@@ -22,8 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-if (property_exists($CFG, 'dirroot') && !str_ends_with($CFG->dirroot, '/public_html')) {
-    $CFG->libdir = $CFG->libdir . '/lib';
+if (property_exists($CFG, 'dirroot') && !str_ends_with($CFG->dirroot, '/public')) {
+    $CFG->dirroot = rtrim($CFG->dirroot, '/') . '/public';
 }
 
-require_once(dirname(__DIR__) . '/public_html/lib/setup.php');
+require_once(dirname(__DIR__) . '/public/lib/setup.php');
