@@ -1,16 +1,18 @@
-$loginbackground-gradient-from: $gray-100 !default;
-$loginbackground-gradient-to: $gray-300 !default;
-$logincontainer-bg: $white !default;
+$loginbackground-gradient-from: #0f172a !default;
+$loginbackground-gradient-to: #11222c !default;
+$logincontainer-bg: rgba(20, 30, 45, 0.45) !default;
 $logincontainer-padding: 3rem !default;
-$logincontainer-shadow: $box-shadow !default;
+$logincontainer-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4) !default;
 $logindivider-margin-top: 1.5rem !default;
 $logindivider-margin-bottom: 1.5rem !default;
-$logindivider-border: $border-color !default;
-$login-identity-provider-btn-border: $border-color !default;
+$logindivider-border: rgba(255, 255, 255, 0.1) !default;
+$login-identity-provider-btn-border: rgba(255, 255, 255, 0.1) !default;
 
 .pagelayout-login #region-main {
     border: 0;
-    background-color: inherit;
+    background-color: transparent !important;
+    box-shadow: none !important;
+    backdrop-filter: none !important;
 }
 
 .pagelayout-login #page {
@@ -30,10 +32,14 @@ $login-identity-provider-btn-border: $border-color !default;
 
 .login-container {
     background-color: $logincontainer-bg;
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
     padding: $logincontainer-padding;
     box-shadow: $logincontainer-shadow;
     margin-bottom: 2rem;
-    @include border-radius();
+    color: #e2e8f0;
+    @include border-radius(16px);
     .login-languagemenu {
         display: flex;
         justify-content: flex-start;

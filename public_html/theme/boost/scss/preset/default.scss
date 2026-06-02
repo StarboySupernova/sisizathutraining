@@ -18,7 +18,7 @@ $gray-800: #343a40 !default;
 $gray-900: #1d2125 !default;
 $black:    #000 !default;
 
-$blue:    #0f6cbf !default;
+$blue:    #0dcaf0 !default;
 $indigo:  #6610f2 !default;
 $purple:  #613d7c !default;
 $pink:    #db1a74 !default;
@@ -27,16 +27,16 @@ $orange:  #f0ad4e !default;
 $yellow:  #ff7518 !default;
 $green:   #357a32 !default;
 $teal:    #20c997 !default;
-$cyan:    #008196 !default;
+$cyan:    #0dcaf0 !default;
 
-$primary:       $blue !default;
-$secondary:     $gray-400 !default;
+$primary:       #117a72 !default; // Deep Brand Teal
+$secondary:     #2b343b !default; // Slate
 $success:       $green !default;
 $info:          $cyan !default;
 $warning:       $orange !default;
 $danger:        $red !default;
 $light:         $gray-100 !default;
-$dark:          $gray-900 !default;
+$dark:          #0f172a !default; // Deep space dark
 
 // stylelint-disable
 $theme-colors: () !default;
@@ -151,3 +151,71 @@ $warning-outline: #a6670e;
 .btn-outline-warning {
     @include button-outline-variant($warning-outline);
 }
+
+// ==========================================
+// CUSTOM GLASSMORPHISM & NEUMORPHISM ENGINE
+// ==========================================
+
+// 1. Dynamic Dark Background
+body, #page-wrapper, #page {
+    background: linear-gradient(135deg, #0f172a, #11222c, #0d1117) !important;
+    background-size: 200% 200% !important;
+    animation: gradientMove 15s ease infinite !important;
+    color: #e2e8f0 !important;
+}
+
+@keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+// 2. Glassmorphism Mixin
+@mixin glass-panel {
+    background: rgba(20, 30, 45, 0.45) !important;
+    backdrop-filter: blur(12px) !important;
+    -webkit-backdrop-filter: blur(12px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.3) !important;
+    border-radius: 16px !important;
+}
+
+// 3. Apply Glass to major components
+.card, .block, .coursebox, .modal-content, .generaltable, .navbar {
+    @include glass-panel;
+    color: #e2e8f0 !important;
+}
+
+.navbar {
+    border-bottom: 1px solid rgba(255,255,255,0.08) !important;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5) !important;
+}
+
+#region-main {
+    @include glass-panel;
+    background: rgba(15, 23, 42, 0.6) !important;
+    padding: 2rem !important;
+}
+
+// 4. Neumorphic Buttons (Extruded default, Inset on hover)
+.btn-primary, .btn-secondary {
+    border: none !important;
+    border-radius: 12px !important;
+    box-shadow: 4px 4px 10px rgba(0,0,0,0.6), -4px -4px 10px rgba(255,255,255,0.05) !important;
+    transition: all 0.2s ease !important;
+    color: #fff !important;
+
+    &:hover, &:focus {
+        // Creates the "pressed in" Neumorphic effect
+        box-shadow: inset 4px 4px 10px rgba(0,0,0,0.6), inset -4px -4px 10px rgba(255,255,255,0.05) !important;
+        transform: translateY(1px);
+    }
+}
+
+.btn-primary { background: #117a72 !important; }
+.btn-secondary { background: #2b343b !important; color: #e2e8f0 !important;}
+
+// 5. Typography fixes for dark mode
+h1, h2, h3, h4, h5, h6, .h1, .h2, .h3, .h4, .h5, .h6 { color: #f8fafc !important; }
+a { color: #0dcaf0; }
+a:hover { color: #7dd3fc; text-decoration: none;}

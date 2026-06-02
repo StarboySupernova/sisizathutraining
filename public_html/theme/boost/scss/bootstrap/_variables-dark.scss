@@ -40,15 +40,15 @@ $light-border-subtle-dark:          $gray-700 !default;
 $dark-border-subtle-dark:           $gray-800 !default;
 // scss-docs-end theme-border-subtle-dark-variables
 
-$body-color-dark:                   $gray-300 !default;
-$body-bg-dark:                      $gray-900 !default;
-$body-secondary-color-dark:         rgba($body-color-dark, .75) !default;
-$body-secondary-bg-dark:            $gray-800 !default;
-$body-tertiary-color-dark:          rgba($body-color-dark, .5) !default;
-$body-tertiary-bg-dark:             mix($gray-800, $gray-900, 50%) !default;
-$body-emphasis-color-dark:          $white !default;
-$border-color-dark:                 $gray-700 !default;
-$border-color-translucent-dark:     rgba($white, .15) !default;
+$body-color-dark:                   #e2e8f0 !default;
+$body-bg-dark:                      #0f172a !default;
+$body-secondary-color-dark:         rgba(#e2e8f0, .75) !default;
+$body-secondary-bg-dark:            rgba(30, 41, 59, 0.5) !default;
+$body-tertiary-color-dark:          rgba(#e2e8f0, .5) !default;
+$body-tertiary-bg-dark:             rgba(15, 23, 42, 0.5) !default;
+$body-emphasis-color-dark:          #f8fafc !default;
+$border-color-dark:                 rgba(255, 255, 255, 0.08) !default;
+$border-color-translucent-dark:     rgba(255, 255, 255, 0.15) !default;
 $headings-color-dark:               inherit !default;
 $link-color-dark:                   tint-color($primary, 40%) !default;
 $link-hover-color-dark:             shift-color($link-color-dark, -$link-shade-percentage) !default;
