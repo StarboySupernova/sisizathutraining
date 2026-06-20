@@ -22,7 +22,7 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-if (!file_exists('./config.php')) {
+/**if (!file_exists('./config.php')) {
     header('Location: install.php');
     die;
 }
@@ -146,3 +146,4 @@ if ($editing && has_capability('moodle/course:create', context_system::instance(
     echo $courserenderer->add_new_course_button();
 }
 echo $OUTPUT->footer();
+*/

@@ -1049,3 +1049,119 @@
       line-height: 80px;
     }
 }
+/* =========================================================
+   MODERNIZATION: GLASSMORPHISM & NEUMORPHISM (HOMEPAGE)
+   ========================================================= */
+
+/* 1. Base Variables for Neumorphism & Glassmorphism */
+:root {
+    --neumbg: #e6ebee; /* Off-white needed for light mode shadows */
+    --neum-shadow-light: #ffffff;
+    --neum-shadow-dark: #c1c9d2;
+    --glass-bg: rgba(255, 255, 255, 0.35);
+    --glass-border: rgba(255, 255, 255, 0.4);
+}
+
+/* Aligning variables automatically if a user switches to Dark Mode */
+.dark-theme {
+    --neumbg: #161B22; /* Deep slate */
+    --neum-shadow-light: #1f2630;
+    --neum-shadow-dark: #0d1014;
+    --glass-bg: rgba(22, 27, 34, 0.5);
+    --glass-border: rgba(255, 255, 255, 0.05);
+}
+
+/* 2. Unify Backgrounds for Neumorphism to Work properly */
+body, .bannar-area, .courses, .top-categories, .expert-instructor, .faq, .student, .grid-view-body, .eUpcomingCourse {
+    background-color: var(--neumbg) !important;
+    background-image: none !important; 
+}
+
+/* 3. Neumorphic Extruded Cards (Courses, Categories, Instructors) */
+.courses-card-body,
+.category-product-body,
+.instructor-card-body,
+.qustion-accrodion,
+.eStudent .student-body-1, 
+.eStudent .student-body-2,
+.course-item-one .content,
+.faq-accrodion .accordion-item {
+    background-color: var(--neumbg) !important;
+    border: none !important;
+    box-shadow: 8px 8px 16px var(--neum-shadow-dark), 
+               -8px -8px 16px var(--neum-shadow-light) !important;
+    border-radius: 18px !important;
+    transition: all 0.3s ease-in-out !important;
+    margin-bottom: 20px;
+}
+
+/* Hover effects for Neumorphic Cards (Lift up slightly) */
+.courses-card-body:hover,
+.category-product-body:hover,
+.instructor-card-body:hover {
+    box-shadow: 12px 12px 20px var(--neum-shadow-dark), 
+               -12px -12px 20px var(--neum-shadow-light) !important;
+    transform: translateY(-5px);
+}
+
+/* Fix images to sit cleanly inside curved neumorphic cards */
+.courses-card-image img { border-radius: 18px 18px 0 0 !important; }
+.courses-card-image { border-radius: 18px 18px 0 0 !important; }
+
+/* 4. Glassmorphism (Frosted Glass on overlapping elements) */
+.Ebaner-card .banner-card-1,
+.course-popover-content,
+.header-dropdown,
+.sub-header {
+    background: var(--glass-bg) !important;
+    backdrop-filter: blur(15px) !important;
+    -webkit-backdrop-filter: blur(15px) !important;
+    border: 1px solid var(--glass-border) !important;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1) !important;
+    border-radius: 18px !important;
+}
+
+/* Clean up legacy image background on the banner card so glass shows */
+.Ebaner-card {
+    background-image: none !important;
+    background-color: transparent !important;
+}
+
+/* 5. Neumorphic Insets (Pressed-in Search Bars) */
+.search-option .form-control,
+.menu-search .form-control {
+    background-color: var(--neumbg) !important;
+    border: none !important;
+    box-shadow: inset 6px 6px 10px var(--neum-shadow-dark), 
+                inset -6px -6px 10px var(--neum-shadow-light) !important;
+    color: var(--color-1) !important;
+    border-radius: 25px !important;
+    padding-left: 20px !important;
+}
+
+.search-option .form-control:focus,
+.menu-search .form-control:focus {
+    box-shadow: inset 8px 8px 12px var(--neum-shadow-dark), 
+                inset -8px -8px 12px var(--neum-shadow-light) !important;
+    outline: none !important;
+}
+
+/* 6. Neumorphic Buttons */
+.btn, .purchase-btn, .submit-cls, .list-btn, .green_purchase {
+    background-color: var(--neumbg) !important;
+    color: var(--color-4) !important;
+    border: 1px solid transparent !important;
+    box-shadow: 5px 5px 10px var(--neum-shadow-dark), 
+               -5px -5px 10px var(--neum-shadow-light) !important;
+    border-radius: 12px !important;
+    transition: all 0.2s ease-in-out !important;
+}
+
+.btn:hover, .purchase-btn:hover, .submit-cls:hover, .list-btn:hover, .green_purchase:hover {
+    box-shadow: inset 4px 4px 8px var(--neum-shadow-dark), 
+                inset -4px -4px 8px var(--neum-shadow-light) !important;
+    transform: scale(0.98); /* Satisfying 'pressed' button feel */
+}
+
+/* Ensure icons on buttons match */
+.submit-cls svg path { stroke: var(--color-4); fill: var(--color-4); }
