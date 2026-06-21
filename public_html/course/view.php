@@ -351,34 +351,101 @@ if (has_capability('moodle/course:update', $context)) {
 
 $containerattributes = ['class' => 'course-content'];
 if ($PAGE->user_is_editing()) {
-    // MDL-65321 The backup libraries are quite heavy, only require the bare minimum.
     require_once($CFG->dirroot . '/backup/util/helper/async_helper.class.php');
-
     if (async_helper::is_async_pending($id, 'course', 'backup')) {
         echo $OUTPUT->notification(get_string('pendingasyncedit', 'backup'), 'warning');
     }
-
-    // Allow drag and drop in the course index.
     $containerattributes['data-courseindexdndallowed'] = 'true';
 }
 
+// =====================================================================
+// --- START OF SISIZATHU CUSTOM MODERN LMS COURSE VIEW ---
+// =====================================================================
+?>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  #page-header { display: none !important; }
+  #page-footer { border-top: 1px solid rgba(255,255,255,0.05) !important; padding: 3rem 0 !important; color: #CBD5E1 !important;}
+
+  #sisi-modern-course-wrapper {
+    font-family: 'Inter', sans-serif;
+    color: #F8FAFC;
+    width: 100%;
+    min-height: 80vh;
+    padding: 2rem 0;
+  }
+  
+  /* Moorosi-Inspired Glass Sections */
+  #sisi-modern-course-wrapper .course-content ul.topics li.section,
+  #sisi-modern-course-wrapper .course-content .section.main {
+      background: rgba(255, 255, 255, 0.05) !important;
+      backdrop-filter: blur(25px) !important;
+      -webkit-backdrop-filter: blur(25px) !important;
+      border: 1px solid rgba(255, 255, 255, 0.1) !important;
+      border-radius: 24px !important;
+      padding: 2.5rem !important;
+      margin-bottom: 2.5rem !important;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.2) !important;
+      transition: all 0.4s ease;
+  }
+  
+  #sisi-modern-course-wrapper .course-content ul.topics li.section:hover {
+      background: rgba(255, 255, 255, 0.08) !important;
+      border-color: rgba(243, 112, 33, 0.4) !important;
+      transform: translateY(-5px);
+  }
+  
+  #sisi-modern-course-wrapper h1, #sisi-modern-course-wrapper h2, #sisi-modern-course-wrapper h3, #sisi-modern-course-wrapper h4 {
+      font-family: 'Poppins', sans-serif !important;
+      color: #ffffff !important;
+  }
+  
+  /* Section Headings with Gradient */
+  #sisi-modern-course-wrapper .course-content .sectionname {
+      font-size: 1.8rem !important;
+      font-weight: 800 !important;
+      margin-bottom: 1.5rem !important;
+      background: linear-gradient(90deg, #F37021, #ffb347);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+  }
+
+  /* Activity Items / Lessons */
+  #sisi-modern-course-wrapper .activity-item {
+      background: rgba(0,0,0,0.3) !important;
+      border: 1px solid rgba(255,255,255,0.05) !important;
+      border-radius: 16px !important;
+      padding: 1.5rem !important;
+      margin-bottom: 1rem !important;
+      transition: all 0.3s ease;
+  }
+  #sisi-modern-course-wrapper .activity-item:hover {
+      background: rgba(0,0,0,0.5) !important;
+      border-color: #00CFFD !important;
+      box-shadow: 0 10px 20px rgba(0, 207, 253, 0.15) !important;
+  }
+  
+  #sisi-modern-course-wrapper a { color: #00CFFD; text-decoration: none; font-weight: 600;}
+  #sisi-modern-course-wrapper a:hover { color: #F37021; }
+</style>
+
+<div id="sisi-modern-course-wrapper">
+<?php
 // Course wrapper start.
 echo html_writer::start_tag('div', $containerattributes);
 
-// CAUTION, hacky fundamental variable defintion to follow!
-// Note that because of the way course fromats are constructed though
-// inclusion we pass parameters around this way.
 $displaysection = $section;
 
 // Include the actual course format.
 require($CFG->dirroot .'/course/format/'. $course->format .'/format.php');
+
 // Content wrapper end.
-
 echo html_writer::end_tag('div');
+?>
+</div>
 
-// Trigger course viewed event.
-// We don't trust $context here. Course format inclusion above executes in the global space. We can't assume
-// anything after that point.
+<?php
+// Trigger course viewed event safely back inside PHP tags.
 course_view(context_course::instance($course->id), $section);
 
 // If available, include the JS to prepare the download course content modal.

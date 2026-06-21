@@ -102,6 +102,89 @@ $PAGE->navbar->add(get_string('enrolmentoptions','enrol'));
 $courserenderer = $PAGE->get_renderer('core', 'course');
 $content = $courserenderer->enrolment_options($course, $widgets,
     $returnurl ? new \core\url($returnurl) : null);
+
 echo $OUTPUT->header();
-echo $content;
+?>
+
+<!-- Inject custom glassmorphism styles and wrapper specifically for the Enrolment box -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Poppins:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  #page-header { display: none !important; }
+  #page-footer { border-top: 1px solid rgba(255,255,255,0.05) !important; padding: 3rem 0 !important; color: #CBD5E1 !important;}
+
+  #sisi-enrol-wrapper {
+    font-family: 'Inter', sans-serif;
+    color: #F8FAFC;
+    width: 100%;
+    min-height: 70vh;
+    padding: 3rem 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Force Moodle's gray box into a Moorosi Glass Card */
+  #sisi-enrol-wrapper .box.generalbox.info, 
+  #sisi-enrol-wrapper .enrolment-options {
+      background: linear-gradient(135deg, rgba(67, 22, 219, 0.4), rgba(0, 207, 253, 0.1)) !important;
+      backdrop-filter: blur(25px) !important;
+      -webkit-backdrop-filter: blur(25px) !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      border-radius: 24px !important;
+      padding: 3.5rem !important;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.4) !important;
+      width: 100%;
+      max-width: 750px;
+      color: #F8FAFC !important;
+  }
+  
+  #sisi-enrol-wrapper h2 {
+      font-family: 'Poppins', sans-serif !important;
+      color: #ffffff !important;
+      font-weight: 800 !important;
+      font-size: 2.8rem;
+      margin-bottom: 0.5rem;
+  }
+  
+  #sisi-enrol-wrapper .box h3,
+  #sisi-enrol-wrapper h3.sectionname {
+      font-family: 'Poppins', sans-serif !important;
+      color: #F37021 !important;
+      font-weight: 700 !important;
+  }
+  
+  /* Force buttons to be orange */
+  #sisi-enrol-wrapper form input[type="submit"], 
+  #sisi-enrol-wrapper .btn-primary, 
+  #sisi-enrol-wrapper .btn {
+      background-color: #F37021 !important;
+      border-color: #F37021 !important;
+      color: white !important;
+      border-radius: 50px !important;
+      padding: 1rem 3rem !important;
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.1rem;
+      font-weight: 700 !important;
+      transition: all 0.3s ease;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+  }
+  #sisi-enrol-wrapper form input[type="submit"]:hover, 
+  #sisi-enrol-wrapper .btn:hover {
+      background-color: #ffffff !important;
+      color: #18204D !important;
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(243, 112, 33, 0.5);
+  }
+</style>
+
+<div id="sisi-enrol-wrapper">
+    <div style="text-align: center; margin-bottom: 3rem;">
+        <h2>Course Enrollment</h2>
+        <p style="color: #CBD5E1; font-size: 1.1rem;">Unlock your potential. Follow the prompts below to access the materials.</p>
+    </div>
+    <?php echo $content; ?>
+</div>
+
+<?php
 echo $OUTPUT->footer();
