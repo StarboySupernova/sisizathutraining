@@ -446,15 +446,15 @@ echo $OUTPUT->header();
         <!-- 2. STATS BAR -->
         <div class="stats-container">
             <div class="stat-box">
-                <h3>15k+</h3>
+                <h3>1k+</h3>
                 <p>Active Learners</p>
             </div>
             <div class="stat-box">
-                <h3>120+</h3>
+                <h3>20+</h3>
                 <p>Accredited Courses</p>
             </div>
             <div class="stat-box">
-                <h3>98%</h3>
+                <h3>99%</h3>
                 <p>Success Rate</p>
             </div>
             <div class="stat-box">
