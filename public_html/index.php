@@ -349,6 +349,90 @@ echo $OUTPUT->header();
     .sisi-moodle-dynamic-content input[type="text"] { margin-bottom: 1rem; max-width: 100%; }
     .sisi-moodle-dynamic-content input[type="submit"] { margin-left: 0; width: 100%; }
   }
+
+  /* ========================================================== */
+/* NEW HERO: SVG CAROUSEL & QUOTE FORM (Imported from Midrand)*/
+/* ========================================================== */
+
+/* SVG Carousel Animation */
+.svg-carousel-container {
+    width: 100%; max-width: 355px; margin: 35px 0 40px 0;
+    position: relative; animation: floatCard 6s ease-in-out infinite;
+}
+@keyframes floatCard {
+    0% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-12px) rotate(1deg); }
+    100% { transform: translateY(0px) rotate(0deg); }
+}
+.carousel-mask {
+    width: 100%; height: 100%; border-radius: 26px; overflow: hidden;
+    position: relative; background: #11173b;
+}
+.carousel-image {
+    position: absolute; inset: 0; opacity: 0;
+    transform: translateX(60px) scale(0.8) rotate(-4deg);
+    transition: all 0.9s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 1;
+}
+.carousel-image.active {
+    opacity: 1; transform: translateX(0px) scale(1) rotate(0deg); z-index: 2;
+}
+.glass-reflection-overlay {
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 50%);
+    border: 1.5px solid rgba(243, 112, 33, 0.5); /* Sisi Orange border */
+    border-radius: 26px; pointer-events: none; z-index: 3;
+    box-shadow: inset 0 0 25px rgba(0,0,0,0.6);
+}
+
+/* Glassmorphism Quote Form */
+.quote-form-container {
+    background: rgba(20, 20, 30, 0.6);
+    backdrop-filter: blur(24px); -webkit-backdrop-filter: blur(24px);
+    padding: 40px; border-radius: 20px;
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-top: 1px solid rgba(243, 112, 33, 0.4);
+    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
+}
+.quote-form-container h3 {
+    font-size: 2.2rem; margin-bottom: 20px; color: #fff; font-family: 'Poppins', sans-serif;
+}
+.quote-form-container input, .quote-form-container textarea {
+    width: 100%; padding: 14px 15px; margin-bottom: 15px;
+    border: 1px solid rgba(255, 255, 255, 0.1); border-radius: 8px;
+    background: rgba(0, 0, 0, 0.4); color: #fff; font-size: 1rem;
+    outline: none; transition: 0.3s;
+}
+.quote-form-container input:focus, .quote-form-container textarea:focus {
+    border-color: #F37021; box-shadow: 0 0 15px rgba(243, 112, 33, 0.3);
+}
+
+/* Custom Select Dropdown (Isolated to avoid Moodle conflicts) */
+.sisi-custom-select { position: relative; margin-bottom: 15px; cursor: pointer; }
+.sisi-select-trigger {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: 14px 15px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px; color: #fff; transition: 0.3s;
+}
+.sisi-select-trigger.active { border-color: #F37021; box-shadow: 0 0 15px rgba(243, 112, 33, 0.3); }
+.sisi-select-menu {
+    position: absolute; top: calc(100% + 8px); left: 0; width: 100%;
+    background: rgba(20, 20, 30, 0.95); backdrop-filter: blur(20px);
+    border: 1px solid #F37021; border-radius: 12px; z-index: 100;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8); display: none;
+}
+.sisi-select-menu.open { display: block; animation: fadeUp 0.3s ease forwards; }
+.sisi-select-item { padding: 12px 20px; color: #CBD5E1; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.sisi-select-item:hover { background: #F37021; color: #fff; }
+
+/* Buttons & Success */
+.submit-btn {
+    width: 100%; background: #F37021; color: #fff; padding: 16px; border: none;
+    border-radius: 8px; font-weight: 800; cursor: pointer; transition: 0.3s;
+}
+.submit-btn:hover { background: #D45D1A; box-shadow: 0 10px 20px rgba(243, 112, 33, 0.4); transform: translateY(-2px); }
+.success-message { text-align: center; display: none; }
+.success-message h3 { color: #25d366; }
 </style>
 
 <div id="sisi-modern-wrapper">
@@ -388,60 +472,86 @@ echo $OUTPUT->header();
     <div class="sisi-container">
         
         <!-- 1. HERO SECTION -->
-        <div class="sisi-hero">
-            <div class="sisi-hero-text">
-                <div class="sisi-badge">✨ Next-Generation Learning</div>
-                <h1 class="sisi-title">Elevate Your Career with <br><span>Immersive Digital</span> Training</h1>
-                <p class="sisi-subtitle">Sisizathu Training delivers elite, industry-recognized certifications. Experience an ultra-modern, gamified learning portal designed to accelerate African professionals to the pinnacle of their industries.</p>
-                
-                <div class="sisi-btn-group">
-                    <?php if (isloggedin() && !isguestuser()): ?>
-                        <a href="<?php echo $CFG->wwwroot; ?>/my/" class="sisi-btn">
-                            Access My Dashboard
-                            <svg style="width:18px;height:18px;" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0-105.4 105.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
-                        </a>
-                    <?php else: ?>
-                        <a href="<?php echo $CFG->wwwroot; ?>/login/index.php" class="sisi-btn">
-                            Login to Portal
-                            <svg style="width:18px;height:18px;" viewBox="0 0 448 512"><path d="M438.6 278.6c12.5-12.5 12.5-32.8 0-45.3l-160-160c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3L338.8 224 32 224c-17.7 0-32 14.3-32 32s14.3 32 32 32l306.7 0-105.4 105.4c-12.5 12.5-12.5 32.8 0 45.3s32.8 12.5 45.3 0l160-160z"/></svg>
-                        </a>
-                        <a href="#coursesearch" class="sisi-btn sisi-btn-outline">Explore Courses</a>
-                    <?php endif; ?>
-                </div>
-            </div>
-
-            <!-- 3D Card Stack -->
-            <div class="card-stack-container">
-                <div class="stacked-card stack-3">
-                    <h4>
-                        <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Fire/3D/fire_3d.png" class="icon-3d-sm" alt="Fire"> 
-                        Instant Feedback
-                    </h4>
-                    <div class="faux-line w-80"></div>
-                </div>
-                <div class="stacked-card stack-2">
-                    <h4>
-                        <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Trophy/3D/trophy_3d.png" class="icon-3d-sm" alt="Trophy"> 
-                        Gamified Leaderboards
-                    </h4>
-                    <div class="faux-line w-60"></div>
-                    <div class="faux-line w-40"></div>
-                </div>
-                <div class="stacked-card stack-1">
-                    <h3>
-                        <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Rocket/3D/rocket_3d.png" class="icon-3d" alt="Rocket"> 
-                        Fast-Track Certification
-                    </h3>
-                    <div class="faux-line w-80"></div>
-                    <h4>
-                        <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Trophy/3D/trophy_3d.png" class="icon-3d-sm" alt="Trophy"> 
-                        Gamified Quizzes
-                    </h4>
-                    <div class="faux-line w-60"></div>
-                    <div class="faux-line w-40"></div>
-                </div>
-            </div>
+<div class="sisi-hero" style="align-items: flex-start;">
+    
+    <!-- LEFT SIDE: Text + SVG Carousel -->
+    <div class="sisi-hero-text">
+        <div class="sisi-badge">✨ Next-Generation Learning</div>
+        <h1 class="sisi-title">Elevate Your Career with <br><span>Immersive Digital</span> Training</h1>
+        
+        <!-- THE 3D SVG CAROUSEL -->
+        <div class="svg-carousel-container">
+            <svg width="100%" viewBox="0 0 310 432" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <!-- Drop Shadow -->
+                <path d="M9.29688 0.958984L241.912 60.0358C274.03 68.1926 300.066 101.668 300.066 134.805V371.805C300.066 404.942 274.03 425.193 241.912 417.036L67.4507 372.728C35.3332 364.571 9.29688 331.096 9.29688 297.959V0.958984Z" fill="black" fill-opacity="0.6"/>
+                <!-- Orange Gradient Card -->
+                <path d="M9.29688 0.958984L247.633 29.168C280.541 33.0628 307.217 63.0831 307.217 96.2202V333.22C307.217 366.357 280.541 390.063 247.633 386.168L68.881 365.011C35.9736 361.116 9.29688 331.096 9.29688 297.959V0.958984Z" fill="url(#paint0_linear_sisi)"/>
+                <!-- Masked Images -->
+                <foreignObject x="11" y="8" width="288" height="364">
+                    <div class="carousel-mask">
+                        <!-- Replace these image URLs with your actual course images later -->
+                        <div class="carousel-image active"><img src="https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&w=800&q=80" style="width:100%; height:100%; object-fit:fill;"></div>
+                        <div class="carousel-image"><img src="https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=80" style="width:100%; height:100%; object-fit:fill;"></div>
+                        <div class="carousel-image"><img src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?auto=format&fit=crop&w=800&q=80" style="width:100%; height:100%; object-fit:fill;"></div>
+                        <div class="glass-reflection-overlay"></div>
+                    </div>
+                </foreignObject>
+                <defs>
+                    <linearGradient id="paint0_linear_sisi" x1="9.29688" y1="0.958984" x2="-32.3731" y2="353.027" gradientUnits="userSpaceOnUse">
+                        <stop stopColor="#F37021"/><stop offset="1" stopColor="#D45D1A"/>
+                    </linearGradient>
+                </defs>
+            </svg>
         </div>
+
+        <p class="sisi-subtitle">Sisizathu Training delivers elite, industry-recognized certifications. Experience an ultra-modern, gamified learning portal designed to accelerate African professionals to the pinnacle of their industries.</p>
+        
+        <div class="sisi-btn-group">
+            <?php if (isloggedin() && !isguestuser()): ?>
+                <a href="<?php echo $CFG->wwwroot; ?>/my/" class="sisi-btn">Access My Dashboard</a>
+            <?php else: ?>
+                <a href="<?php echo $CFG->wwwroot; ?>/login/index.php" class="sisi-btn">Login to Portal</a>
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <!-- RIGHT SIDE: Quote Form -->
+    <div style="flex: 1 1 400px; max-width: 500px;">
+        <div class="quote-form-container">
+            <!-- Success Message (Hidden by default) -->
+            <div id="form-success" class="success-message">
+                <h3>Request Sent!</h3>
+                <p>An administrator will contact you shortly with enrollment details.</p>
+                <button type="button" class="sisi-btn sisi-btn-outline" onclick="resetForm()">Send another request</button>
+            </div>
+            
+            <!-- The Form -->
+            <form id="sisi-quote-form" onsubmit="submitQuoteForm(event)">
+                <h3>Get Course Info</h3>
+                <input type="text" name="name" placeholder="Your Name" required />
+                <input type="email" name="email" placeholder="Email Address" required />
+                <input type="tel" name="phone" placeholder="Phone / WhatsApp" required />
+                
+                <!-- Custom Dropdown -->
+                <div class="sisi-custom-select">
+                    <div class="sisi-select-trigger" onclick="toggleDropdown()">
+                        <span id="selected-course-text">Select Course...</span> ▼
+                    </div>
+                    <div class="sisi-select-menu" id="custom-dropdown-options">
+                        <div class="sisi-select-item" onclick="selectOption('Financial Administration')">Financial Administration</div>
+                        <div class="sisi-select-item" onclick="selectOption('System Development')">System Development</div>
+                        <div class="sisi-select-item" onclick="selectOption('Basic Computer Skills')">Basic Computer Skills</div>
+                        <div class="sisi-select-item" onclick="selectOption('Occupational Health & Safety')">Occupational Health & Safety</div>
+                    </div>
+                    <input type="hidden" name="course" id="hidden-course-input" required />
+                </div>
+
+                <textarea name="message" placeholder="Any specific requirements or questions?" rows="3"></textarea>
+                <button type="submit" class="submit-btn" id="submit-btn-text">Request Information</button>
+            </form>
+        </div>
+    </div>
+</div>
 
         <!-- 2. STATS BAR -->
         <div class="stats-container">
@@ -670,6 +780,67 @@ echo $OUTPUT->header();
     </div> <!-- End .sisi-container -->
 </div> <!-- End #sisi-modern-wrapper -->
 
+<script>
+    // 1. CAROUSEL LOGIC
+    document.addEventListener("DOMContentLoaded", function() {
+        const images = document.querySelectorAll('.carousel-image');
+        let currentImg = 0;
+        if (images.length > 0) {
+            setInterval(() => {
+                images[currentImg].classList.remove('active');
+                currentImg = (currentImg + 1) % images.length;
+                images[currentImg].classList.add('active');
+            }, 3500);
+        }
+    });
+
+    // 2. FORM DROPDOWN LOGIC
+    function toggleDropdown() {
+        document.getElementById('custom-dropdown-options').classList.toggle('open');
+        document.querySelector('.sisi-select-trigger').classList.toggle('active');
+    }
+    function selectOption(value) {
+        document.getElementById('selected-course-text').innerText = value;
+        document.getElementById('hidden-course-input').value = value;
+        toggleDropdown();
+    }
+
+    // 3. AJAX FORM SUBMISSION LOGIC
+    function submitQuoteForm(e) {
+        e.preventDefault();
+        const form = document.getElementById('sisi-quote-form');
+        const btn = document.getElementById('submit-btn-text');
+        const formData = new FormData(form);
+        
+        btn.innerText = "Sending...";
+        
+        // Send data to our custom PHP handler
+        fetch('submit_quote.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => response.text())
+        .then(data => {
+            form.style.display = 'none';
+            document.getElementById('form-success').style.display = 'block';
+            btn.innerText = "Request Information";
+        })
+        .catch(error => {
+            alert("There was an error sending your request.");
+            btn.innerText = "Request Information";
+        });
+    }
+
+    function resetForm() {
+        document.getElementById('sisi-quote-form').reset();
+        document.getElementById('selected-course-text').innerText = "Select Course...";
+        document.getElementById('hidden-course-input').value = "";
+        document.getElementById('form-success').style.display = 'none';
+        document.getElementById('sisi-quote-form').style.display = 'block';
+    }
+</script>
+
 <?php
+
 // Output Moodle's footer
 echo $OUTPUT->footer();
