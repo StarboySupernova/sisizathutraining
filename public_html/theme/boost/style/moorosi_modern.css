@@ -155,12 +155,12 @@ select.form-control option, .custom-select option { background-color: #18204D !i
 
 
 /* --- 6. SECONDARY NAVIGATION (Course Toolbar identically styled to Main Toolbar) --- */
-.secondary-navigation, 
-.secondary-navigation.bg-white, 
-#page-header, 
-#page-header.bg-white, 
-.tertiary-navigation, 
-.tertiary-navigation.bg-white {
+html body .secondary-navigation, 
+html body .secondary-navigation.bg-white, 
+html body #page-header, 
+html body #page-header.bg-white, 
+html body .tertiary-navigation, 
+html body .tertiary-navigation.bg-white {
     background: rgba(15, 15, 25, 0.85) !important;
     backdrop-filter: blur(30px) !important;
     -webkit-backdrop-filter: blur(30px) !important;
@@ -172,7 +172,8 @@ select.form-control option, .custom-select option { background-color: #18204D !i
     margin-bottom: 2rem !important;
 }
 
-.secondary-navigation .navigation { 
+html body .secondary-navigation .navigation,
+html body .secondary-navigation .bg-white { 
     background: transparent !important; 
     box-shadow: none !important; 
     border: none !important; 
@@ -302,3 +303,138 @@ select.form-control option, .custom-select option { background-color: #18204D !i
 
 .navbar-brand img { border-radius: 8px !important; box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5) !important; border: 1px solid rgba(255,255,255,0.1); }
 .editmode-switch-form, .usermenu .switch { pointer-events: none !important; opacity: 0.5 !important; cursor: not-allowed !important; }
+
+/* --- 10. MODALS & FILE PICKER OVERRIDES --- */
+.modal-content, .moodle-dialogue-base .moodle-dialogue-wrap {
+    background: rgba(20, 20, 30, 0.95) !important;
+    backdrop-filter: blur(30px) !important;
+    -webkit-backdrop-filter: blur(30px) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
+    border-radius: 16px !important;
+    color: #F8FAFC !important;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.8) !important;
+}
+
+/* Nuke the hardcoded white backgrounds inside the YUI File Picker */
+.modal-body, .moodle-dialogue-bd, .fp-content, .fp-formset, 
+.file-picker .fp-content, .filemanager .fp-content,
+.moodle-dialogue-base .fp-content-center {
+    background: transparent !important;
+    color: #F8FAFC !important;
+}
+
+.modal-header, .moodle-dialogue-hd {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background: transparent !important;
+    color: #ffffff !important;
+}
+.modal-footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+    background: transparent !important;
+}
+
+/* Modal & File Picker Inputs */
+.modal-content input, .modal-content textarea, .modal-content select,
+.moodle-dialogue-base input[type="text"], .moodle-dialogue-base select {
+    background: rgba(0, 0, 0, 0.4) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+    border-radius: 8px !important;
+    padding: 8px !important;
+}
+/* Ensure placeholder text is visible */
+.moodle-dialogue-base input[type="text"]::placeholder { color: rgba(255,255,255,0.5) !important; }
+
+/* Modal & File Picker Buttons */
+.modal-content .btn, .fp-btn-download, .fp-btn-delete, .fp-btn-update,
+.moodle-dialogue-base .fp-upload-btn, .moodle-dialogue-base .fp-btn-choose,
+.moodle-dialogue-base button {
+    background: rgba(255, 255, 255, 0.05) !important;
+    border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    color: #ffffff !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease !important;
+    text-shadow: none !important;
+    padding: 8px 16px !important;
+}
+.modal-content .btn:hover, .modal-content .btn-primary,
+.moodle-dialogue-base .fp-upload-btn:hover, .moodle-dialogue-base button:hover {
+    background: #F37021 !important;
+    border-color: #F37021 !important;
+    color: #ffffff !important;
+    box-shadow: 0 4px 15px rgba(243, 112, 33, 0.4) !important;
+}
+
+/* File Picker Specific Text (Labels, Paths, Names) */
+.filemanager .yui3-datatable-header, .filemanager .fp-filename, 
+.filemanager .fp-author, .filemanager .fp-license, 
+.filemanager .fp-path, .form-control-label, .col-form-label,
+.moodle-dialogue-base label, .moodle-dialogue-base .fp-login-form label {
+    color: #CBD5E1 !important;
+    font-weight: 500 !important;
+}
+
+/* Modal Close "X" Icon */
+.close, .modal-header .close, .moodle-dialogue-hd .yui3-button-close {
+    color: #F37021 !important;
+    text-shadow: none !important;
+    opacity: 1 !important;
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+.close:hover, .moodle-dialogue-hd .yui3-button-close:hover {
+    color: #D45D1A !important;
+    transform: scale(1.1);
+}
+
+/* ========================================================== */
+/* 11. GAMIFIED LEARNING JOURNEY                              */
+/* ========================================================== */
+
+#sisi-game-container {
+    width: 100%; max-width: 650px; margin: 4rem auto; min-height: 600px;
+    background: rgba(15, 15, 25, 0.6); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
+    border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 24px;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.5); position: relative; overflow: hidden;
+    color: #F8FAFC !important; font-family: 'Poppins', sans-serif;
+}
+.game-header {
+    text-align: center; padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.2); 
+    font-size: 1.5rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center; color: #fff;
+}
+#game-back-btn {
+    background: rgba(255,255,255,0.1); border: none; color: white; padding: 8px 15px; border-radius: 8px;
+    cursor: pointer; display: none; font-weight: 600; transition: 0.3s;
+}
+#game-back-btn:hover { background: #F37021; }
+#game-progress-text { font-size: 1rem; background: #F37021; padding: 4px 12px; border-radius: 20px; display: none; color: white; }
+
+/* Progress Map */
+#sisi-map-view { padding: 40px 20px; height: 600px; overflow-y: auto; display: flex; flex-direction: column; align-items: center; }
+#sisi-map-view::-webkit-scrollbar { display: none; }
+.level-wrapper { display: flex; flex-direction: column; align-items: center; position: relative; width: 100%; min-height: 140px; }
+.level-node { width: 70px; height: 70px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; z-index: 5; cursor: pointer; transition: all 0.3s ease; position: relative; }
+.level-node.locked { background: rgba(255,255,255,0.05); color: rgba(255,255,255,0.3); cursor: not-allowed; border: 1px solid rgba(255,255,255,0.1); }
+.level-node.current { background: #F37021; color: white; box-shadow: 0 0 20px rgba(243, 112, 33, 0.6); transform: scale(1.1); }
+.level-node.completed { background: #25d366; color: white; box-shadow: 0 0 15px rgba(37, 211, 102, 0.4); }
+
+/* SVG Connectors */
+.progress-ring { position: absolute; top: -10px; left: -10px; width: 90px; height: 90px; pointer-events: none; }
+.progress-ring circle { fill: transparent; stroke-width: 6; stroke-linecap: round; transform: rotate(-90deg); transform-origin: 50% 50%; transition: stroke-dashoffset 0.5s ease; }
+.ring-bg { stroke: rgba(255,255,255,0.1); }
+.ring-fill { stroke: #00CFFD; stroke-dasharray: 251; stroke-dashoffset: 251; }
+.path-svg { position: absolute; top: 70px; width: 100px; height: 70px; z-index: 1; pointer-events: none; }
+.path-line { fill: none; stroke: rgba(255,255,255,0.1); stroke-width: 6; stroke-linecap: round; stroke-dasharray: 1 15; }
+.path-line.active { stroke: #F37021; }
+
+/* Quiz View */
+#sisi-quiz-view { padding: 40px 20px; display: none; animation: fadeIn 0.4s ease; }
+.question-text { font-size: 1.6rem; text-align: center; margin-bottom: 40px; min-height: 100px; display: flex; align-items: center; justify-content: center; color: #fff; }
+.options-grid { display: flex; flex-direction: column; gap: 15px; }
+.option-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); padding: 18px; border-radius: 12px; color: #CBD5E1; font-size: 1.2rem; cursor: pointer; transition: all 0.3s ease; text-align: center; }
+.option-btn:hover:not(.disabled) { background: rgba(243, 112, 33, 0.2); border-color: #F37021; color: white; }
+.option-btn.correct { background: #25d366 !important; border-color: #25d366 !important; color: white !important; box-shadow: 0 0 15px rgba(37, 211, 102, 0.4); }
+.option-btn.wrong { background: #ff4444 !important; border-color: #ff4444 !important; color: white !important; box-shadow: 0 0 15px rgba(255, 68, 68, 0.4); }
+.option-btn.disabled { cursor: not-allowed; opacity: 0.7; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
