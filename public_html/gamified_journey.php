@@ -90,13 +90,7 @@ echo $OUTPUT->header();
 </div>
 
 <script>
-    const levelsData = [
-        { id: 1, offset: -80, questions: [ { q: "What is the capital of France?", options: ["London", "Berlin", "Paris", "Madrid"], ans: 2 }, { q: "Which planet is known as the Red Planet?", options: ["Venus", "Mars", "Jupiter", "Saturn"], ans: 1 }, { q: "What is 15 + 27?", options: ["32", "42", "47", "52"], ans: 1 } ] },
-        { id: 2, offset: 60, questions: [ { q: "What is the largest ocean on Earth?", options: ["Atlantic Ocean", "Indian Ocean", "Arctic Ocean", "Pacific Ocean"], ans: 3 }, { q: "Which element has the chemical symbol 'O'?", options: ["Gold", "Oxygen", "Osmium", "Oganesson"], ans: 1 }, { q: "In which year did World War II end?", options: ["1944", "1945", "1946", "1947"], ans: 1 } ] },
-        { id: 3, offset: -40, questions: [ { q: "Which country is known as the Land of the Rising Sun?", options: ["China", "South Korea", "Japan", "Thailand"], ans: 2 }, { q: "What is the hardest natural substance on Earth?", options: ["Gold", "Iron", "Diamond", "Platinum"], ans: 2 }, { q: "How many bones are in the human body?", options: ["206", "215", "198", "250"], ans: 0 } ] },
-        { id: 4, offset: 50, questions: [ { q: "What is the main gas found in the Earth's atmosphere?", options: ["Oxygen", "Carbon Dioxide", "Nitrogen", "Hydrogen"], ans: 2 }, { q: "Which Shakespeare play features the character Hamlet?", options: ["Romeo and Juliet", "Macbeth", "Hamlet", "Othello"], ans: 2 }, { q: "What is the freezing point of water in Celsius?", options: ["0°C", "32°C", "100°C", "-10°C"], ans: 0 } ] },
-        { id: 5, offset: -30, questions: [ { q: "What is the largest mammal in the world?", options: ["African Elephant", "Blue Whale", "Giraffe", "Polar Bear"], ans: 1 }, { q: "Which programming language is known as the 'language of the web'?", options: ["Python", "Java", "JavaScript", "C++"], ans: 2 }, { q: "What is the currency of Japan?", options: ["Won", "Yuan", "Yen", "Ringgit"], ans: 2 } ] }
-    ];
+    const levelsData = <?php echo get_config('local_sisizathu', 'journey_data') ?: '[]'; ?>;
 
     let selectedLevel = 1;
     let questionIndex = 0;
@@ -235,7 +229,14 @@ echo $OUTPUT->header();
         } else {
             btnElement.classList.add('wrong');
             allBtns[correctIndex].classList.add('correct');
-            setTimeout(() => { renderQuestion(); isProcessing = false; }, 1500);
+            setTimeout(() => { 
+                // Advance to next question even if wrong
+                questionIndex++;
+                if (questionIndex >= levelData.questions.length) {
+                    selectedLevel++; questionIndex = 0; showMap();
+                } else { renderQuestion(); }
+                isProcessing = false; 
+            }, 1500);
         }
     }
 
