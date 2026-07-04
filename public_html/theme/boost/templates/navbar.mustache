@@ -91,7 +91,90 @@
                 {{> theme_boost/language_menu }}
                 <div class="divider border-start h-75 align-self-center mx-1"></div>
             {{/langmenu}}
-            {{{ output.navbar_plugin_output }}}
+           {{{ output.navbar_plugin_output }}}
+
+            <!-- --- SISI CUSTOM HUB DROPDOWN --- -->
+            <div class="nav-item sisi-hub-wrapper">
+                <a href="#" class="nav-link sisi-hub-icon" id="sisiHubToggle">
+                    <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Control%20knobs/3D/control_knobs_3d.png" alt="Hub">
+                </a>
+                <div class="sisi-hub-menu" id="sisiHubMenu">
+                    <div class="sisi-hub-header">Comms Hub</div>
+                    <div class="sisi-hub-item" id="sisiTriggerNotifs">
+                        <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Bell/3D/bell_3d.png" alt="Notifications">
+                        <span>Notifications</span>
+                    </div>
+                    <div class="sisi-hub-item" id="sisiTriggerMessages">
+                        <img src="https://raw.githubusercontent.com/microsoft/fluentui-emoji/main/assets/Speech%20balloon/3D/speech_balloon_3d.png" alt="Messages">
+                        <span>Messages</span>
+                    </div>
+                </div>
+            </div>
+            
+            <script>
+                document.addEventListener("DOMContentLoaded", function() {
+                    const toggle = document.getElementById('sisiHubToggle');
+                    const menu = document.getElementById('sisiHubMenu');
+                    const wrapper = document.querySelector('.sisi-hub-wrapper');
+
+                    if (toggle && menu) {
+                        // Toggle Hub Dropdown
+                        toggle.addEventListener('click', function(e) {
+                            e.preventDefault();
+                            menu.classList.toggle('open');
+                        });
+
+                        // Close when clicking outside
+                        document.addEventListener('click', function(e) {
+                            if (!wrapper.contains(e.target)) {
+                                menu.classList.remove('open');
+                            }
+                        });
+
+                       // Fires a realistic mousedown/mouseup/click sequence at the
+                        // element's actual screen position, on a fresh task (setTimeout 0).
+                        // This avoids Moodle's own "click outside closes the drawer" logic
+                        // seeing our synthetic click as part of the same event that opened
+                        // our custom hub menu, and immediately closing the drawer again.
+                        function triggerNativeToggle(el) {
+                            if (!el) {
+                                console.warn('Sisi Hub: native toggle not found.');
+                                return;
+                            }
+                            const rect = el.getBoundingClientRect();
+                            const x = rect.left + (rect.width / 2);
+                            const y = rect.top + (rect.height / 2);
+                            const opts = { bubbles: true, cancelable: true, view: window, clientX: x, clientY: y };
+                            setTimeout(function() {
+                                el.dispatchEvent(new MouseEvent('mousedown', opts));
+                                el.dispatchEvent(new MouseEvent('mouseup', opts));
+                                el.dispatchEvent(new MouseEvent('click', opts));
+                            }, 0);
+                        }
+
+                        // Trigger Moodle Notifications
+                        document.getElementById('sisiTriggerNotifs').addEventListener('click', function() {
+                            menu.classList.remove('open');
+                            const nativeNotif = document.querySelector('.popover-region-notifications .popover-region-toggle')
+                                           || document.querySelector('[data-region="popover-region-notifications"] .popover-region-toggle')
+                                           || document.querySelector('#nav-notification-popover-container [data-region="popover-region-toggle"]');
+                            triggerNativeToggle(nativeNotif);
+                        });
+
+                        // Trigger Moodle Messaging
+                        document.getElementById('sisiTriggerMessages').addEventListener('click', function() {
+                            menu.classList.remove('open');
+                            const nativeMsg = document.querySelector('[data-region="popover-region-messages"] .popover-region-toggle')
+                                           || document.querySelector('[id^="message-drawer-toggle"]')
+                                           || document.querySelector('[data-region="message-drawer-toggle"]')
+                                           || document.querySelector('[data-action="toggle-message-drawer"]');
+                            triggerNativeToggle(nativeMsg);
+                        });
+                    }
+                });
+            </script>
+            <!-- --- END SISI CUSTOM HUB DROPDOWN --- -->
+
             <div class="d-flex align-items-stretch usermenu-container" data-region="usermenu">
                 {{#usermenu}}
                     {{> core/user_menu }}
