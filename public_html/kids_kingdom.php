@@ -2,11 +2,33 @@
 // public_html/kids_kingdom.php
 require_once('config.php');
 
+// Handle silent AJAX save progress
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_qidx'])) {
+    require_login();
+    set_user_preference('kids_kingdom_qidx', (int)$_POST['save_qidx']);
+    die('saved');
+}
+
 $PAGE->set_context(context_system::instance());
 $PAGE->set_url('/kids_kingdom.php');
 $PAGE->set_title('Kids Kingdom');
 $PAGE->set_heading('Kids Kingdom');
 $PAGE->set_pagelayout('standard'); 
+
+$saved_qidx = (isloggedin() && !isguestuser()) ? get_user_preferences('kids_kingdom_qidx', 0) : 0;
+$is_logged_in = (isloggedin() && !isguestuser()) ? 'true' : 'false';
+
+// Fetch dynamic quiz questions from DB
+$kids_quiz_json = get_config('local_sisizathu', 'kids_kingdom_quiz');
+if (!$kids_quiz_json) {
+    $kids_quiz_json = json_encode([
+        ["q" => "Who built the ark to save the animals from the great flood?", "opts" => ["Moses", "Noah", "Abraham", "David"], "ans" => "Noah"],
+        ["q" => "What giant did David fight with a slingshot?", "opts" => ["Goliath", "Saul", "Pharaoh", "Hercules"], "ans" => "Goliath"],
+        ["q" => "Who was swallowed by a giant fish?", "opts" => ["Peter", "Paul", "Jonah", "John"], "ans" => "Jonah"],
+        ["q" => "Where was baby Jesus born?", "opts" => ["A castle", "A hospital", "A stable", "A house"], "ans" => "A stable"],
+        ["q" => "What did God use to create the first woman, Eve?", "opts" => ["A flower", "Adam's rib", "Clay", "A star"], "ans" => "Adam's rib"]
+    ]);
+}
 
 echo $OUTPUT->header();
 ?>
@@ -100,14 +122,15 @@ echo $OUTPUT->header();
     .kk-activities-list h1 { color: #000; font-weight: 900; font-size: 2.2rem; margin-bottom: 20px; text-align: center;}
     
     .kk-activity-row {
-        background: rgba(255,255,255,0.25); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.4);
-        border-radius: 20px; padding: 15px; display: flex; align-items: center; gap: 15px;
-        margin-bottom: 15px; cursor: pointer; transition: 0.2s; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        background: rgba(15, 15, 25, 0.7); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+        border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 20px; padding: 15px; 
+        display: flex; align-items: center; gap: 15px; margin-bottom: 15px; cursor: pointer; 
+        transition: 0.3s; box-shadow: 0 10px 25px rgba(0,0,0,0.4);
     }
     .kk-activity-row:active { transform: scale(0.95); }
-    .kk-act-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; background: white; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-    .kk-act-text h4 { margin: 0; font-weight: 800; color: #111; font-size: 1.15rem;}
-    .kk-act-text p { margin: 0; color: rgba(0,0,0,0.7); font-size: 0.9rem; font-weight: 600;}
+    .kk-act-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
+    .kk-act-text h4 { margin: 0; font-weight: 800; color: #fff; font-size: 1.15rem;}
+    .kk-act-text p { margin: 0; color: #CBD5E1; font-size: 0.9rem; font-weight: 600;}
 
     /* Close X Button (Sits exactly over the canvas mask blob) */
     .kk-close-x {
@@ -118,26 +141,29 @@ echo $OUTPUT->header();
     }
     #kk-app.show-activities .kk-close-x { pointer-events: auto; opacity: 1; transition-delay: 0.4s;}
 
-    /* --- 5. FAB MENU (Exact SwiftUI Coordinates + Shared Transforms) --- */
-    .kk-fab-container { position: absolute; bottom: 30px; right: 30px; width: 65px; height: 65px; z-index: 50; }
+    /* --- 5. FAB MENU (Perfect Emoji Alignment) --- */
+    .kk-fab-container { position: absolute; bottom: 30px; right: 30px; width: 60px; height: 60px; z-index: 50; }
     
     .fab-goo-layer { position: absolute; right: -50px; bottom: -50px; width: 250px; height: 250px; filter: url(#fab-goo); pointer-events: none; }
     
-    /* Blobs and Icons share the exact same transform coordinates so they NEVER orphan */
-    .fab-blob, .fab-icon {
-        position: absolute; bottom: 50px; right: 50px; width: 65px; height: 65px; border-radius: 50%;
-        display: flex; align-items: center; justify-content: center;
-        transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    /* Blobs and Icons locked to identical dimensions and base positions */
+    .fab-blob {
+        position: absolute; bottom: 50px; right: 50px; width: 60px; height: 60px; border-radius: 50%;
+        background: rgba(0,0,0,0.85); z-index: 51; transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
-    .fab-blob { background: rgba(0,0,0,0.85); z-index: 51; }
-    .fab-icon { color: white; font-size: 1.5rem; z-index: 52; cursor: pointer; pointer-events: none; opacity: 0; }
+    .fab-icon {
+        position: absolute; bottom: 0; right: 0; width: 60px; height: 60px; border-radius: 50%;
+        color: white; display: flex; align-items: center; justify-content: center; font-size: 1.5rem;
+        z-index: 52; cursor: pointer; pointer-events: none; opacity: 0; transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
     
-    .kk-fab-container.open .fab-blob-1, .kk-fab-container.open .fab-icon.i1 { transform: translate(-10px, -100px); opacity: 1; pointer-events: auto; } /* Top */
-    .kk-fab-container.open .fab-blob-2, .kk-fab-container.open .fab-icon.i2 { transform: translate(-100px, -10px); opacity: 1; pointer-events: auto; } /* Left */
-    .kk-fab-container.open .fab-blob-3, .kk-fab-container.open .fab-icon.i3 { transform: translate(-80px, -80px); opacity: 1; pointer-events: auto; } /* Top-Left */
+    /* Unified exact transforms */
+    .kk-fab-container.open .fab-blob-1, .kk-fab-container.open .fab-icon.i1 { transform: translate(-10px, -100px); opacity: 1; pointer-events: auto; } 
+    .kk-fab-container.open .fab-blob-2, .kk-fab-container.open .fab-icon.i2 { transform: translate(-100px, -10px); opacity: 1; pointer-events: auto; } 
+    .kk-fab-container.open .fab-blob-3, .kk-fab-container.open .fab-icon.i3 { transform: translate(-80px, -80px); opacity: 1; pointer-events: auto; } 
 
     .fab-main {
-        position: absolute; bottom: 0; right: 0; width: 65px; height: 65px; border-radius: 50%;
+        position: absolute; bottom: 0; right: 0; width: 60px; height: 60px; border-radius: 50%;
         color: white; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: 300;
         cursor: pointer; transition: 0.4s; z-index: 55; background: #000; box-shadow: 0 10px 20px rgba(0,0,0,0.5); pointer-events: auto;
     }
@@ -146,21 +172,32 @@ echo $OUTPUT->header();
     /* Hide UI when Quiz is open */
     #kk-app.hide-ui .kk-masked-content, #kk-app.hide-ui .kk-content-layer, #kk-app.hide-ui .kk-fab-container { opacity: 0; pointer-events: none; }
 
-    /* --- 6. QUIZ & RESULTS --- */
+    /* --- 6. QUIZ & RESULTS (Dark Glassmorphism) --- */
     #quiz-view, #results-view { position: absolute; inset: 0; z-index: 100; display: none; flex-direction: column; padding: 40px 30px; box-sizing: border-box; }
     #quiz-view { background: linear-gradient(180deg, #FF9500, #FFCC00); }
     #results-view { background: linear-gradient(180deg, #007AFF, #AF52DE); align-items: center; justify-content: center; text-align: center; }
     
-    .qz-header { display: flex; justify-content: space-between; color: white; font-weight: 600; font-size: 1.1rem; margin-bottom: 10px; }
-    .qz-progress-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.3); border-radius: 4px; margin-bottom: 40px; overflow: hidden; }
+    .qz-header { display: flex; justify-content: space-between; align-items: center; color: white; font-weight: 600; font-size: 1.1rem; margin-bottom: 10px; }
+    .qz-quit-btn { background: rgba(255, 59, 48, 0.2); border: 1px solid #FF3B30; color: #fff; padding: 6px 14px; border-radius: 12px; cursor: pointer; font-weight: bold; transition: 0.2s; backdrop-filter: blur(10px); }
+    .qz-quit-btn:hover { background: #FF3B30; }
+
+    .qz-progress-bg { width: 100%; height: 8px; background: rgba(255,255,255,0.3); border-radius: 4px; margin-bottom: 40px; overflow: hidden; box-shadow: inset 0 1px 3px rgba(0,0,0,0.2); }
     .qz-progress-fill { height: 100%; background: white; width: 0%; transition: width 0.3s ease; }
     
-    .qz-question { font-size: 2.2rem; font-weight: 800; color: white; text-align: center; margin-bottom: auto; line-height: 1.2;}
+    .qz-question-card { background: rgba(15, 15, 25, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.15); border-radius: 24px; padding: 30px 20px; margin-bottom: auto; box-shadow: 0 15px 30px rgba(0,0,0,0.3); }
+    .qz-question { font-size: 1.8rem; font-weight: 800; color: white; text-align: center; line-height: 1.3;}
+    
     .qz-options { display: flex; flex-direction: column; gap: 15px; margin-bottom: auto; }
-    .qz-btn { background: rgba(255,255,255,0.3); border: 3px solid transparent; padding: 18px; border-radius: 20px; color: white; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    .qz-btn { background: rgba(15, 15, 25, 0.6); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.2); padding: 18px; border-radius: 20px; color: white; font-size: 1.2rem; font-weight: 600; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 20px rgba(0,0,0,0.2); }
     .qz-btn.correct { background: #34C759 !important; border-color: white; box-shadow: 0 5px 15px rgba(0,0,0,0.3); }
     .qz-btn.wrong { background: #FF3B30 !important; border-color: white; }
     .qz-btn.disabled { opacity: 0.5; pointer-events: none; }
+    
+    .qz-next { background: white; color: #FF9500; padding: 18px; border-radius: 20px; border: none; font-size: 1.3rem; font-weight: 800; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.2); display: none; transition: 0.2s; width: 100%; margin-top: 20px;}
+    .qz-next:active { transform: scale(0.95); }
+
+    .res-star { font-size: 6rem; color: #FFCC00; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.4)); margin-bottom: 20px; }
+    .res-score { font-size: 4.5rem; font-weight: 900; color: white; margin: 10px 0 40px 0; }
     
     .qz-next { background: white; color: #FF9500; padding: 18px; border-radius: 20px; border: none; font-size: 1.3rem; font-weight: 800; cursor: pointer; box-shadow: 0 10px 20px rgba(0,0,0,0.2); display: none; transition: 0.2s; width: 100%; margin-top: 20px;}
     .qz-next:active { transform: scale(0.95); }
@@ -277,9 +314,12 @@ echo $OUTPUT->header();
         <div class="qz-header">
             <span id="qz-prog-text">Question 1/20</span>
             <span id="qz-score-text">Score: 0</span>
+            <button class="qz-quit-btn" onclick="quitQuiz()">Quit</button>
         </div>
         <div class="qz-progress-bg"><div class="qz-progress-fill" id="qz-bar"></div></div>
-        <div class="qz-question" id="qz-q-text">Loading...</div>
+        <div class="qz-question-card">
+            <div class="qz-question" id="qz-q-text">Loading...</div>
+        </div>
         <div class="qz-options" id="qz-opts"></div>
         <button class="qz-next" id="qz-next-btn" onclick="nextQuizQuestion()">Next Question</button>
     </div>
@@ -356,23 +396,29 @@ echo $OUTPUT->header();
     }
 
 
-    // --- 2. QUIZ LOGIC (SwiftUI ViewModel Translated) ---
-    const quizData = [
-        { q: "Who built the ark to save the animals from the great flood?", opts: ["Moses", "Noah", "Abraham", "David"], ans: "Noah" },
-        { q: "What giant did David fight with a slingshot?", opts: ["Goliath", "Saul", "Pharaoh", "Hercules"], ans: "Goliath" },
-        { q: "Who was swallowed by a giant fish?", opts: ["Peter", "Paul", "Jonah", "John"], ans: "Jonah" },
-        { q: "Where was baby Jesus born?", opts: ["A castle", "A hospital", "A stable", "A house"], ans: "A stable" },
-        { q: "What did God use to create the first woman, Eve?", opts: ["A flower", "Adam's rib", "Clay", "A star"], ans: "Adam's rib" }
-    ];
+   // --- 2. QUIZ LOGIC & PROGRESS SAVING ---
+    const isLoggedIn = <?php echo $is_logged_in; ?>;
+    const savedQIdx = <?php echo $saved_qidx; ?>;
 
-    let currentQIdx = 0;
-    let score = 0;
+    const quizData = <?php echo $kids_quiz_json; ?>;
+
+    let currentQIdx = savedQIdx < quizData.length ? savedQIdx : 0;
+    let score = 0; // Standard to reset score per session even if resuming questions
     let answerChosen = false;
 
+    function saveProgress(idx) {
+        if (!isLoggedIn) return;
+        const formData = new FormData();
+        formData.append('save_qidx', idx);
+        fetch('kids_kingdom.php', { method: 'POST', body: formData });
+    }
+
     function startQuiz() {
-        appContainer.classList.add('hide-ui'); // Hides background UI
+        toggleActivities(false); // FIXED: Calling the correct toggle function
+        appContainer.classList.add('hide-ui');
         document.getElementById('quiz-view').style.display = 'flex';
-        currentQIdx = 0; score = 0;
+        if (currentQIdx >= quizData.length) currentQIdx = 0; // Reset if they finished before
+        score = 0; 
         renderQuizQuestion();
     }
 
@@ -382,6 +428,10 @@ echo $OUTPUT->header();
         document.getElementById('results-view').style.display = 'none';
         handleSelection(1);
     }
+    
+    function quitQuiz() {
+        closeQuiz();
+    }
 
     function renderQuizQuestion() {
         answerChosen = false;
@@ -389,7 +439,7 @@ echo $OUTPUT->header();
         
         document.getElementById('qz-prog-text').innerText = `Question ${currentQIdx + 1}/${quizData.length}`;
         document.getElementById('qz-score-text').innerText = `Score: ${score}`;
-        document.getElementById('qz-bar').style.width = `${((currentQIdx) / quizData.length) * 100}%`;
+       document.getElementById('qz-bar').style.width = `${((currentQIdx + 1) / quizData.length) * 100}%`;
         
         document.getElementById('qz-q-text').innerText = qObj.q;
         document.getElementById('qz-next-btn').style.display = 'none';
@@ -433,8 +483,11 @@ echo $OUTPUT->header();
     function nextQuizQuestion() {
         if (currentQIdx < quizData.length - 1) {
             currentQIdx++;
+            saveProgress(currentQIdx);
             renderQuizQuestion();
         } else {
+            saveProgress(0); // Reset progress on completion
+            currentQIdx = 0; // FIX: Reset local index so it starts at Question 1 next time!
             document.getElementById('quiz-view').style.display = 'none';
             document.getElementById('results-view').style.display = 'flex';
             document.getElementById('res-score-text').innerText = `${score} out of ${quizData.length}`;
@@ -443,6 +496,9 @@ echo $OUTPUT->header();
 
     function restartQuiz() {
         document.getElementById('results-view').style.display = 'none';
+        currentQIdx = 0;
+        score = 0;
+        saveProgress(0);
         startQuiz();
     }
     
