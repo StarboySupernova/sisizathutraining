@@ -16,19 +16,23 @@ $PAGE->set_pagelayout('standard');
 // Handle Form Submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['questions_json'])) {
     $json_data = trim($_POST['questions_json']);
-    set_config('kids_kingdom_quiz', $json_data, 'local_sisizathu');
+    $course_id = isset($_POST['course_id']) ? (int)$_POST['course_id'] : 0;
+    
+    if ($course_id > 0) {
+        set_config('kids_kingdom_quiz_' . $course_id, $json_data, 'local_sisizathu');
+    } else {
+        set_config('kids_kingdom_quiz', $json_data, 'local_sisizathu'); // Default fallback
+    }
     $success_msg = "Quiz questions successfully updated!";
 }
 
-// Fetch existing data or load defaults
-$current_data = get_config('local_sisizathu', 'kids_kingdom_quiz');
-if (!$current_data) {
-    // Default starter template
-    $current_data = json_encode([
-        ["q" => "Who built the ark to save the animals from the great flood?", "opts" => ["Moses", "Noah", "Abraham", "David"], "ans" => "Noah"],
-        ["q" => "What giant did David fight with a slingshot?", "opts" => ["Goliath", "Saul", "Pharaoh", "Hercules"], "ans" => "Goliath"],
-        ["q" => "Who was swallowed by a giant fish?", "opts" => ["Peter", "Paul", "Jonah", "John"], "ans" => "Jonah"]
-    ]);
+// Fetch all active Moodle courses for the dropdown
+global $DB;
+$courses = $DB->get_records('course', null, 'sortorder', 'id, fullname');
+$course_options = [];
+foreach($courses as $c) {
+    if ($c->id == SITEID) continue; 
+    $course_options[] = ['id' => $c->id, 'name' => format_string($c->fullname)];
 }
 
 echo $OUTPUT->header();
@@ -55,11 +59,11 @@ echo $OUTPUT->header();
     .form-group { margin-bottom: 15px; }
     .form-group label { display: block; font-size: 0.85rem; color: #CBD5E1; margin-bottom: 8px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
     
-    .admin-manager-container input[type="text"] {
+    .admin-manager-container input[type="text"], .admin-manager-container select {
         width: 100%; padding: 12px 15px; background: rgba(0, 0, 0, 0.4); border: 1px solid rgba(255, 255, 255, 0.2);
         color: #fff; border-radius: 8px; font-family: 'Inter', sans-serif; transition: 0.3s; font-size: 1rem;
     }
-    .admin-manager-container input:focus { border-color: #FF9500; outline: none; box-shadow: 0 0 10px rgba(255, 149, 0, 0.3); }
+    .admin-manager-container input:focus, .admin-manager-container select:focus { border-color: #FF9500; outline: none; box-shadow: 0 0 10px rgba(255, 149, 0, 0.3); }
 
     .options-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
     .option-input-wrapper { display: flex; align-items: center; gap: 12px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
@@ -85,6 +89,16 @@ echo $OUTPUT->header();
         <div class="alert-success">✓ <?php echo $success_msg; ?></div>
     <?php endif; ?>
 
+    <div class="form-group" style="margin-bottom: 30px; background: rgba(0,0,0,0.3); padding: 20px; border-radius: 12px; border: 1px solid #FF9500;">
+        <label style="color: #FF9500; font-size: 1.1rem; margin-bottom: 10px;">🎯 Select Course for Quiz</label>
+        <select id="course-selector" onchange="loadCourseData(this.value)">
+            <option value="0">Global Default Quiz</option>
+            <?php foreach($course_options as $c): ?>
+                <option value="<?php echo $c['id']; ?>"><?php echo $c['name']; ?></option>
+            <?php endforeach; ?>
+        </select>
+    </div>
+
     <div id="visual-builder"></div>
 
     <button type="button" class="sisi-btn-add" onclick="addQuestion()" style="width: 100%; margin-bottom: 30px;">
@@ -92,18 +106,39 @@ echo $OUTPUT->header();
     </button>
 
     <form method="POST" id="quiz-form" onsubmit="prepareSubmit()">
+        <input type="hidden" name="course_id" id="hidden-course-id" value="0">
         <textarea name="questions_json" id="hidden-json-output" style="display: none;"></textarea>
         <button type="submit" class="sisi-btn-primary" style="width: 100%;">💾 Save Quiz to Database</button>
     </form>
 </div>
 
 <script>
-    let quizState = JSON.parse(<?php echo json_encode($current_data); ?>);
-    
-    // Normalize data for the builder (Find the index of the correct answer)
-    quizState.forEach(q => {
-        q.ansIdx = Math.max(0, q.opts.indexOf(q.ans)); 
-    });
+    const dbData = <?php 
+        $all_data = ['0' => get_config('local_sisizathu', 'kids_kingdom_quiz')];
+        foreach($course_options as $c) {
+            $all_data[$c['id']] = get_config('local_sisizathu', 'kids_kingdom_quiz_' . $c['id']);
+        }
+        echo json_encode($all_data); 
+    ?>;
+
+    let quizState = [];
+
+    function loadCourseData(courseId) {
+        document.getElementById('hidden-course-id').value = courseId;
+        const dataStr = dbData[courseId] || '[]';
+        quizState = dataStr ? JSON.parse(dataStr) : [];
+        
+        if (quizState.length === 0 && courseId === "0") {
+             quizState = [
+                {"q": "Who built the ark to save the animals from the great flood?", "opts": ["Moses", "Noah", "Abraham", "David"], "ans": "Noah"},
+                {"q": "What giant did David fight with a slingshot?", "opts": ["Goliath", "Saul", "Pharaoh", "Hercules"], "ans": "Goliath"},
+                {"q": "Who was swallowed by a giant fish?", "opts": ["Peter", "Paul", "Jonah", "John"], "ans": "Jonah"}
+            ];
+        }
+        
+        quizState.forEach(q => { q.ansIdx = Math.max(0, q.opts.indexOf(q.ans)); });
+        render();
+    }
 
     const builderDiv = document.getElementById('visual-builder');
 
@@ -161,7 +196,6 @@ echo $OUTPUT->header();
     }
     
     function prepareSubmit() {
-        // Map the selected radio button index back to the string value for the frontend
         const exportData = quizState.map(q => ({
             q: q.q,
             opts: q.opts,
@@ -170,7 +204,7 @@ echo $OUTPUT->header();
         document.getElementById('hidden-json-output').value = JSON.stringify(exportData);
     }
 
-    document.addEventListener("DOMContentLoaded", render);
+    document.addEventListener("DOMContentLoaded", () => loadCourseData("0"));
 </script>
 
 <?php echo $OUTPUT->footer(); ?>
