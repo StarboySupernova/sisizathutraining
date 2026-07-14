@@ -124,6 +124,22 @@ echo $OUTPUT->header();
         .option-input-wrapper { align-items: center; }
         .sisi-select-trigger { font-size: 0.9rem; padding: 12px; }
     }
+
+    /* Custom Toast Notifications */
+    #sisi-toast-container {
+        position: fixed; top: 80px; right: 20px; z-index: 9999;
+        display: flex; flex-direction: column; gap: 10px; pointer-events: none;
+    }
+    .sisi-toast {
+        background: rgba(255, 59, 48, 0.95); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+        color: white; padding: 16px 24px; border-radius: 12px; font-weight: 600; font-size: 0.95rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2);
+        transform: translateX(120%); opacity: 0; transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        display: flex; align-items: center; gap: 12px; pointer-events: auto; max-width: 350px; line-height: 1.4;
+    }
+    .sisi-toast.show { transform: translateX(0); opacity: 1; }
+    .sisi-toast.success { background: rgba(52, 199, 89, 0.95); }
+    .sisi-toast-icon { font-size: 1.5rem; }
 </style>
 
 <div class="admin-manager-container">
@@ -152,7 +168,7 @@ echo $OUTPUT->header();
         + Add New Map
     </button>
 
-    <button type="button" class="sisi-btn-primary" style="width: 100%;" onclick="saveToDB(false)">💾 Save Configuration to Database</button>
+    <button type="button" id="save-db-btn" class="sisi-btn-primary" style="width: 100%; display: none;" onclick="saveToDB(false)">💾 Save Configuration to Database</button>
 </div>
 
 <script>
@@ -201,10 +217,12 @@ echo $OUTPUT->header();
         if (!activeAdminCourseId) {
             builderDiv.innerHTML = '<div style="text-align:center; padding: 50px; color:#CBD5E1; background: rgba(255,255,255,0.05); border-radius: 12px; border: 1px dashed rgba(255,255,255,0.2);">Select a course from the dropdown above to manage its gamified maps.</div>';
             document.getElementById('add-map-btn').style.display = 'none';
+            document.getElementById('save-db-btn').style.display = 'none';
             return;
         }
 
         document.getElementById('add-map-btn').style.display = 'block';
+        document.getElementById('save-db-btn').style.display = 'block';
         
         let courseTotalXP = 0;
         let mapsHtml = '';
@@ -383,6 +401,10 @@ echo $OUTPUT->header();
     }
     
     function deleteLevel(mIdx, lIdx) { 
+        if(journeyState[mIdx].levels.length <= 1) {
+            showToast("A map must have at least 1 level. Delete the map instead.", false);
+            return;
+        }
         if(confirm("Delete level?")) { 
             journeyState[mIdx].levels.splice(lIdx, 1); 
             render(); 
@@ -396,6 +418,10 @@ echo $OUTPUT->header();
     }
     
     function deleteQuestion(mIdx, lIdx, qIdx) { 
+        if(journeyState[mIdx].levels[lIdx].questions.length <= 1) {
+            showToast("A level must have at least 1 question. Delete the level instead.", false);
+            return;
+        }
         if(confirm("Delete Question?")) {
             journeyState[mIdx].levels[lIdx].questions.splice(qIdx, 1); 
             render(); 
@@ -403,26 +429,59 @@ echo $OUTPUT->header();
         } 
     }
 
+    function showToast(message, isSuccess = false) {
+        let container = document.getElementById('sisi-toast-container');
+        if (!container) {
+            container = document.createElement('div');
+            container.id = 'sisi-toast-container';
+            document.body.appendChild(container);
+        }
+        
+        const toast = document.createElement('div');
+        toast.className = 'sisi-toast' + (isSuccess ? ' success' : '');
+        toast.innerHTML = `<span class="sisi-toast-icon">${isSuccess ? '✅' : '⚠️'}</span> <div>${message}</div>`;
+        
+        container.appendChild(toast);
+        
+        // Trigger animation
+        requestAnimationFrame(() => { toast.classList.add('show'); });
+        
+        // Remove after 4.5 seconds
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 400);
+        }, 4500);
+    }
+
     async function saveToDB(isSilent = false) {
         let valid = true;
         let errorMsg = "";
         
+        // INTERCEPTOR: Prevent manual saving if the course has 0 maps
+        const courseMaps = journeyState.filter(m => m.course_id == activeAdminCourseId);
+        if (!isSilent && courseMaps.length === 0) {
+            showToast("Cannot save an empty course. Please add at least one Map.", false);
+            return false;
+        }
+        
         outerLoop: for (let map of journeyState) {
             if(!map.title.trim()) { valid=false; errorMsg="Every map must have a title."; break; }
-            if(!map.levels || map.levels.length===0) { valid=false; errorMsg="Map '"+map.title+"' needs at least 1 level."; break; }
-            for (let lvl of map.levels) {
-                if (!lvl.questions || lvl.questions.length === 0) { valid = false; errorMsg = "Every level must have at least one question."; break outerLoop; }
-                for (let q of lvl.questions) {
-                    if (!q.q.trim()) { valid = false; errorMsg = "Question text cannot be empty."; break outerLoop; }
-                    if (!q.xp || isNaN(q.xp) || q.xp <= 0) { valid = false; errorMsg = "Every question must have a valid XP value greater than 0."; break outerLoop; }
+            if(!map.levels || map.levels.length===0) { valid=false; errorMsg=`The map "<b>${map.title}</b>" needs at least 1 level added to it.`; break; }
+            for (let i = 0; i < map.levels.length; i++) {
+                let lvl = map.levels[i];
+                if (!lvl.questions || lvl.questions.length === 0) { valid = false; errorMsg = `Level ${i+1} in "<b>${map.title}</b>" is empty. It must have at least one question.`; break outerLoop; }
+                for (let j = 0; j < lvl.questions.length; j++) {
+                    let q = lvl.questions[j];
+                    if (!q.q.trim()) { valid = false; errorMsg = `Question ${j+1} in Level ${i+1} cannot be empty. Please type a question.`; break outerLoop; }
+                    if (!q.xp || isNaN(q.xp) || q.xp <= 0) { valid = false; errorMsg = `Question ${j+1} in Level ${i+1} must have a valid XP value greater than 0.`; break outerLoop; }
                     const filledOptions = q.options.filter(o => o.trim() !== '');
-                    if (filledOptions.length < 4) { valid = false; errorMsg = "Every question must have exactly 4 options typed in."; break outerLoop; }
+                    if (filledOptions.length < 4) { valid = false; errorMsg = `Question ${j+1} in Level ${i+1} is incomplete. Every question must have exactly 4 options typed in.`; break outerLoop; }
                 }
             }
         }
 
         if (!valid) {
-            if(!isSilent) alert("Cannot save: " + errorMsg);
+            showToast(errorMsg, false); // Always show errors, even on silent saves
             return false;
         }
 
@@ -436,11 +495,11 @@ echo $OUTPUT->header();
                 headers: { 'X-Requested-With': 'XMLHttpRequest' }
             });
             if (response.ok) {
-                if(!isSilent) alert("Path successfully updated in database!");
+                if(!isSilent) showToast("Path successfully updated and saved to the database!", true);
                 return true;
             }
         } catch(e) {
-            if(!isSilent) alert("Error communicating with database.");
+            if(!isSilent) showToast("Error communicating with database. Please check your connection.", false);
             return false;
         }
     }

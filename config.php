@@ -25,4 +25,26 @@ $CFG->admin     = 'admin';
 
 $CFG->directorypermissions = 0777;
 
+// --- TASK 1 & 3: GLOBAL LOGO AND FAVICON OVERRIDE ---
+// Note the Capital 'S' in the logo filename and the '?v=2' cache-busters!
+$custom_favicon = 'https://www.sisizathutraining.com/sisizathulogo.png?v=2';
+$custom_logo = 'https://www.sisizathutraining.com/Sisizathutrainingglassmorphiclogo.png?v=2';
+
+$CFG->additionalhtmlhead = '
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        // 1. Forcefully overwrite Moodle\'s native Favicon tags
+        var favicons = document.querySelectorAll("link[rel~=\'icon\']");
+        favicons.forEach(function(fav) { fav.href = "'.$custom_favicon.'"; });
+        
+        // 2. Forcefully overwrite the Header Logos
+        var logos = document.querySelectorAll(".navbar-brand img, .site-name img, .logo img, .navbar-brand .logo");
+        logos.forEach(function(img) { 
+            img.src = "'.$custom_logo.'"; 
+            img.style.maxHeight = "50px"; /* Ensures the new logo fits perfectly in the navbar */
+            img.style.width = "auto";
+        });
+    });
+</script>';
+
 require_once(__DIR__ . '/public/lib/setup.php');
