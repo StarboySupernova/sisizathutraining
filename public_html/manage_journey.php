@@ -12,14 +12,21 @@ $PAGE->set_title('Manage Gamified Journey');
 $PAGE->set_heading('Gamified Questions Manager');
 $PAGE->set_pagelayout('standard');
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['questions_json'])) {
-    set_config('journey_data', trim($_POST['questions_json']), 'local_sisizathu');
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['questions_json'])) {
+        set_config('journey_data', trim($_POST['questions_json']), 'local_sisizathu');
+    }
+    if (isset($_POST['strict_progression'])) {
+        set_config('journey_strict_progression', (int)$_POST['strict_progression'], 'local_sisizathu');
+    }
     if (!empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest') {
         echo json_encode(['status' => 'success']);
         die();
     }
     $success_msg = "Path successfully updated!";
 }
+
+$strict_mode = get_config('local_sisizathu', 'journey_strict_progression') ?: 0;
 
 $current_data = get_config('local_sisizathu', 'journey_data');
 if (!$current_data) $current_data = '[]';
@@ -159,6 +166,13 @@ echo $OUTPUT->header();
             </div>
             <div class="sisi-select-menu" id="master-dropdown-menu"></div>
         </div>
+
+        <hr style="border-color: rgba(255,255,255,0.1); margin: 20px 0;">
+        
+        <label style="color: #00CFFD; font-size: 1rem; display: flex; justify-content: space-between; align-items: center;">
+            <span>🔒 Enforce Strict Progression<br><small style="color:#CBD5E1; font-weight:normal; font-size:0.8rem;">Users must finish previous maps/categories to unlock the next ones.</small></span>
+            <input type="checkbox" id="strict-mode-toggle" <?php echo $strict_mode ? 'checked' : ''; ?> style="width:24px; height:24px; accent-color:#00CFFD; cursor:pointer;">
+        </label>
     </div>
 
     <div id="course-xp-container"></div>
@@ -487,6 +501,7 @@ echo $OUTPUT->header();
 
         const formData = new FormData();
         formData.append('questions_json', JSON.stringify(journeyState));
+        formData.append('strict_progression', document.getElementById('strict-mode-toggle').checked ? 1 : 0);
 
         try {
             const response = await fetch('manage_journey.php', { 

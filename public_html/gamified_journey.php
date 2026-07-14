@@ -10,6 +10,7 @@ $PAGE->set_pagelayout('standard');
 
 $journey_data_json = get_config('local_sisizathu', 'journey_data') ?: '[]';
 $journey_data = json_decode($journey_data_json, true);
+$strict_progression = get_config('local_sisizathu', 'journey_strict_progression') ?: 0;
 
 // Calculate Maps per course to rank them
 $map_counts = [];
@@ -81,8 +82,31 @@ echo $OUTPUT->header();
 
     /* VIEW 2: CATEGORY BLOBS */
     #kk-app { width: 400px; height: 800px; max-width: 100%; margin: 2rem auto; position: relative; overflow: hidden; border-radius: 40px; box-shadow: 0 30px 60px rgba(0,0,0,0.6); font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif; background-color: #111; user-select: none; }
-    #blob-ui-view { display: flex; justify-content: center; }
-#kk-app { margin: 0; } /* frame now handles spacing/centering */
+    #blob-ui-view.active { display: flex; justify-content: center; }
+    #kk-app { margin: 0; } /* frame now handles spacing/centering */
+    
+   /* Custom Modal Styles */
+    .sisi-modal-overlay {
+        position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(10px);
+        z-index: 2147483647; display: none; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s;
+    }
+    .sisi-modal-overlay.show { display: flex; opacity: 1; }
+    .sisi-modal-content {
+        background: rgba(20, 20, 30, 0.95); border: 1px solid rgba(255,255,255,0.15);
+        border-radius: 24px; padding: 30px; max-width: 400px; width: 90%; text-align: center;
+        box-shadow: 0 20px 50px rgba(0,0,0,0.5); transform: translateY(20px); transition: transform 0.3s;
+    }
+    .sisi-modal-overlay.show .sisi-modal-content { transform: translateY(0); }
+    .sisi-modal-content h3 { margin: 0 0 15px 0; color: #fff; font-size: 1.5rem; }
+    .sisi-modal-content p { color: #CBD5E1; margin: 0 0 25px 0; font-size: 1.05rem; line-height: 1.4; }
+    .sisi-modal-actions { display: flex; gap: 15px; justify-content: center; }
+    .sisi-modal-actions button { flex: 1; padding: 12px; border-radius: 12px; font-weight: bold; border: none; cursor: pointer; transition: 0.2s; color: white; }
+    .sisi-modal-actions button:hover { filter: brightness(1.1); transform: translateY(-2px); }
+
+    /* Custom Toast for Idle Timer */
+    #sisi-toast-container { position: fixed; top: 80px; right: 20px; z-index: 2147483647; display: flex; flex-direction: column; gap: 10px; pointer-events: none; }
+    .sisi-toast { background: rgba(0, 207, 253, 0.95); backdrop-filter: blur(10px); color: #000; padding: 16px 24px; border-radius: 12px; font-weight: 600; font-size: 0.95rem; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.2); transform: translateX(120%); opacity: 0; transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); display: flex; align-items: center; gap: 12px; pointer-events: auto; max-width: 350px; line-height: 1.4; }
+    .sisi-toast.show { transform: translateX(0); opacity: 1; }
 
 .kk-device-frame, #kk-device-frame {
     margin: 2rem auto;
@@ -199,24 +223,28 @@ echo $OUTPUT->header();
     .kk-close-x { position: absolute; top: 585px; left: 50%; transform: translateX(-50%); width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: bold; cursor: pointer; pointer-events: none; opacity: 0; transition: opacity 0.3s; }
     #kk-app.show-activities .kk-close-x { pointer-events: auto; opacity: 1; transition-delay: 0.4s;}
 
-    .cat-scrollview { max-height: 280px; overflow-y: auto; padding-right: 10px; }
+    .cat-scrollview { max-height: 250px; overflow-y: auto; padding-right: 10px; margin-bottom: 20px; }
     .cat-scrollview::-webkit-scrollbar { width: 6px; }
-    .cat-scrollview::-webkit-scrollbar-track { background: rgba(0,0,0,0.2); border-radius: 10px; }
-    .cat-scrollview::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.6); border-radius: 10px; backdrop-filter: blur(5px); }
+    .cat-scrollview::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 10px; }
+    .cat-scrollview::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); }
+    .cat-scrollview::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.25); }
     .map-row { background: rgba(15, 15, 25, 0.6); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 20px; padding: 15px; display: flex; align-items: center; gap: 15px; margin-bottom: 15px; cursor: pointer; transition: 0.3s; box-shadow: 0 10px 25px rgba(0,0,0,0.4); }
     .map-row:active { transform: scale(0.95); }
     .map-icon { width: 50px; height: 50px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); }
     .map-text h4 { margin: 0; font-weight: 800; color: #fff; font-size: 1.1rem; }
     .map-text p { margin: 0; color: #CBD5E1; font-size: 0.85rem; font-weight: 600; }
-    .kk-app.wide-mode .cat-scrollview { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-height: 340px; }
+    .kk-app.wide-mode .cat-scrollview, #kk-app.wide-mode .cat-scrollview { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-height: 160px; padding-bottom: 10px; }
 
     /* VIEW 3: GAME MAP & QUIZ LAYER */
     #sisi-game-container {
         width: 100%; max-width: 850px; margin: 2rem auto; height: calc(100vh - 140px); min-height: 600px;
         background: rgba(15, 15, 25, 0.75); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
         border: 1px solid rgba(255, 255, 255, 0.15); border-radius: 24px; box-shadow: 0 20px 50px rgba(0,0,0,0.6); overflow: hidden;
-        color: #F8FAFC !important; font-family: 'Poppins', sans-serif; position: relative;
+        color: #F8FAFC !important; font-family: 'Poppins', sans-serif; position: relative; transition: background 0.5s;
     }
+    #sisi-game-container.cat-bg-1 { background: linear-gradient(135deg, rgba(67, 20, 7, 0.9), rgba(15, 15, 25, 0.95)); }
+    #sisi-game-container.cat-bg-2 { background: linear-gradient(135deg, rgba(46, 16, 101, 0.9), rgba(15, 15, 25, 0.95)); }
+    #sisi-game-container.cat-bg-3 { background: linear-gradient(135deg, rgba(5, 46, 22, 0.9), rgba(15, 15, 25, 0.95)); }
     .game-header { padding: 18px 25px; border-bottom: 1px solid rgba(255,255,255,0.1); background: rgba(0,0,0,0.3); font-size: 1.3rem; font-weight: 700; display: flex; justify-content: space-between; align-items: center; color: #fff; z-index: 20; }
     .header-btn { background: rgba(255,255,255,0.1); border: none; color: white; padding: 8px 16px; border-radius: 10px; cursor: pointer; font-weight: 600; transition: 0.3s; }
     .header-btn:hover { background: #F37021; transform: scale(1.05); }
@@ -226,11 +254,15 @@ echo $OUTPUT->header();
     .stat-badge.xp { color: #00CFFD; border-color: rgba(0, 207, 253, 0.3); }
 
     /* Map Overlay */
-    #sisi-map-view { flex-grow: 1; position: relative; padding: 40px 0; display: flex; flex-direction: column; justify-content: space-evenly; align-items: center; overflow-y: auto; height: 100%; }
+    #sisi-map-view { flex-grow: 1; position: relative; padding: 40px 0 80px 0; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; overflow-x: hidden; overflow-y: auto; height: 100%; gap: 30px; }
+    #sisi-map-view::-webkit-scrollbar { width: 8px; }
+    #sisi-map-view::-webkit-scrollbar-track { background: rgba(0,0,0,0.15); border-radius: 10px; margin: 10px 0; }
+    #sisi-map-view::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); }
+    #sisi-map-view::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
     #path-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
     .game-path-line { fill: none; stroke: rgba(255,255,255,0.15); stroke-width: 6; stroke-linecap: round; stroke-dasharray: 2 18; }
     .game-path-line.active { stroke: #25d366; }
-    .level-wrapper { position: relative; display: flex; justify-content: center; align-items: center; z-index: 10; width: 100%; }
+    .level-wrapper { position: relative; display: flex; justify-content: center; align-items: center; z-index: 10; width: 100%; flex-shrink: 0; }
     .level-node { width: 75px; height: 75px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; cursor: pointer; transition: 0.3s; position: relative; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
     .level-node.locked { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.3); border: 3px solid rgba(255,255,255,0.1); }
     .level-node.current { background: #25d366; color: white; box-shadow: 0 0 30px rgba(37, 211, 102, 0.5); transform: scale(1.15); border: 4px solid #fff; }
@@ -248,21 +280,32 @@ echo $OUTPUT->header();
     .kk-fab-container.open .fab-main { transform: rotate(45deg); background: #333; }
     #kk-app.show-activities .kk-fab-container { opacity: 0; pointer-events: none; }
 
-    /* Quiz Overlay */
-    #sisi-quiz-view { padding: 30px; display: none; flex-direction: column; flex-grow: 1; justify-content: space-between; height: 100%; overflow-y: auto; }
-    .question-box { font-size: 1.5rem; text-align: center; margin: 20px 0; font-weight: 600; color: #fff; line-height:1.4; }
-    .options-grid { display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; }
-    .option-btn { background: rgba(255,255,255,0.06); border: 2px solid rgba(255,255,255,0.12); padding: 18px; border-radius: 14px; color: #fff; font-size: 1.15rem; cursor: pointer; transition: 0.2s; text-align: center; font-weight: 500; }
+   /* Quiz Overlay & Results View */
+    #sisi-quiz-view { padding: 30px 20px; display: none; flex-direction: column; flex-grow: 1; height: 100%; overflow-y: auto; }
+    #sisi-quiz-view::-webkit-scrollbar { width: 6px; }
+    #sisi-quiz-view::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 10px; margin: 10px 0; }
+    #sisi-quiz-view::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); }
+    #sisi-quiz-view::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.25); }
+    .question-box { font-size: 1.3rem; text-align: center; margin: 0 0 20px 0; font-weight: 600; color: #fff; line-height:1.4; flex-shrink: 0; }
+    .options-grid { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; flex-grow: 1; }
+    .option-btn { background: rgba(255,255,255,0.06); border: 2px solid rgba(255,255,255,0.12); padding: 16px; border-radius: 14px; color: #fff; font-size: 1.05rem; cursor: pointer; transition: 0.2s; text-align: center; font-weight: 500; }
     .option-btn:hover:not(.disabled) { background: rgba(243, 112, 33, 0.25); border-color: #F37021; transform: scale(1.02); }
     .option-btn.correct { background: #25d366 !important; border-color: #25d366 !important; box-shadow: 0 0 20px rgba(37, 211, 102, 0.5); }
     .option-btn.wrong { background: #ff4444 !important; border-color: #ff4444 !important; animation: shake 0.4s; }
     .option-btn.disabled { pointer-events: none; opacity: 0.6; }
 
-    .quiz-footer { display: flex; justify-content: space-between; padding-top: 20px; margin-top: auto; border-top: 1px solid rgba(255,255,255,0.1); }
-    .qz-quit-btn { background: rgba(255, 59, 48, 0.2); border: 1px solid #FF3B30; color: #fff; padding: 12px 24px; border-radius: 12px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+    .quiz-footer { display: flex; justify-content: space-between; padding-top: 20px; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+    .qz-quit-btn { background: rgba(255, 59, 48, 0.2); border: 1px solid #FF3B30; color: #fff; padding: 12px 20px; border-radius: 12px; cursor: pointer; font-weight: bold; transition: 0.2s; }
     .qz-quit-btn:hover { background: #FF3B30; }
-    .skip-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 12px 24px; border-radius: 12px; cursor: pointer; font-weight: 700; transition: 0.3s; }
+    .skip-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 12px 20px; border-radius: 12px; cursor: pointer; font-weight: 700; transition: 0.3s; }
     .skip-btn:hover { background: #00CFFD; color: #000; }
+    
+    #sisi-results-view { display: none; flex-direction: column; justify-content: center; align-items: center; height: 100%; text-align: center; padding: 30px; animation: fadeIn 0.4s ease; z-index: 100; position: absolute; inset: 0; border-radius: inherit; }
+    .res-icon { font-size: 5rem; margin-bottom: 15px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.5)); }
+    .res-title { font-size: 2rem; font-weight: 900; color: white; margin-bottom: 10px; }
+    .res-desc { font-size: 1.1rem; color: #CBD5E1; margin-bottom: 30px; line-height: 1.4; }
+    .res-btn { background: #F37021; color: white; padding: 14px 30px; border-radius: 14px; font-size: 1.1rem; font-weight: bold; cursor: pointer; border: none; box-shadow: 0 10px 20px rgba(243, 112, 33, 0.4); transition: 0.3s; }
+    .res-btn:hover { transform: translateY(-3px); }
 
     .floating-xp { position: absolute; font-weight: 800; font-size: 1.5rem; color: #25d366; pointer-events: none; animation: floatUp 1s ease forwards; z-index: 200; }
     @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-60px) scale(1.3); } }
@@ -354,7 +397,7 @@ echo $OUTPUT->header();
         <div class="kk-frame-btn kk-btn-vol-down"></div>
         <div id="sisi-game-container">
             <div class="game-header">
-            <button class="header-btn" onclick="showBlobUI(activeAdminCourseId, activeCourseName)">❮ Maps</button>
+            <button id="game-header-back-btn" class="header-btn" onclick="handleGameBack()">❮ Maps</button>
             <span id="game-title">Select a Map</span>
             <div class="stats-pill">
                 <div class="stat-badge fire">🔥 <span id="streak-count">0</span></div>
@@ -364,7 +407,7 @@ echo $OUTPUT->header();
 
         <div id="sisi-map-view"><svg id="path-overlay"></svg></div>
         
-        <div id="sisi-quiz-view">
+       <div id="sisi-quiz-view">
             <div class="question-box" id="quiz-question">Loading...</div>
             <div class="options-grid" id="quiz-options"></div>
             <div class="quiz-footer">
@@ -372,12 +415,32 @@ echo $OUTPUT->header();
                 <button class="skip-btn" onclick="skipQuestion()">Skip ⏭️</button>
             </div>
         </div> 
+        <div id="sisi-results-view">
+            <div class="res-icon" id="res-icon">🏆</div>
+            <div class="res-title" id="res-title">Level Complete!</div>
+            <div class="res-desc" id="res-desc">Great job.</div>
+            <button class="res-btn" onclick="closeResults()">Continue</button>
+        </div>
     </div> 
 </div> 
+
+<!-- Custom UI Overlays -->
+<div id="sisi-toast-container"></div>
+<div id="sisi-custom-modal" class="sisi-modal-overlay" style="z-index: 2147483647;">
+    <div class="sisi-modal-content">
+        <h3 id="sisi-modal-title">Confirm</h3>
+        <p id="sisi-modal-text">Are you sure?</p>
+        <div class="sisi-modal-actions">
+            <button id="sisi-modal-cancel" style="background:rgba(255,255,255,0.1);">Cancel</button>
+            <button id="sisi-modal-confirm" style="background:#FF3B30;">Confirm</button>
+        </div>
+    </div>
+</div>
 
 <script>
     const allMapsData = <?php echo json_encode($journey_data); ?>;
     const availableCourses = <?php echo json_encode($course_list); ?>;
+    const STRICT_PROGRESSION = <?php echo $strict_progression; ?> == 1; // Passed from PHP
     
     const catData = {
         1: { title: "Foundational Modules", desc: "Start your journey here with introductory maps." },
@@ -394,48 +457,34 @@ echo $OUTPUT->header();
     }
 
     const KK_MODES = {
-    phone: {
-        w: 400, h: 800,
-        mainRect: { x: 16, width: 368, closedHeight: 275, openHeight: 580 },
-        tailCx: [85, 200, 315], tailCy: 275,
-        closeCx: 200, closedCy: 275, openCy: 610,
-        closeXTop: 585
-    },
-    wide: {
-        w: 700, h: 550,
-        mainRect: { x: 16, width: 668, closedHeight: 275, openHeight: 460 },
-        tailCx: [175, 350, 525], tailCy: 275,
-        closeCx: 350, closedCy: 275, openCy: 490,
-        closeXTop: 465
+        phone: { w: 400, h: 800, mainRect: { x: 16, width: 368, closedHeight: 275, openHeight: 580 }, tailCx: [85, 200, 315], tailCy: 275, closeCx: 200, closedCy: 275, openCy: 610, closeXTop: 585 },
+        wide: { w: 700, h: 550, mainRect: { x: 16, width: 668, closedHeight: 275, openHeight: 460 }, tailCx: [175, 350, 525], tailCy: 275, closeCx: 350, closedCy: 275, openCy: 490, closeXTop: 465 }
+    };
+    let currentMode = 'phone';
+
+    function applyKkMode(mode) {
+        currentMode = mode;
+        const cfg = KK_MODES[mode];
+        const app = document.getElementById('kk-app');
+        const canvas = document.getElementById('kk-canvas');
+
+        app.classList.toggle('wide-mode', mode === 'wide');
+        document.getElementById('kk-device-frame').classList.toggle('wide-mode', mode === 'wide');
+        canvas.style.width = cfg.w + 'px'; canvas.style.height = cfg.h + 'px';
+
+        document.getElementById('mask-main-rect').setAttribute('width', cfg.mainRect.width);
+        const tails = [document.getElementById('mask-tail-1'), document.getElementById('mask-tail-2'), document.getElementById('mask-tail-3')];
+        tails.forEach((t, i) => t.setAttribute('cx', cfg.tailCx[i]));
+        document.getElementById('mask-close-blob').setAttribute('cx', cfg.closeCx);
+
+        document.querySelectorAll('.sel-btn').forEach((btn, i) => {
+            btn.style.left = (cfg.tailCx[i] - 22) + 'px'; btn.style.top = (cfg.tailCy - 22) + 'px';
+        });
+        document.querySelector('.kk-activities-list').style.width = cfg.mainRect.width + 'px';
+        document.querySelector('.kk-close-x').style.top = cfg.closeXTop + 'px';
+
+        toggleActivities(app.classList.contains('show-activities')); 
     }
-};
-let currentMode = 'phone';
-
-function applyKkMode(mode) {
-    currentMode = mode;
-    const cfg = KK_MODES[mode];
-    const app = document.getElementById('kk-app');
-    const canvas = document.getElementById('kk-canvas');
-
-    app.classList.toggle('wide-mode', mode === 'wide');
-    document.getElementById('kk-device-frame').classList.toggle('wide-mode', mode === 'wide');
-    canvas.style.width = cfg.w + 'px';
-    canvas.style.height = cfg.h + 'px';
-
-    document.getElementById('mask-main-rect').setAttribute('width', cfg.mainRect.width);
-    const tails = [document.getElementById('mask-tail-1'), document.getElementById('mask-tail-2'), document.getElementById('mask-tail-3')];
-    tails.forEach((t, i) => t.setAttribute('cx', cfg.tailCx[i]));
-    document.getElementById('mask-close-blob').setAttribute('cx', cfg.closeCx);
-
-    document.querySelectorAll('.sel-btn').forEach((btn, i) => {
-        btn.style.left = (cfg.tailCx[i] - 22) + 'px';
-        btn.style.top = (cfg.tailCy - 22) + 'px';
-    });
-    document.querySelector('.kk-activities-list').style.width = cfg.mainRect.width + 'px';
-    document.querySelector('.kk-close-x').style.top = cfg.closeXTop + 'px';
-
-    toggleActivities(app.classList.contains('show-activities')); // reapply heights for new mode
-}
 
     let activeAdminCourseId = null;
     let activeCourseName = "";
@@ -444,6 +493,7 @@ function applyKkMode(mode) {
     
     let selectedLevelIdx = 0;
     let questionIndex = 0;
+    let correctAnswersCount = 0;
     let isProcessing = false;
     let streak = 0; let xp = 0;
     let quizTimerInterval = null;
@@ -454,7 +504,6 @@ function applyKkMode(mode) {
     function loadMapProgress(mapId) { if (!userProgress[mapId]) userProgress[mapId] = { level: 0, q: 0 }; return userProgress[mapId]; }
     function saveMapProgress(mapId, lvl, q) { userProgress[mapId] = { level: lvl, q: q }; localStorage.setItem('sisi_map_progress', JSON.stringify(userProgress)); }
 
-    // Navigation Controllers
     function switchView(viewId) {
         document.querySelectorAll('.master-view').forEach(v => v.classList.remove('active'));
         document.getElementById(viewId).classList.add('active');
@@ -468,42 +517,50 @@ function applyKkMode(mode) {
             const extra = c.map_count === 0 ? '<span style="color:#FF3B30; font-size:0.8rem; display:block; margin-top:5px;">(No Maps Yet)</span>' : '';
             container.innerHTML += `
                 <div class="course-hub-card" onclick="showBlobUI(${c.id}, '${c.name.replace(/'/g, "\\'")}')">
-                    <div>
-                        <h3>${c.name}</h3>
-                        <div class="map-count">🗺️ ${c.map_count} Maps Total</div>
-                        ${extra}
-                    </div>
+                    <div><h3>${c.name}</h3><div class="map-count">🗺️ ${c.map_count} Maps Total</div>${extra}</div>
                     <div style="margin-top:20px; color:#F37021; font-weight:700; font-size:0.9rem;">View Categories ➔</div>
                 </div>`;
         });
     }
 
-   function showBlobUI(courseId, courseName) {
+    function showBlobUI(courseId, courseName) {
         activeAdminCourseId = courseId;
         activeCourseName = courseName;
         switchView('blob-ui-view');
         setDynamicIsland('dyn-island-blob', courseName, 'neutral');
-        scaleKkApp(); // now the wrapper has real width, safe to compute
-        
-        // Reset blob UI state
+        scaleKkApp(); 
         toggleActivities(false);
-        setTimeout(() => handleCatSelection(1), 500); // Auto-select category 1
+        setTimeout(() => handleCatSelection(1), 500); 
     }
 
-    // Blob UI Logic
+    function isCategoryLocked(catId) {
+        if (!STRICT_PROGRESSION || catId === 1) return false;
+        // To unlock Cat 2, ALL maps in Cat 1 must be 100% complete
+        const prevCatMaps = allMapsData.filter(m => m.course_id == activeAdminCourseId && (m.category_id == catId - 1 || (!m.category_id && catId - 1 == 1)));
+        if (prevCatMaps.length === 0) return false; 
+        
+        for (let map of prevCatMaps) {
+            let prog = loadMapProgress(map.id);
+            if (prog.level < map.levels.length) return true; 
+        }
+        return false;
+    }
+
     function handleCatSelection(catId) {
+        if (isCategoryLocked(catId)) {
+            showIdleToast("🔒 You must complete all Maps in the previous category to unlock this one!");
+            return;
+        }
+
         document.querySelectorAll('.sel-btn').forEach(b => b.classList.remove('active'));
         document.getElementById('sel-' + catId).classList.add('active');
 
         const overlay = document.querySelector('.kk-grad-overlay');
-overlay.classList.remove('cat-1', 'cat-2', 'cat-3');
-overlay.classList.add('cat-' + catId);
+        overlay.classList.remove('cat-1', 'cat-2', 'cat-3'); overlay.classList.add('cat-' + catId);
+        const base = document.querySelector('.kk-grad-base');
+        base.classList.remove('cat-1', 'cat-2', 'cat-3'); base.classList.add('cat-' + catId);
 
-const base = document.querySelector('.kk-grad-base');
-base.classList.remove('cat-1', 'cat-2', 'cat-3');
-base.classList.add('cat-' + catId);
-
-setDynamicIsland('dyn-island-blob', catData[catId].title, 'info');
+        setDynamicIsland('dyn-island-blob', catData[catId].title, 'info');
         
         const tails = [document.getElementById('mask-tail-1'), document.getElementById('mask-tail-2'), document.getElementById('mask-tail-3')];
         const baseCy = KK_MODES[currentMode].tailCy;
@@ -534,42 +591,50 @@ setDynamicIsland('dyn-island-blob', catData[catId].title, 'info');
             app.classList.remove('show-activities');
             maskRect.setAttribute('height', cfg.mainRect.closedHeight);
             closeBlob.setAttribute('cy', cfg.closedCy);
+            document.getElementById('game-map-view').classList.remove('active');
         }
     }
 
-   function loadMapsForCategory(catId) {
+    function loadMapsForCategory(catId) {
         const container = document.getElementById('map-list-container');
         container.innerHTML = '';
         
-        const courseMaps = allMapsData.filter(m => m.course_id == activeAdminCourseId && (m.category_id == catId || (!m.category_id && catId == 1)));
+        let courseMaps = allMapsData.filter(m => m.course_id == activeAdminCourseId && (m.category_id == catId || (!m.category_id && catId == 1)));
+        courseMaps.sort((a,b) => a.id - b.id);
 
         if (courseMaps.length === 0) {
             setDynamicIsland('dyn-island-blob', 'No Maps Yet', 'warning');
-        } else {
-            setDynamicIsland('dyn-island-blob', `${courseMaps.length} Map${courseMaps.length > 1 ? 's' : ''} Available`, 'info');
-        }
-
-        if (courseMaps.length === 0) {
             container.innerHTML = `
                 <div style="display:flex; flex-direction:column; align-items:center; text-align:center; padding: 20px;">
                     <div style="font-size: 3rem; margin-bottom: 10px;">🏗️</div>
                     <h3 style="color:#000; font-size: 1.5rem; margin:0; font-weight: 900;">No Maps Available</h3>
                     <p style="color:#333; font-size: 0.95rem; font-weight: 600; max-width: 280px; margin: 10px 0 20px 0;">This category doesn't have an interactive gamified path set up right now.</p>
-                    <a href="manage_journey.php?course_id=${activeAdminCourseId}" class="header-btn" style="background:#F37021; padding: 12px 25px; border-radius:12px; text-decoration:none; color:white; font-weight:bold; box-shadow:0 10px 20px rgba(0,0,0,0.3); display:inline-block;">⚙️ Create Map</a>
                 </div>`;
         } else {
-            courseMaps.forEach(m => {
+            setDynamicIsland('dyn-island-blob', `${courseMaps.length} Map${courseMaps.length > 1 ? 's' : ''} Available`, 'info');
+            
+            let prevMapComplete = true;
+            courseMaps.forEach((m, idx) => {
+                let prog = loadMapProgress(m.id);
+                let isCompleted = prog.level >= m.levels.length;
+                let isLocked = STRICT_PROGRESSION && !prevMapComplete && idx > 0;
+                
+                let icon = isLocked ? '🔒' : (isCompleted ? '⭐' : '🗺️');
+                let opacity = isLocked ? '0.5' : '1';
+                let onClick = isLocked ? `showIdleToast('🔒 Complete the previous Map first!')` : `startMap(${m.id})`;
+
                 container.innerHTML += `
-                    <div class="map-row" onclick="startMap(${m.id})">
-                        <div class="map-icon" style="color: #007AFF;">🗺️</div>
+                    <div class="map-row" onclick="${onClick}" style="opacity: ${opacity}">
+                        <div class="map-icon" style="color: ${isLocked ? '#888' : '#007AFF'};">${icon}</div>
                         <div class="map-text"><h4>${m.title}</h4><p>🎮 ${m.levels.length} Levels</p></div>
                         <div style="margin-left:auto; opacity:0.5; color:#000;">❯</div>
                     </div>`;
+                
+                if (!isCompleted) prevMapComplete = false;
             });
         }
     }
 
-    // GAME MAP & QUIZ LOGIC
     function startMap(mapId) {
         activeMapData = allMapsData.find(m => m.id == mapId);
         activeLevels = activeMapData.levels;
@@ -579,10 +644,15 @@ setDynamicIsland('dyn-island-blob', catData[catId].title, 'info');
         questionIndex = prog.q;
 
         document.getElementById('game-title').innerText = activeMapData.title;
+        document.getElementById('game-header-back-btn').innerText = '❮ Maps';
         switchView('game-map-view');
+                
+        const gameContainer = document.getElementById('sisi-game-container');
+        gameContainer.className = 'cat-bg-' + (activeMapData.category_id || 1);
         
         document.getElementById('sisi-quiz-view').style.display = 'none';
-        document.getElementById('sisi-game-container').classList.remove('hide-fab');
+        document.getElementById('sisi-results-view').style.display = 'none';
+        gameContainer.classList.remove('hide-fab');
         
         const mapView = document.getElementById('sisi-map-view');
         mapView.style.display = 'flex';
@@ -626,48 +696,134 @@ setDynamicIsland('dyn-island-blob', catData[catId].title, 'info');
         svg.innerHTML = html;
     }
 
+    function showCustomConfirm(title, message, confirmText, confirmColor, onConfirm) {
+        const overlay = document.getElementById('sisi-custom-modal');
+        document.getElementById('sisi-modal-title').innerText = title;
+        document.getElementById('sisi-modal-text').innerText = message;
+        
+        const confirmBtn = document.getElementById('sisi-modal-confirm');
+        confirmBtn.innerText = confirmText;
+        confirmBtn.style.background = confirmColor;
+        
+        confirmBtn.onclick = () => {
+            overlay.classList.remove('show');
+            setTimeout(() => { overlay.style.display = 'none'; onConfirm(); }, 300);
+        };
+        
+        document.getElementById('sisi-modal-cancel').onclick = () => {
+            overlay.classList.remove('show');
+            setTimeout(() => overlay.style.display = 'none', 300);
+        };
+        
+        overlay.style.display = 'flex';
+        requestAnimationFrame(() => overlay.classList.add('show'));
+    }
+
+    function showIdleToast(message) {
+        let container = document.getElementById('sisi-toast-container');
+        const toast = document.createElement('div');
+        toast.className = 'sisi-toast';
+        toast.innerHTML = `<span style="font-size:1.5rem;">💡</span> <div>${message}</div>`;
+        container.appendChild(toast);
+        requestAnimationFrame(() => toast.classList.add('show'));
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => toast.remove(), 400);
+        }, 6000);
+    }
+
+    let idleTimer = null;
+    function resetIdleTimer() {
+        clearTimeout(idleTimer);
+        idleTimer = setTimeout(() => {
+            showIdleToast("Need a hint? Take your time, or click Skip if you are stuck!");
+        }, 30000); // Triggers after 30 seconds of inactivity
+    }
+
+    function handleGameBack() {
+        if (document.getElementById('sisi-quiz-view').style.display === 'flex') {
+            quitQuiz(); // If in quiz, trigger quit confirmation
+        } else {
+            showBlobUI(activeAdminCourseId, activeCourseName); // Otherwise, back to Categories
+        }
+    }
+
     function openLevel(idx) {
-        if (idx > selectedLevelIdx) return; 
+        if (idx > selectedLevelIdx) {
+            if (STRICT_PROGRESSION) showIdleToast("🔒 You must complete previous levels first!");
+            return; 
+        }
+        correctAnswersCount = 0; // Reset score tracker
         document.getElementById('sisi-map-view').style.display = 'none'; 
         document.getElementById('sisi-quiz-view').style.display = 'flex';
-        document.getElementById('sisi-game-container').classList.add('hide-fab'); // Hide FAB during quiz
+        document.getElementById('game-header-back-btn').innerText = '❮ Map'; // Update back text
+        
+        // Remove background overlay so it applies to the quiz too
+        document.getElementById('sisi-game-container').classList.add('hide-fab'); 
+        
         renderQuestion();
         startQuizTimer();
     }
 
     function closeQuiz() {
         stopQuizTimer();
+        clearTimeout(idleTimer);
         document.getElementById('sisi-quiz-view').style.display = 'none';
         document.getElementById('sisi-map-view').style.display = 'flex';
         document.getElementById('sisi-game-container').classList.remove('hide-fab');
         document.getElementById('quiz-options').innerHTML = ''; 
-        startMap(activeMapData.id); // Re-render map perfectly
+        document.getElementById('game-header-back-btn').innerText = '❮ Maps'; // Revert back text
+        startMap(activeMapData.id); 
     }
 
     function quitQuiz() {
-        if (confirm("Quitting now will deduct 20 XP. Your exact question progress will be saved. Are you sure?")) {
-            xp = Math.max(0, xp - 20); updateStats();
-            saveMapProgress(activeMapData.id, selectedLevelIdx, questionIndex);
-            closeQuiz();
-        }
+        showCustomConfirm(
+            "Quit Quiz?", 
+            "Quitting now will deduct 20 XP. Your progress on this question will be saved.", 
+            "Quit (-20 XP)", "#FF3B30", 
+            () => {
+                xp = Math.max(0, xp - 20); updateStats();
+                saveMapProgress(activeMapData.id, selectedLevelIdx, questionIndex);
+                closeQuiz();
+            }
+        );
+    }
+
+    function quitQuiz() {
+        showCustomConfirm(
+            "Quit Quiz?", 
+            "Quitting now will deduct 20 XP. Your progress on this question will be saved.", 
+            "Quit (-20 XP)", "#FF3B30", 
+            () => {
+                xp = Math.max(0, xp - 20); updateStats();
+                saveMapProgress(activeMapData.id, selectedLevelIdx, questionIndex);
+                closeQuiz();
+            }
+        );
     }
 
     function skipQuestion() {
         const qData = activeLevels[selectedLevelIdx].questions[questionIndex];
         const penalty = Math.floor((qData.xp || 100) / 2);
-        if (confirm(`Skipping this question will deduct ${penalty} XP. Are you sure?`)) {
-            xp = Math.max(0, xp - penalty); streak = 0; updateStats();
-            flashQuizIsland(`⏭ Skipped · -${penalty} XP`, 'warning', 1200);
-            nextQuestion(true);
-        }
+        
+        showCustomConfirm(
+            "Skip Question?", 
+            `Skipping this question will deduct ${penalty} XP from your score. Are you sure?`, 
+            `Skip (-${penalty} XP)`, "#FF9500", 
+            () => {
+                xp = Math.max(0, xp - penalty); streak = 0; updateStats();
+                flashQuizIsland(`⏭ Skipped · -${penalty} XP`, 'warning', 1200);
+                nextQuestion(true);
+            }
+        );
     }
 
     function renderQuestion() {
+        resetIdleTimer(); 
         const qData = activeLevels[selectedLevelIdx].questions[questionIndex];
         document.getElementById('game-title').innerText = `Level ${selectedLevelIdx + 1} | Q: ${questionIndex + 1} / ${activeLevels[selectedLevelIdx].questions.length}`;
         document.getElementById('quiz-question').innerText = qData.q;
         
-        // Update skip button text based on XP value
         const skipBtn = document.querySelector('.skip-btn');
         const penalty = Math.floor((qData.xp || 100) / 2);
         skipBtn.innerHTML = `Skip (-${penalty} XP) ⏭️`;
@@ -685,6 +841,8 @@ setDynamicIsland('dyn-island-blob', catData[catId].title, 'info');
 
     function checkAnswer(selectedIndex, btnElement, event) {
         if (isProcessing) return; isProcessing = true;
+        clearTimeout(idleTimer); 
+
         const qData = activeLevels[selectedLevelIdx].questions[questionIndex];
         const correctIndex = qData.ans;
         const qXp = parseInt(qData.xp) || 100;
@@ -694,7 +852,7 @@ setDynamicIsland('dyn-island-blob', catData[catId].title, 'info');
 
         if (selectedIndex === correctIndex) {
             btnElement.classList.add('correct');
-            streak++; 
+            streak++; correctAnswersCount++;
             const earned = qXp + (streak * 10);
             xp += earned; updateStats();
 
@@ -716,14 +874,47 @@ setDynamicIsland('dyn-island-blob', catData[catId].title, 'info');
         }
     }
 
+    function showResultsView(correct, total) {
+        stopQuizTimer();
+        document.getElementById('sisi-quiz-view').style.display = 'none';
+        const resView = document.getElementById('sisi-results-view');
+        
+        // Dynamically style based on the category background
+        resView.className = document.getElementById('sisi-game-container').className; 
+        
+        const pct = correct / total;
+        const icon = document.getElementById('res-icon');
+        const title = document.getElementById('res-title');
+        const desc = document.getElementById('res-desc');
+        
+        if (pct >= 0.8) {
+            icon.innerText = '🏆'; title.innerText = 'Outstanding!';
+            desc.innerText = `You dominated this level with ${correct}/${total} correct! Massive XP gains!`;
+        } else if (pct >= 0.5) {
+            icon.innerText = '⭐'; title.innerText = 'Good Job!';
+            desc.innerText = `You passed with ${correct}/${total} correct. Keep going!`;
+        } else {
+            icon.innerText = '📚'; title.innerText = 'Keep Practicing!';
+            desc.innerText = `You got ${correct}/${total} right. Review the material and you'll get it next time!`;
+        }
+        
+        resView.style.display = 'flex';
+        flashQuizIsland(`Level Complete!`, 'streak', 2000);
+    }
+
+    function closeResults() {
+        document.getElementById('sisi-results-view').style.display = 'none';
+        closeQuiz();
+    }
+
     function nextQuestion(skipped = false) {
         questionIndex++;
-        if (questionIndex >= activeLevels[selectedLevelIdx].questions.length) {
+        const totalQ = activeLevels[selectedLevelIdx].questions.length;
+        if (questionIndex >= totalQ) {
             selectedLevelIdx++; 
             questionIndex = 0;
             saveMapProgress(activeMapData.id, selectedLevelIdx, 0);
-            flashQuizIsland(`🎉 Level ${selectedLevelIdx} Complete!`, 'streak', 900);
-            setTimeout(closeQuiz, 700);
+            showResultsView(correctAnswersCount, totalQ);
         } else {
             saveMapProgress(activeMapData.id, selectedLevelIdx, questionIndex);
             renderQuestion();
@@ -765,49 +956,47 @@ setDynamicIsland('dyn-island-blob', catData[catId].title, 'info');
         return null;
     }
     window.addEventListener('resize', () => {
-    if(document.getElementById('sisi-map-view').style.display === 'flex') drawDynamicPaths();
-    scaleKkApp();
-});
+        if(document.getElementById('sisi-map-view').style.display === 'flex') drawDynamicPaths();
+        scaleKkApp();
+    });
 
-function scaleKkApp() {
-    const app = document.getElementById('kk-app');
-    const canvas = document.getElementById('kk-canvas');
-    const wrapper = document.getElementById('blob-ui-view');
-    if (!app || !canvas || !wrapper) return;
-    if (getComputedStyle(wrapper).display === 'none') return;
+    function scaleKkApp() {
+        const app = document.getElementById('kk-app');
+        const canvas = document.getElementById('kk-canvas');
+        const wrapper = document.getElementById('blob-ui-view');
+        if (!app || !canvas || !wrapper) return;
+        if (getComputedStyle(wrapper).display === 'none') return;
 
-    const vw = window.innerWidth;
-    const vh = window.innerHeight;
-    const desiredMode = vw >= 700 ? 'wide' : 'phone';
-    if (desiredMode !== currentMode) applyKkMode(desiredMode);
+        const vw = window.innerWidth;
+        const vh = window.innerHeight;
+        const desiredMode = vw >= 700 ? 'wide' : 'phone';
+        if (desiredMode !== currentMode) applyKkMode(desiredMode);
 
-    const cfg = KK_MODES[currentMode];
-    const availableWidth = wrapper.clientWidth - 64;
-    let targetWidth, targetHeight;
+        const cfg = KK_MODES[currentMode];
+        const availableWidth = wrapper.clientWidth - 64;
+        let targetWidth, targetHeight;
 
-    if (currentMode === 'wide') {
-        // Aim for 80% of viewport height, keeping the landscape aspect ratio
-        targetHeight = vh * 0.8;
-        targetWidth = targetHeight * (cfg.w / cfg.h);
-        // Fall back to fitting available width if that would overflow horizontally
-        if (targetWidth > availableWidth) {
-            targetWidth = availableWidth;
-            targetHeight = targetWidth * (cfg.h / cfg.w);
+        if (currentMode === 'wide') {
+            targetHeight = vh * 0.8;
+            targetWidth = targetHeight * (cfg.w / cfg.h);
+            if (targetWidth > availableWidth) {
+                targetWidth = availableWidth;
+                targetHeight = targetWidth * (cfg.h / cfg.w);
+            }
+        } else {
+            targetWidth = Math.min(cfg.w, availableWidth);
+            targetHeight = cfg.h * (targetWidth / cfg.w);
         }
-    } else {
-        targetWidth = Math.min(cfg.w, availableWidth);
-        targetHeight = cfg.h * (targetWidth / cfg.w);
+
+        const scale = targetWidth / cfg.w;
+        app.style.width = targetWidth + 'px';
+        app.style.height = targetHeight + 'px';
+        canvas.style.transform = `scale(${scale})`;
+        wrapper.style.minHeight = targetHeight + 32 + 'px';
     }
 
-    const scale = targetWidth / cfg.w;
-    app.style.width = targetWidth + 'px';
-    app.style.height = targetHeight + 'px';
-    canvas.style.transform = `scale(${scale})`;
-    wrapper.style.minHeight = targetHeight + 32 + 'px';
-}
-
-// Boot sequence
-document.addEventListener("DOMContentLoaded", showCourseHub);
+    // Boot sequence
+    document.addEventListener("DOMContentLoaded", showCourseHub);
 </script>
 
 <?php echo $OUTPUT->footer(); ?>
