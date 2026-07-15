@@ -8,9 +8,15 @@ $PAGE->set_title('Gamified Learning Hub');
 $PAGE->set_heading('Interactive Certification Path');
 $PAGE->set_pagelayout('standard'); 
 
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['save_progress'])) {
+    require_login();
+    set_user_preference('sisi_journey_progress', trim($_POST['save_progress']));
+    die(json_encode(['status' => 'success']));
+}
 $journey_data_json = get_config('local_sisizathu', 'journey_data') ?: '[]';
 $journey_data = json_decode($journey_data_json, true);
 $strict_progression = get_config('local_sisizathu', 'journey_strict_progression') ?: 0;
+$user_progress_json = isloggedin() && !isguestuser() ? get_user_preferences('sisi_journey_progress', '{}') : '{}';
 
 // Calculate Maps per course to rank them
 $map_counts = [];
@@ -73,12 +79,15 @@ echo $OUTPUT->header();
     .master-view.active { display: flex; flex-direction: column; }
     @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-    /* VIEW 1: COURSE HUB */
+   /* VIEW 1: COURSE HUB */
     #sisi-course-hub { padding: 20px; max-width: 1200px; margin: 0 auto; display:grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; align-content: start; box-sizing: border-box; width: 100%; }
     .course-hub-card { background: rgba(15,15,25,0.7); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.1); border-radius: 18px; padding: 25px; cursor: pointer; transition: all 0.3s ease; display: flex; flex-direction: column; justify-content: space-between; min-height: 180px; box-shadow: 0 15px 30px rgba(0,0,0,0.4); }
     .course-hub-card:hover { transform: translateY(-6px); background: rgba(243, 112, 33, 0.15); border-color: #F37021; box-shadow: 0 10px 25px rgba(243, 112, 33, 0.3); }
     .course-hub-card h3 { font-size: 1.3rem; margin: 0 0 10px 0; color: #fff; line-height: 1.4; }
     .course-hub-card .map-count { font-size: 0.85rem; color: #CBD5E1; background: rgba(0,0,0,0.4); padding: 6px 12px; border-radius: 12px; width: fit-content; font-weight: 600; }
+    /* Task 6: Skeleton Loader */
+    .skeleton-card { background: linear-gradient(90deg, rgba(255,255,255,0.05) 25%, rgba(255,255,255,0.1) 50%, rgba(255,255,255,0.05) 75%); background-size: 400% 100%; animation: shimmer 1.5s infinite; border: 1px solid rgba(255,255,255,0.05); border-radius: 18px; min-height: 180px; }
+    @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
 
     /* VIEW 2: CATEGORY BLOBS */
     #kk-app { width: 400px; height: 800px; max-width: 100%; margin: 2rem auto; position: relative; overflow: hidden; border-radius: 40px; box-shadow: 0 30px 60px rgba(0,0,0,0.6); font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif; background-color: #111; user-select: none; }
@@ -141,46 +150,40 @@ echo $OUTPUT->header();
 .kk-btn-vol-down { left: -3px; top: 165px; width: 4px; height: 45px; }
 .kk-device-frame.wide-mode .kk-frame-btn { opacity: 0; pointer-events: none; }
 
-/* Dynamic Island — replaces the plain notch with live contextual info */
-.kk-dynamic-island {
-    position: absolute;
-    top: 14px; left: 50%; transform: translateX(-50%);
-    min-width: 100px; max-width: 78%;
-    height: 30px;
-    background: #000;
-    border-radius: 18px;
-    display: flex; align-items: center; justify-content: center; gap: 8px;
-    padding: 0 16px;
-    z-index: 6;
-    box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
-    transition: background 0.3s ease, box-shadow 0.3s ease;
-    overflow: hidden;
-    white-space: nowrap;
-}
-.kk-dynamic-island .di-dot { width: 6px; height: 6px; border-radius: 50%; background: #555; flex-shrink: 0; transition: background 0.3s; }
-.kk-dynamic-island .di-text { color: #ccc; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.3px; }
-
-.kk-dynamic-island.state-correct { background: #0d2818; box-shadow: 0 0 0 1px #25d366, 0 0 12px rgba(37,211,102,0.5); }
-.kk-dynamic-island.state-correct .di-dot { background: #25d366; }
-.kk-dynamic-island.state-correct .di-text { color: #6ee7a8; }
-
-.kk-dynamic-island.state-wrong { background: #2c0d0d; box-shadow: 0 0 0 1px #ff4444, 0 0 12px rgba(255,68,68,0.5); }
-.kk-dynamic-island.state-wrong .di-dot { background: #ff4444; }
-.kk-dynamic-island.state-wrong .di-text { color: #ff8080; }
-
-.kk-dynamic-island.state-streak { background: #2c1a05; box-shadow: 0 0 0 1px #ffb347, 0 0 12px rgba(255,179,71,0.5); }
-.kk-dynamic-island.state-streak .di-dot { background: #ffb347; }
-.kk-dynamic-island.state-streak .di-text { color: #ffcb80; }
-
-.kk-dynamic-island.state-warning { background: #2c1a05; box-shadow: 0 0 0 1px #FF9500; }
-.kk-dynamic-island.state-warning .di-dot { background: #FF9500; animation: diPulse 0.8s infinite; }
-.kk-dynamic-island.state-warning .di-text { color: #FF9500; }
-
-.kk-dynamic-island.state-info { background: #001a2c; box-shadow: 0 0 0 1px #00CFFD; }
-.kk-dynamic-island.state-info .di-dot { background: #00CFFD; }
-.kk-dynamic-island.state-info .di-text { color: #7fe2ff; }
-
-@keyframes diPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+/* Dynamic Island — Task 1: Spring Physics & Task 7: Morphing */
+    .kk-dynamic-island {
+        position: absolute; top: 14px; left: 50%; transform: translateX(-50%) scale(1);
+        min-width: 100px; max-width: 78%; height: 30px; background: #000; border-radius: 18px;
+        display: flex; align-items: center; justify-content: center; gap: 8px; padding: 0 16px;
+        z-index: 6; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+        transition: background 0.4s ease, box-shadow 0.4s ease, width 0.4s ease; overflow: hidden; white-space: nowrap;
+    }
+    .kk-dynamic-island.spring { animation: islandSpring 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    @keyframes islandSpring { 
+        0% {transform: translateX(-50%) scale(1);} 
+        30% {transform: translateX(-50%) scaleX(1.1) scaleY(0.85);} 
+        60% {transform: translateX(-50%) scaleX(0.95) scaleY(1.05);} 
+        100% {transform: translateX(-50%) scale(1);} 
+    }
+    .kk-dynamic-island .di-dot { width: 6px; height: 6px; border-radius: 50%; background: #555; flex-shrink: 0; transition: background 0.3s; }
+    .kk-dynamic-island .di-text { color: #ccc; font-size: 0.7rem; font-weight: 700; letter-spacing: 0.3px; display:flex; align-items:center; gap:5px; }
+    
+    .kk-dynamic-island.state-correct { background: #0d2818; box-shadow: 0 0 0 1px #25d366, 0 0 12px rgba(37,211,102,0.5); }
+    .kk-dynamic-island.state-correct .di-dot { background: #25d366; }
+    .kk-dynamic-island.state-correct .di-text { color: #6ee7a8; }
+    .kk-dynamic-island.state-wrong { background: #2c0d0d; box-shadow: 0 0 0 1px #ff4444, 0 0 12px rgba(255,68,68,0.5); }
+    .kk-dynamic-island.state-wrong .di-dot { background: #ff4444; }
+    .kk-dynamic-island.state-wrong .di-text { color: #ff8080; }
+    .kk-dynamic-island.state-streak { background: #2c1a05; box-shadow: 0 0 0 1px #ffb347, 0 0 15px rgba(255,179,71,0.6); }
+    .kk-dynamic-island.state-streak .di-dot { background: #ffb347; animation: diPulse 0.5s infinite; }
+    .kk-dynamic-island.state-streak .di-text { color: #ffcb80; text-shadow: 0 0 5px rgba(255,203,128,0.5); }
+    .kk-dynamic-island.state-warning { background: #2c1a05; box-shadow: 0 0 0 1px #FF9500; }
+    .kk-dynamic-island.state-warning .di-dot { background: #FF9500; }
+    .kk-dynamic-island.state-warning .di-text { color: #FF9500; }
+    .kk-dynamic-island.state-info { background: #001a2c; box-shadow: 0 0 0 1px #00CFFD; }
+    .kk-dynamic-island.state-info .di-dot { background: #00CFFD; }
+    .kk-dynamic-island.state-info .di-text { color: #7fe2ff; }
+    @keyframes diPulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.3; transform: scale(1.5); } }
     #kk-canvas { position: absolute; top: 0; left: 0; width: 400px; height: 800px; transform-origin: top left; }
     .kk-bg-wrapper { position: absolute; inset: 0; z-index: 1; }
     .kk-orb { position: absolute; border-radius: 50%; filter: blur(40px); opacity: 0.6; mix-blend-mode: screen; animation: orbFloat 8s infinite alternate ease-in-out; }
@@ -218,12 +221,13 @@ echo $OUTPUT->header();
     .sel-btn:active { transform: scale(0.9); }
 
     .kk-activities-list { position: absolute; top: 200px; left: 16px; width: 368px; padding: 20px; box-sizing: border-box; transform: translateY(40px); opacity: 0; pointer-events: none; transition: all 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
-    #kk-app.show-activities .kk-activities-list { transform: translateY(0); opacity: 1; pointer-events: auto; transition-delay: 0.1s;}
-    .kk-activities-list h1 { color: #fff; font-weight: 900; font-size: 2rem; margin-bottom: 20px; text-align: center; text-shadow: 0 2px 10px rgba(0,0,0,0.3);}
+    #kk-app.show-activities .kk-activities-list { top: 10px; transform: translateY(0); opacity: 1; pointer-events: auto; transition-delay: 0.1s;}
+    .kk-activities-list h1 { color: #fff; font-weight: 900; font-size: 2rem; margin: 0 0 20px 0; padding-top: 12px; text-align: center; text-shadow: 0 2px 10px rgba(0,0,0,0.3);}
     .kk-close-x { position: absolute; top: 585px; left: 50%; transform: translateX(-50%); width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; font-weight: bold; cursor: pointer; pointer-events: none; opacity: 0; transition: opacity 0.3s; }
     #kk-app.show-activities .kk-close-x { pointer-events: auto; opacity: 1; transition-delay: 0.4s;}
 
-    .cat-scrollview { max-height: 250px; overflow-y: auto; padding-right: 10px; margin-bottom: 20px; }
+    .cat-scrollview { max-height: 250px; overflow-y: auto; padding-right: 10px; margin-bottom: 20px; transition: max-height 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    #kk-app.show-activities .cat-scrollview { max-height: 440px; }
     .cat-scrollview::-webkit-scrollbar { width: 6px; }
     .cat-scrollview::-webkit-scrollbar-track { background: rgba(0,0,0,0.1); border-radius: 10px; }
     .cat-scrollview::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); }
@@ -234,6 +238,7 @@ echo $OUTPUT->header();
     .map-text h4 { margin: 0; font-weight: 800; color: #fff; font-size: 1.1rem; }
     .map-text p { margin: 0; color: #CBD5E1; font-size: 0.85rem; font-weight: 600; }
     .kk-app.wide-mode .cat-scrollview, #kk-app.wide-mode .cat-scrollview { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; max-height: 160px; padding-bottom: 10px; }
+    #kk-app.wide-mode.show-activities .cat-scrollview { max-height: 310px; }
 
     /* VIEW 3: GAME MAP & QUIZ LAYER */
     #sisi-game-container {
@@ -260,8 +265,10 @@ echo $OUTPUT->header();
     #sisi-map-view::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); }
     #sisi-map-view::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
     #path-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+    /* Task 3: Animated Path Flow */
     .game-path-line { fill: none; stroke: rgba(255,255,255,0.15); stroke-width: 6; stroke-linecap: round; stroke-dasharray: 2 18; }
-    .game-path-line.active { stroke: #25d366; }
+    .game-path-line.active { stroke: #25d366; animation: pathFlow 0.8s linear infinite; filter: drop-shadow(0 0 5px #25d366); }
+    @keyframes pathFlow { to { stroke-dashoffset: -20; } }
     .level-wrapper { position: relative; display: flex; justify-content: center; align-items: center; z-index: 10; width: 100%; flex-shrink: 0; }
     .level-node { width: 75px; height: 75px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; cursor: pointer; transition: 0.3s; position: relative; box-shadow: inset 0 0 10px rgba(0,0,0,0.5); }
     .level-node.locked { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.3); border: 3px solid rgba(255,255,255,0.1); }
@@ -287,14 +294,14 @@ echo $OUTPUT->header();
     #sisi-quiz-view::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); }
     #sisi-quiz-view::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.25); }
     .question-box { font-size: 1.3rem; text-align: center; margin: 0 0 20px 0; font-weight: 600; color: #fff; line-height:1.4; flex-shrink: 0; }
-    .options-grid { display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; flex-grow: 1; }
+    .options-grid { display: flex; flex-direction: column; gap: 12px; margin-bottom: 40px; } /* flex-grow removed, arbitrary padding added */
     .option-btn { background: rgba(255,255,255,0.06); border: 2px solid rgba(255,255,255,0.12); padding: 16px; border-radius: 14px; color: #fff; font-size: 1.05rem; cursor: pointer; transition: 0.2s; text-align: center; font-weight: 500; }
     .option-btn:hover:not(.disabled) { background: rgba(243, 112, 33, 0.25); border-color: #F37021; transform: scale(1.02); }
     .option-btn.correct { background: #25d366 !important; border-color: #25d366 !important; box-shadow: 0 0 20px rgba(37, 211, 102, 0.5); }
     .option-btn.wrong { background: #ff4444 !important; border-color: #ff4444 !important; animation: shake 0.4s; }
     .option-btn.disabled { pointer-events: none; opacity: 0.6; }
 
-    .quiz-footer { display: flex; justify-content: space-between; padding-top: 20px; margin-top: 20px; border-top: 1px solid rgba(255,255,255,0.1); }
+    .quiz-footer { display: flex; justify-content: space-between; padding-top: 20px; padding-bottom: 30px; border-top: 1px solid rgba(255,255,255,0.1); }
     .qz-quit-btn { background: rgba(255, 59, 48, 0.2); border: 1px solid #FF3B30; color: #fff; padding: 12px 20px; border-radius: 12px; cursor: pointer; font-weight: bold; transition: 0.2s; }
     .qz-quit-btn:hover { background: #FF3B30; }
     .skip-btn { background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.2); color: #fff; padding: 12px 20px; border-radius: 12px; cursor: pointer; font-weight: 700; transition: 0.3s; }
@@ -310,6 +317,15 @@ echo $OUTPUT->header();
     .floating-xp { position: absolute; font-weight: 800; font-size: 1.5rem; color: #25d366; pointer-events: none; animation: floatUp 1s ease forwards; z-index: 200; }
     @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-60px) scale(1.3); } }
     @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
+    /* Task 2 fix: map-view parallax orbs need to be visible over the dark cat-bg gradient */
+#sisi-map-view #map-orbs .kk-orb {
+    mix-blend-mode: normal;
+    opacity: 0.35;
+    animation: none;          /* let JS scroll transform take over instead of fighting orbFloat */
+}
+#sisi-map-view #map-orbs .orb-1 { background: #F37021; }
+#sisi-map-view #map-orbs .orb-2 { background: #00CFFD; }
+#sisi-map-view #map-orbs .orb-3 { background: #25d366; }
     /* ============ MOBILE RESPONSIVENESS ============ */
 @media (max-width: 768px) {
     #sisi-course-hub { padding: 12px; gap: 14px; grid-template-columns: 1fr; }
@@ -424,7 +440,8 @@ echo $OUTPUT->header();
     </div> 
 </div> 
 
-<!-- Custom UI Overlays -->
+<!-- Custom UI Overlays & Task 4 Particle Canvas -->
+<canvas id="sisi-particle-canvas" style="position:fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; z-index:2147483647;"></canvas>
 <div id="sisi-toast-container"></div>
 <div id="sisi-custom-modal" class="sisi-modal-overlay" style="z-index: 2147483647;">
     <div class="sisi-modal-content">
@@ -440,7 +457,8 @@ echo $OUTPUT->header();
 <script>
     const allMapsData = <?php echo json_encode($journey_data); ?>;
     const availableCourses = <?php echo json_encode($course_list); ?>;
-    const STRICT_PROGRESSION = <?php echo $strict_progression; ?> == 1; // Passed from PHP
+    const serverProgress = <?php echo $user_progress_json; ?>; // Task 5: Server State
+    const STRICT_PROGRESSION = <?php echo $strict_progression; ?> == 1; 
     
     const catData = {
         1: { title: "Foundational Modules", desc: "Start your journey here with introductory maps." },
@@ -452,8 +470,14 @@ echo $OUTPUT->header();
         const island = document.getElementById(islandId);
         if (!island) return;
         island.className = 'kk-dynamic-island' + (state && state !== 'neutral' ? ' state-' + state : '');
+        
+        // Task 1: Trigger Spring Physics
+        island.classList.remove('spring');
+        void island.offsetWidth; // Force reflow
+        island.classList.add('spring');
+
         const label = island.querySelector('.di-text');
-        if (label) label.innerText = text;
+        if (label) label.innerHTML = text; // innerHTML allows emojis for the idle eye
     }
 
     const KK_MODES = {
@@ -492,6 +516,7 @@ echo $OUTPUT->header();
     let activeLevels = [];
     
     let selectedLevelIdx = 0;
+    let playingLevelIdx = 0;   // the level actually being rendered/played
     let questionIndex = 0;
     let correctAnswersCount = 0;
     let isProcessing = false;
@@ -500,9 +525,15 @@ echo $OUTPUT->header();
     let quizStartTime = null;
     let islandOverrideUntil = 0;
 
-    let userProgress = JSON.parse(localStorage.getItem('sisi_map_progress')) || {};
+    let userProgress = serverProgress || {};
     function loadMapProgress(mapId) { if (!userProgress[mapId]) userProgress[mapId] = { level: 0, q: 0 }; return userProgress[mapId]; }
-    function saveMapProgress(mapId, lvl, q) { userProgress[mapId] = { level: lvl, q: q }; localStorage.setItem('sisi_map_progress', JSON.stringify(userProgress)); }
+    function saveMapProgress(mapId, lvl, q) { 
+        userProgress[mapId] = { level: lvl, q: q }; 
+        localStorage.setItem('sisi_map_progress', JSON.stringify(userProgress)); 
+        // Task 5: Background AJAX Sync heartbeat
+        const fd = new FormData(); fd.append('save_progress', JSON.stringify(userProgress));
+        fetch('gamified_journey.php', { method: 'POST', body: fd });
+    }
 
     function switchView(viewId) {
         document.querySelectorAll('.master-view').forEach(v => v.classList.remove('active'));
@@ -513,14 +544,21 @@ echo $OUTPUT->header();
         switchView('course-hub-view');
         const container = document.getElementById('sisi-course-hub');
         container.innerHTML = '';
-        availableCourses.forEach(c => {
-            const extra = c.map_count === 0 ? '<span style="color:#FF3B30; font-size:0.8rem; display:block; margin-top:5px;">(No Maps Yet)</span>' : '';
-            container.innerHTML += `
-                <div class="course-hub-card" onclick="showBlobUI(${c.id}, '${c.name.replace(/'/g, "\\'")}')">
-                    <div><h3>${c.name}</h3><div class="map-count">🗺️ ${c.map_count} Maps Total</div>${extra}</div>
-                    <div style="margin-top:20px; color:#F37021; font-weight:700; font-size:0.9rem;">View Categories ➔</div>
-                </div>`;
-        });
+        
+        // Task 6: Shimmering Skeletons
+        for(let i=0; i<6; i++) container.innerHTML += '<div class="skeleton-card"></div>';
+
+        setTimeout(() => {
+            container.innerHTML = '';
+            availableCourses.forEach(c => {
+                const extra = c.map_count === 0 ? '<span style="color:#FF3B30; font-size:0.8rem; display:block; margin-top:5px;">(No Maps Yet)</span>' : '';
+                container.innerHTML += `
+                    <div class="course-hub-card" onclick="showBlobUI(${c.id}, '${c.name.replace(/'/g, "\\'")}')">
+                        <div><h3>${c.name}</h3><div class="map-count">🗺️ ${c.map_count} Maps Total</div>${extra}</div>
+                        <div style="margin-top:20px; color:#F37021; font-weight:700; font-size:0.9rem;">View Categories ➔</div>
+                    </div>`;
+            });
+        }, 400); // 400ms Skeleton shimmer effect
     }
 
     function showBlobUI(courseId, courseName) {
@@ -656,7 +694,24 @@ echo $OUTPUT->header();
         
         const mapView = document.getElementById('sisi-map-view');
         mapView.style.display = 'flex';
-        mapView.innerHTML = '<svg id="path-overlay"></svg>';
+        // Task 2: Insert Background Orbs for Parallax Depth
+        mapView.innerHTML = `
+            <div id="map-orbs" style="position:absolute; inset:0; z-index:0; pointer-events:none; overflow:hidden;">
+                <div class="kk-orb orb-1" style="width:400px; height:400px; top:-100px; left:-100px;"></div>
+                <div class="kk-orb orb-2" style="width:250px; height:250px; top:50%; right:-50px;"></div>
+                <div class="kk-orb orb-3" style="width:300px; height:300px; bottom:-100px; left:20%;"></div>
+            </div>
+            <svg id="path-overlay"></svg>
+        `;
+
+        // Task 2: Attach Parallax Scroll Physics
+        mapView.onscroll = function() {
+            const y = this.scrollTop;
+            const orbs = this.querySelectorAll('.kk-orb');
+            if(orbs[0]) orbs[0].style.transform = `translateY(${y * 0.4}px)`;
+            if(orbs[1]) orbs[1].style.transform = `translateY(${y * 0.2}px)`;
+            if(orbs[2]) orbs[2].style.transform = `translateY(${y * 0.6}px)`;
+        };
 
         activeLevels.forEach((level, idx) => {
             const isLocked = idx > selectedLevelIdx;
@@ -676,27 +731,41 @@ echo $OUTPUT->header();
 
     function drawDynamicPaths() {
         const svg = document.getElementById('path-overlay');
-        if (!svg || activeLevels.length < 2) return;
+        const container = document.getElementById('sisi-map-view');
+        if (!svg || !container || activeLevels.length < 2) return;
+        
+        // 1. Ensure SVG covers the full scrollable height of the map so lines don't cut off
+        svg.style.height = container.scrollHeight + 'px';
+
         let html = '';
-        const containerRect = document.getElementById('sisi-map-view').getBoundingClientRect();
+        // 2. Get the bounding box of the SVG itself to use as the absolute coordinate baseline
+        const svgRect = svg.getBoundingClientRect(); 
+
         for (let i = 0; i < activeLevels.length - 1; i++) {
             const startNode = document.querySelector(`#node-${i} .level-node`);
             const endNode = document.querySelector(`#node-${i+1} .level-node`);
             if (!startNode || !endNode) continue;
 
-            const startX = (startNode.getBoundingClientRect().left + 37) - containerRect.left;
-            const startY = (startNode.getBoundingClientRect().top + 37) - containerRect.top;
-            const endX = (endNode.getBoundingClientRect().left + 37) - containerRect.left;
-            const endY = (endNode.getBoundingClientRect().top + 37) - containerRect.top;
+            const startRect = startNode.getBoundingClientRect();
+            const endRect = endNode.getBoundingClientRect();
+
+            // 3. Robust calculation: Compare Node position directly against SVG position. 
+            // This ignores scrolling offsets, paddings, and CSS transforms automatically!
+            const startX = (startRect.left - svgRect.left) + (startRect.width / 2);
+            const startY = (startRect.top - svgRect.top) + (startRect.height / 2);
+            const endX = (endRect.left - svgRect.left) + (endRect.width / 2);
+            const endY = (endRect.top - svgRect.top) + (endRect.height / 2);
 
             const strokeClass = (i < selectedLevelIdx) ? 'game-path-line active' : 'game-path-line';
             const cpY = startY + (endY - startY) / 2;
+            
+            // Draw S-Curve connecting the exact centers
             html += `<path class="${strokeClass}" d="M ${startX} ${startY} C ${startX} ${cpY}, ${endX} ${cpY}, ${endX} ${endY}" />`;
         }
         svg.innerHTML = html;
     }
 
-    function showCustomConfirm(title, message, confirmText, confirmColor, onConfirm) {
+    function showCustomConfirm(title, message, confirmText, confirmColor, onConfirm, onCancel) {
         const overlay = document.getElementById('sisi-custom-modal');
         document.getElementById('sisi-modal-title').innerText = title;
         document.getElementById('sisi-modal-text').innerText = message;
@@ -712,7 +781,10 @@ echo $OUTPUT->header();
         
         document.getElementById('sisi-modal-cancel').onclick = () => {
             overlay.classList.remove('show');
-            setTimeout(() => overlay.style.display = 'none', 300);
+            setTimeout(() => { 
+                overlay.style.display = 'none'; 
+                if (onCancel) onCancel(); // Trigger cancel callback if provided
+            }, 300);
         };
         
         overlay.style.display = 'flex';
@@ -733,11 +805,20 @@ echo $OUTPUT->header();
     }
 
     let idleTimer = null;
+    let idleWarningTimer = null;
     function resetIdleTimer() {
         clearTimeout(idleTimer);
+        clearTimeout(idleWarningTimer);
+        
+        // Task 7: Contextual Island "Eye" Morph
+        idleWarningTimer = setTimeout(() => {
+            setDynamicIsland('dyn-island-quiz', '<span style="font-size:1.2rem;">👀</span> Looking for the answer?', 'warning');
+        }, 15000);
+
         idleTimer = setTimeout(() => {
             showIdleToast("Need a hint? Take your time, or click Skip if you are stuck!");
-        }, 30000); // Triggers after 30 seconds of inactivity
+            resetIdleTimer(); // Re-arm the timer
+        }, 30000); 
     }
 
     function handleGameBack() {
@@ -753,6 +834,7 @@ echo $OUTPUT->header();
             if (STRICT_PROGRESSION) showIdleToast("🔒 You must complete previous levels first!");
             return; 
         }
+        playingLevelIdx = idx;   
         correctAnswersCount = 0; // Reset score tracker
         document.getElementById('sisi-map-view').style.display = 'none'; 
         document.getElementById('sisi-quiz-view').style.display = 'flex';
@@ -776,52 +858,52 @@ echo $OUTPUT->header();
         startMap(activeMapData.id); 
     }
 
-    function quitQuiz() {
-        showCustomConfirm(
-            "Quit Quiz?", 
-            "Quitting now will deduct 20 XP. Your progress on this question will be saved.", 
-            "Quit (-20 XP)", "#FF3B30", 
-            () => {
+function quitQuiz() {
+    clearTimeout(idleTimer);
+    const isReplay = playingLevelIdx !== selectedLevelIdx;   // NEW
+    showCustomConfirm(
+        "Quit Quiz?", 
+        isReplay
+            ? "This is a replay, so quitting won't cost XP or change your saved progress."
+            : "Quitting now will deduct 20 XP. Your progress on this question will be saved.", 
+        isReplay ? "Quit" : "Quit (-20 XP)", "#FF3B30", 
+        () => {
+            if (!isReplay) {                                  // NEW guard
                 xp = Math.max(0, xp - 20); updateStats();
                 saveMapProgress(activeMapData.id, selectedLevelIdx, questionIndex);
-                closeQuiz();
             }
-        );
-    }
+            closeQuiz();
+        },
+        () => resetIdleTimer()
+    );
+}
 
-    function quitQuiz() {
-        showCustomConfirm(
-            "Quit Quiz?", 
-            "Quitting now will deduct 20 XP. Your progress on this question will be saved.", 
-            "Quit (-20 XP)", "#FF3B30", 
-            () => {
-                xp = Math.max(0, xp - 20); updateStats();
-                saveMapProgress(activeMapData.id, selectedLevelIdx, questionIndex);
-                closeQuiz();
-            }
-        );
-    }
-
-    function skipQuestion() {
-        const qData = activeLevels[selectedLevelIdx].questions[questionIndex];
-        const penalty = Math.floor((qData.xp || 100) / 2);
-        
-        showCustomConfirm(
-            "Skip Question?", 
-            `Skipping this question will deduct ${penalty} XP from your score. Are you sure?`, 
-            `Skip (-${penalty} XP)`, "#FF9500", 
-            () => {
-                xp = Math.max(0, xp - penalty); streak = 0; updateStats();
-                flashQuizIsland(`⏭ Skipped · -${penalty} XP`, 'warning', 1200);
-                nextQuestion(true);
-            }
-        );
-    }
+function skipQuestion() {
+    clearTimeout(idleTimer);
+    const qData = activeLevels[playingLevelIdx].questions[questionIndex];
+    const penalty = Math.floor((qData.xp || 100) / 2);
+    const isReplay = playingLevelIdx !== selectedLevelIdx;   // NEW
+    
+    showCustomConfirm(
+        "Skip Question?", 
+        isReplay
+            ? "This is a replay, so skipping won't cost you any XP."
+            : `Skipping this question will deduct ${penalty} XP from your score. Are you sure?`,
+        isReplay ? "Skip" : `Skip (-${penalty} XP)`, "#FF9500", 
+        () => {
+            if (!isReplay) { xp = Math.max(0, xp - penalty); }   // NEW guard
+            streak = 0; updateStats();
+            flashQuizIsland(isReplay ? '⏭ Skipped' : `⏭ Skipped · -${penalty} XP`, 'warning', 1200);
+            nextQuestion(true);
+        },
+        () => resetIdleTimer()
+    );
+}
 
     function renderQuestion() {
         resetIdleTimer(); 
-        const qData = activeLevels[selectedLevelIdx].questions[questionIndex];
-        document.getElementById('game-title').innerText = `Level ${selectedLevelIdx + 1} | Q: ${questionIndex + 1} / ${activeLevels[selectedLevelIdx].questions.length}`;
+        const qData = activeLevels[playingLevelIdx].questions[questionIndex];
+        document.getElementById('game-title').innerText = `Level ${playingLevelIdx + 1} | Q: ${questionIndex + 1} / ${activeLevels[playingLevelIdx].questions.length}`;
         document.getElementById('quiz-question').innerText = qData.q;
         
         const skipBtn = document.querySelector('.skip-btn');
@@ -839,40 +921,81 @@ echo $OUTPUT->header();
         });
     }
 
-    function checkAnswer(selectedIndex, btnElement, event) {
-        if (isProcessing) return; isProcessing = true;
-        clearTimeout(idleTimer); 
-
-        const qData = activeLevels[selectedLevelIdx].questions[questionIndex];
-        const correctIndex = qData.ans;
-        const qXp = parseInt(qData.xp) || 100;
+    function spawnXPParticles(startX, startY, endX, endY) {
+        const cvs = document.getElementById('sisi-particle-canvas');
+        if (!cvs) return;
+        const ctx = cvs.getContext('2d');
+        cvs.width = window.innerWidth; cvs.height = window.innerHeight;
         
-        const allBtns = document.querySelectorAll('.option-btn');
-        allBtns.forEach(b => b.classList.add('disabled'));
-
-        if (selectedIndex === correctIndex) {
-            btnElement.classList.add('correct');
-            streak++; correctAnswersCount++;
-            const earned = qXp + (streak * 10);
-            xp += earned; updateStats();
-
-            const sLabel = streakLabel(streak);
-            flashQuizIsland(sLabel ? `${sLabel} +${earned} XP` : `✓ +${earned} XP`, sLabel ? 'streak' : 'correct', 950);
-            
-            const floatEl = document.createElement('div');
-            floatEl.className = 'floating-xp'; floatEl.innerText = `+${earned} XP 🔥`;
-            floatEl.style.left = `${event.clientX - 30}px`; floatEl.style.top = `${event.clientY - 30}px`;
-            document.body.appendChild(floatEl);
-            setTimeout(() => floatEl.remove(), 1000);
-            setTimeout(() => { isProcessing = false; nextQuestion(); }, 1000);
-       } else {
-            btnElement.classList.add('wrong');
-            allBtns[correctIndex].classList.add('correct');
-            streak = 0; updateStats();
-            flashQuizIsland('✗ Not quite — streak reset', 'wrong', 1400);
-            setTimeout(() => { isProcessing = false; nextQuestion(); }, 1500);
+        let particles = [];
+        for(let i=0; i<30; i++) {
+            particles.push({
+                x: startX, y: startY,
+                vx: (Math.random() - 0.5) * 20, vy: (Math.random() - 0.5) * 20 - 5,
+                life: 1, size: Math.random() * 6 + 3,
+                color: ['#25d366','#FFD60A','#00CFFD', '#FFF'][Math.floor(Math.random()*4)]
+            });
         }
+        function animate() {
+            ctx.clearRect(0,0,cvs.width,cvs.height);
+            let alive = false;
+            particles.forEach(p => {
+                if (p.life > 0) {
+                    alive = true;
+                    p.vx += (endX - p.x) * 0.05; // Steer to target
+                    p.vy += (endY - p.y) * 0.05; 
+                    p.x += p.vx; p.y += p.vy;
+                    p.life -= 0.02;
+                    ctx.beginPath(); ctx.arc(p.x, p.y, p.size * p.life, 0, Math.PI*2);
+                    ctx.fillStyle = p.color; ctx.shadowBlur = 10; ctx.shadowColor = p.color; ctx.fill();
+                }
+            });
+            if(alive) requestAnimationFrame(animate);
+            else ctx.clearRect(0,0,cvs.width,cvs.height);
+        }
+        animate();
     }
+
+function checkAnswer(selectedIndex, btnElement, event) {
+    if (isProcessing) return; isProcessing = true;
+    clearTimeout(idleTimer); 
+    clearTimeout(idleWarningTimer);
+
+    const qData = activeLevels[playingLevelIdx].questions[questionIndex];
+    const correctIndex = qData.ans;
+    const qXp = parseInt(qData.xp) || 100;
+    const isReplay = playingLevelIdx !== selectedLevelIdx;   // NEW
+
+    const allBtns = document.querySelectorAll('.option-btn');
+    allBtns.forEach(b => b.classList.add('disabled'));
+
+    if (selectedIndex === correctIndex) {
+        btnElement.classList.add('correct');
+        streak++; correctAnswersCount++;
+        const earned = qXp + (streak * 10);
+
+        if (!isReplay) {                                     // — only real progress earns XP
+            xp += earned; updateStats();
+            const btnRect = btnElement.getBoundingClientRect();
+            const xpRect = document.querySelector('.stat-badge.xp').getBoundingClientRect();
+            spawnXPParticles(btnRect.left + btnRect.width/2, btnRect.top, xpRect.left + xpRect.width/2, xpRect.top + xpRect.height/2);
+        }
+
+        const sLabel = streakLabel(streak);
+        const label = isReplay
+            ? (sLabel ? `${sLabel} (Replay)` : '✓ Correct (Replay)')
+            : (sLabel ? `${sLabel} +${earned} XP` : `✓ +${earned} XP`);
+        flashQuizIsland(label, sLabel ? 'streak' : 'correct', 950);
+        
+        setTimeout(() => { isProcessing = false; nextQuestion(); }, 1200);
+   } else {
+        btnElement.classList.add('wrong');
+        allBtns[correctIndex].classList.add('correct');
+        streak = 0; updateStats();
+        flashQuizIsland('✗ Not quite — streak reset', 'wrong', 1400);
+        setTimeout(() => { isProcessing = false; nextQuestion(); }, 1500);
+    }
+}
 
     function showResultsView(correct, total) {
         stopQuizTimer();
@@ -907,20 +1030,24 @@ echo $OUTPUT->header();
         closeQuiz();
     }
 
-    function nextQuestion(skipped = false) {
-        questionIndex++;
-        const totalQ = activeLevels[selectedLevelIdx].questions.length;
-        if (questionIndex >= totalQ) {
-            selectedLevelIdx++; 
-            questionIndex = 0;
+function nextQuestion(skipped = false) {
+    questionIndex++;
+    const totalQ = activeLevels[playingLevelIdx].questions.length;
+    if (questionIndex >= totalQ) {
+        questionIndex = 0;
+        if (playingLevelIdx === selectedLevelIdx) {   // only advance if this WAS the frontier level
+            selectedLevelIdx++;
             saveMapProgress(activeMapData.id, selectedLevelIdx, 0);
-            showResultsView(correctAnswersCount, totalQ);
-        } else {
-            saveMapProgress(activeMapData.id, selectedLevelIdx, questionIndex);
-            renderQuestion();
         }
-        isProcessing = false;
+        showResultsView(correctAnswersCount, totalQ);
+    } else {
+        if (playingLevelIdx === selectedLevelIdx) {   // don't clobber saved progress on replay
+            saveMapProgress(activeMapData.id, selectedLevelIdx, questionIndex);
+        }
+        renderQuestion();
     }
+    isProcessing = false;
+}
 
     function updateStats() { document.getElementById('streak-count').innerText = streak; document.getElementById('xp-count').innerText = xp; }
 
@@ -941,7 +1068,7 @@ echo $OUTPUT->header();
         const elapsed = Math.floor((Date.now() - quizStartTime) / 1000);
         const mm = String(Math.floor(elapsed / 60)).padStart(2, '0');
         const ss = String(elapsed % 60).padStart(2, '0');
-        const lvl = activeLevels[selectedLevelIdx];
+        const lvl = activeLevels[playingLevelIdx];
         const qTotal = lvl ? lvl.questions.length : '?';
         setDynamicIsland('dyn-island-quiz', `⏱ ${mm}:${ss} · Q${questionIndex + 1}/${qTotal}`, 'neutral');
     }
