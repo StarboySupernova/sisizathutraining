@@ -259,7 +259,8 @@ echo $OUTPUT->header();
     .stat-badge.xp { color: #00CFFD; border-color: rgba(0, 207, 253, 0.3); }
 
     /* Map Overlay */
-    #sisi-map-view { flex-grow: 1; position: relative; padding: 40px 0 80px 0; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; overflow-x: hidden; overflow-y: auto; height: 100%; gap: 30px; }
+    #sisi-map-view { flex-grow: 1; position: relative; padding: 20px 0 80px 0; display: flex; flex-direction: column; align-items: center; overflow-x: hidden; overflow-y: auto; height: 100%; perspective: 1200px; perspective-origin: 50% 10%; }
+    #sisi-map-3d-plane { width: 100%; position: relative; display: flex; flex-direction: column; gap: 30px; transform-style: preserve-3d; transform: rotateX(-20deg) translateY(20px); transform-origin: top center; padding-bottom: 80px; }
     #sisi-map-view::-webkit-scrollbar { width: 8px; }
     #sisi-map-view::-webkit-scrollbar-track { background: rgba(0,0,0,0.15); border-radius: 10px; margin: 10px 0; }
     #sisi-map-view::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; border: 1px solid rgba(255,255,255,0.05); }
@@ -317,15 +318,29 @@ echo $OUTPUT->header();
     .floating-xp { position: absolute; font-weight: 800; font-size: 1.5rem; color: #25d366; pointer-events: none; animation: floatUp 1s ease forwards; z-index: 200; }
     @keyframes floatUp { 0% { opacity: 1; transform: translateY(0) scale(1); } 100% { opacity: 0; transform: translateY(-60px) scale(1.3); } }
     @keyframes shake { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-8px); } 75% { transform: translateX(8px); } }
-    /* Task 2 fix: map-view parallax orbs need to be visible over the dark cat-bg gradient */
-#sisi-map-view #map-orbs .kk-orb {
-    mix-blend-mode: normal;
-    opacity: 0.35;
-    animation: none;          /* let JS scroll transform take over instead of fighting orbFloat */
-}
-#sisi-map-view #map-orbs .orb-1 { background: #F37021; }
-#sisi-map-view #map-orbs .orb-2 { background: #00CFFD; }
-#sisi-map-view #map-orbs .orb-3 { background: #25d366; }
+
+    /* Map Complete & Regal Gold Styles */
+    .game-path-line.gold { stroke: #FFD700; filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.8)); stroke-dasharray: 1000; stroke-dashoffset: 1000; }
+    @keyframes traceGold { to { stroke-dashoffset: 0; } }
+    .level-node.gold-node { background: linear-gradient(135deg, #FFD700, #F39C12) !important; color: #000 !important; border: 4px solid #FFF !important; box-shadow: 0 0 20px rgba(255, 215, 0, 0.8) !important; transform: scale(1.15) !important; }
+    
+    #sisi-map-complete-view { display: none; position: absolute; inset: 0; background: rgba(15,15,25,0.95); z-index: 300; flex-direction: column; align-items: center; justify-content: center; text-align: center; padding: 30px; animation: fadeIn 0.5s ease; border-radius: inherit; backdrop-filter: blur(10px); }
+    .map-comp-icon { font-size: 6rem; animation: pulse 2s infinite; margin-bottom: 20px; filter: drop-shadow(0 0 20px rgba(255,215,0,0.5)); }
+    @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.1); } 100% { transform: scale(1); } }
+
+    /* Parallax Floating Particles */
+    #map-parallax-bg .kk-particle { position: absolute; background: #fff; border-radius: 50%; opacity: 0.6; pointer-events: none; filter: blur(1px); }
+    .p-1 { width: 10px; height: 10px; top: 15%; left: 10%; box-shadow: 0 0 10px #fff; }
+    .p-2 { width: 14px; height: 14px; top: 45%; right: 12%; box-shadow: 0 0 10px #fff; }
+    .p-3 { width: 8px; height: 8px; bottom: 30%; left: 60%; box-shadow: 0 0 10px #fff; }
+    /* (rebuilt): parallax background — a fixed non-scrolling layer, positioned
+       purely via JS from scrollTop, instead of scrolling natively with the content */
+    #map-parallax-bg { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+    #map-parallax-bg .kk-orb { position: absolute; mix-blend-mode: normal; opacity: 0.35; animation: none; }
+    #map-parallax-bg .orb-1 { width: 400px; height: 400px; background: #F37021; top: -100px; left: -100px; }
+    #map-parallax-bg .orb-2 { width: 250px; height: 250px; background: #00CFFD; top: 50%; right: -50px; }
+    #map-parallax-bg .orb-3 { width: 300px; height: 300px; background: #25d366; bottom: -100px; left: 20%; }
+    #sisi-map-view { z-index: 1; }
     /* ============ MOBILE RESPONSIVENESS ============ */
 @media (max-width: 768px) {
     #sisi-course-hub { padding: 12px; gap: 14px; grid-template-columns: 1fr; }
@@ -357,6 +372,10 @@ echo $OUTPUT->header();
     <div style="text-align:center; padding:20px; color:#fff;">
         <h2 style="font-size:2.2rem; font-weight:900;">Learning Path Hub</h2>
         <p style="color:#CBD5E1;">Select a course to view its available gamified maps.</p>
+        <div style="display:flex; justify-content:center; flex-wrap:wrap; gap:15px; margin-top:15px;">
+            <button onclick="window.location.href='gamified_leaderboard.php'" style="background:rgba(255,215,0,0.15); border:1px solid #FFD700; color:#FFD700; padding:10px 20px; border-radius:12px; cursor:pointer; font-weight:bold; transition:0.3s; box-shadow:0 5px 15px rgba(255,215,0,0.15);" onmouseover="this.style.background='#FFD700'; this.style.color='#000';" onmouseout="this.style.background='rgba(255,215,0,0.15)'; this.style.color='#FFD700';">🏆 View Global Leaderboard</button>
+            <button onclick="resetAllProgress()" style="background:rgba(255,59,48,0.15); border:1px solid #FF3B30; color:#fff; padding:10px 20px; border-radius:12px; cursor:pointer; font-weight:bold; transition:0.3s;" onmouseover="this.style.background='#FF3B30'" onmouseout="this.style.background='rgba(255,59,48,0.15)'">↻ Reset Progress</button>
+        </div>
     </div>
     <div id="sisi-course-hub"></div>
 </div>
@@ -414,12 +433,25 @@ echo $OUTPUT->header();
         <div id="sisi-game-container">
             <div class="game-header">
             <button id="game-header-back-btn" class="header-btn" onclick="handleGameBack()">❮ Maps</button>
-            <span id="game-title">Select a Map</span>
+            <div style="display:flex; align-items:center; gap:10px;">
+                <span id="game-title">Select a Map</span>
+                <button id="reset-map-btn" onclick="resetCurrentMap()" style="display:none; background:rgba(255,59,48,0.2); border:1px solid #FF3B30; color:#fff; border-radius:8px; cursor:pointer; padding:4px 8px; font-size:0.75rem; font-weight:bold; transition:0.3s;" onmouseover="this.style.background='#FF3B30'" onmouseout="this.style.background='rgba(255,59,48,0.2)'" title="Reset this map's progress">↻ Reset</button>
+            </div>
             <div class="stats-pill">
                 <div class="stat-badge fire">🔥 <span id="streak-count">0</span></div>
                 <div class="stat-badge xp">⚡ <span id="xp-count">0</span> XP</div>
             </div>
         </div>
+
+        <!-- Persistent parallax background layer — lives outside the scrolling map so it never scrolls out of view -->
+            <div id="map-parallax-bg">
+                <div class="kk-orb orb-1"></div>
+                <div class="kk-orb orb-2"></div>
+                <div class="kk-orb orb-3"></div>
+                <div class="kk-particle p-1"></div>
+                <div class="kk-particle p-2"></div>
+                <div class="kk-particle p-3"></div>
+            </div>
 
         <div id="sisi-map-view"><svg id="path-overlay"></svg></div>
         
@@ -436,6 +468,12 @@ echo $OUTPUT->header();
             <div class="res-title" id="res-title">Level Complete!</div>
             <div class="res-desc" id="res-desc">Great job.</div>
             <button class="res-btn" onclick="closeResults()">Continue</button>
+        </div>
+        <div id="sisi-map-complete-view">
+            <div class="map-comp-icon">👑</div>
+            <h2 style="color:#FFD700; font-size:2.2rem; font-weight:900; margin:0 0 15px 0;">Map Mastered!</h2>
+            <p style="color:#CBD5E1; font-size:1.1rem; line-height:1.5; margin-bottom:30px; max-width:80%;">You've completed all extant levels in this map! Return later to see if new challenges have been added.</p>
+            <button class="res-btn" style="background:#FFD700; color:#000; box-shadow:0 10px 20px rgba(255,215,0,0.4);" onclick="closeMapComplete()">View Golden Map</button>
         </div>
     </div> 
 </div> 
@@ -520,19 +558,56 @@ echo $OUTPUT->header();
     let questionIndex = 0;
     let correctAnswersCount = 0;
     let isProcessing = false;
-    let streak = 0; let xp = 0;
     let quizTimerInterval = null;
     let quizStartTime = null;
     let islandOverrideUntil = 0;
 
     let userProgress = serverProgress || {};
-    function loadMapProgress(mapId) { if (!userProgress[mapId]) userProgress[mapId] = { level: 0, q: 0 }; return userProgress[mapId]; }
+    let xp = userProgress._globalXP || 0;
+    let streak = 0; 
+    
+    function loadMapProgress(mapId) { 
+        if (!userProgress[mapId]) userProgress[mapId] = { level: 0, q: 0, xp: 0 }; 
+        return userProgress[mapId]; 
+    }
+    
+    // Ledger helper: Modifies Global XP and Map-Specific XP in tandem
+    function updateXP(amount) {
+        xp = Math.max(0, xp + amount);
+        if (activeMapData && activeMapData.id) {
+            let p = loadMapProgress(activeMapData.id);
+            p.xp = Math.max(0, (p.xp || 0) + amount);
+        }
+        updateStats();
+    }
+
     function saveMapProgress(mapId, lvl, q) { 
-        userProgress[mapId] = { level: lvl, q: q }; 
+        let currentXp = userProgress[mapId] ? (userProgress[mapId].xp || 0) : 0;
+        userProgress[mapId] = { level: lvl, q: q, xp: currentXp }; 
+        userProgress._globalXP = xp; // Save global XP natively into JSON
         localStorage.setItem('sisi_map_progress', JSON.stringify(userProgress)); 
-        // Task 5: Background AJAX Sync heartbeat
+        // Background AJAX Sync heartbeat (Our Cloud Database Ledger)
         const fd = new FormData(); fd.append('save_progress', JSON.stringify(userProgress));
         fetch('gamified_journey.php', { method: 'POST', body: fd });
+    }
+    
+    function resetAllProgress() {
+        showCustomConfirm("Reset Progress?", "Are you sure you want to delete all your progress and reset your XP? This cannot be undone.", "Reset", "#FF3B30", () => {
+            userProgress = {}; xp = 0;
+            const fd = new FormData(); fd.append('save_progress', JSON.stringify(userProgress));
+            fetch('gamified_journey.php', { method: 'POST', body: fd }).then(() => location.reload());
+        });
+    }
+
+    function resetCurrentMap() {
+        showCustomConfirm("Reset Map Progress?", `Are you sure you want to reset your progress for "${activeMapData.title}"? This will also remove the XP you earned on this specific map.`, "Reset Map", "#FF3B30", () => {
+            let mapXp = userProgress[activeMapData.id] ? (userProgress[activeMapData.id].xp || 0) : 0;
+            xp = Math.max(0, xp - mapXp); // Refund/Remove this map's specific XP from Global XP
+            userProgress[activeMapData.id] = { level: 0, q: 0, xp: 0 }; // Wipe map ledger
+            saveMapProgress(activeMapData.id, 0, 0); 
+            updateStats();
+            startMap(activeMapData.id); // Instantly reload map cleanly
+        });
     }
 
     function switchView(viewId) {
@@ -561,14 +636,14 @@ echo $OUTPUT->header();
         }, 400); // 400ms Skeleton shimmer effect
     }
 
-    function showBlobUI(courseId, courseName) {
+    function showBlobUI(courseId, courseName, catId = 1) {
         activeAdminCourseId = courseId;
         activeCourseName = courseName;
         switchView('blob-ui-view');
         setDynamicIsland('dyn-island-blob', courseName, 'neutral');
         scaleKkApp(); 
         toggleActivities(false);
-        setTimeout(() => handleCatSelection(1), 500); 
+        setTimeout(() => handleCatSelection(catId), 500); 
     }
 
     function isCategoryLocked(catId) {
@@ -673,6 +748,34 @@ echo $OUTPUT->header();
         }
     }
 
+    let parallaxAttached = false;
+    function attachParallaxScroll() {
+        if (parallaxAttached) return;      // only bind the listener once, ever
+        parallaxAttached = true;
+        const mapView = document.getElementById('sisi-map-view');
+        const bg = document.getElementById('map-parallax-bg');
+        if (!mapView || !bg) return;
+        const orbs = bg.querySelectorAll('.kk-orb');
+        const particles = bg.querySelectorAll('.kk-particle');
+        let ticking = false;
+        mapView.addEventListener('scroll', () => {
+            if (ticking) return;
+            ticking = true;
+            requestAnimationFrame(() => {
+                const y = mapView.scrollTop;
+                // Deep background elements move down slightly
+                if (orbs[0]) orbs[0].style.transform = `translateY(${y * 0.2}px)`;
+                if (orbs[1]) orbs[1].style.transform = `translateY(${y * 0.4}px)`;
+                if (orbs[2]) orbs[2].style.transform = `translateY(${y * 0.6}px)`;
+                // Foreground elements move up sharply against scroll (strong depth)
+                if (particles[0]) particles[0].style.transform = `translateY(${y * -0.5}px)`;
+                if (particles[1]) particles[1].style.transform = `translateY(${y * -0.3}px)`;
+                if (particles[2]) particles[2].style.transform = `translateY(${y * -0.8}px)`;
+                ticking = false;
+            });
+        }, { passive: true });
+    }
+
     function startMap(mapId) {
         activeMapData = allMapsData.find(m => m.id == mapId);
         activeLevels = activeMapData.levels;
@@ -680,8 +783,12 @@ echo $OUTPUT->header();
         let prog = loadMapProgress(mapId);
         selectedLevelIdx = prog.level;
         questionIndex = prog.q;
+        updateStats(); // Render natively loaded XP immediately
+
+        const isMapComplete = selectedLevelIdx >= activeLevels.length;
 
         document.getElementById('game-title').innerText = activeMapData.title;
+        document.getElementById('reset-map-btn').style.display = 'inline-block';
         document.getElementById('game-header-back-btn').innerText = '❮ Maps';
         switchView('game-map-view');
                 
@@ -694,51 +801,46 @@ echo $OUTPUT->header();
         
         const mapView = document.getElementById('sisi-map-view');
         mapView.style.display = 'flex';
-        // Task 2: Insert Background Orbs for Parallax Depth
-        mapView.innerHTML = `
-            <div id="map-orbs" style="position:absolute; inset:0; z-index:0; pointer-events:none; overflow:hidden;">
-                <div class="kk-orb orb-1" style="width:400px; height:400px; top:-100px; left:-100px;"></div>
-                <div class="kk-orb orb-2" style="width:250px; height:250px; top:50%; right:-50px;"></div>
-                <div class="kk-orb orb-3" style="width:300px; height:300px; bottom:-100px; left:20%;"></div>
-            </div>
-            <svg id="path-overlay"></svg>
-        `;
+        mapView.innerHTML = `<div id="sisi-map-3d-plane"><svg id="path-overlay"></svg></div>`;
+        const plane = document.getElementById('sisi-map-3d-plane');
 
-        // Task 2: Attach Parallax Scroll Physics
-        mapView.onscroll = function() {
-            const y = this.scrollTop;
-            const orbs = this.querySelectorAll('.kk-orb');
-            if(orbs[0]) orbs[0].style.transform = `translateY(${y * 0.4}px)`;
-            if(orbs[1]) orbs[1].style.transform = `translateY(${y * 0.2}px)`;
-            if(orbs[2]) orbs[2].style.transform = `translateY(${y * 0.6}px)`;
-        };
+        attachParallaxScroll();   // binds once, safe to call every startMap
 
         activeLevels.forEach((level, idx) => {
             const isLocked = idx > selectedLevelIdx;
             const isCompleted = idx < selectedLevelIdx;
-            const statusClass = isLocked ? 'locked' : (isCompleted ? 'completed' : 'current');
+            
+            let statusClass = isLocked ? 'locked' : (isCompleted ? 'completed' : 'current');
+            if (isMapComplete) statusClass += ' gold-node'; // Render Regal Gold Nodes
+            
             const icon = isLocked ? '🔒' : (isCompleted ? '✓' : '⭐');
 
-            mapView.innerHTML += `
+            plane.innerHTML += `
                 <div class="level-wrapper" id="node-${idx}">
                     <div style="position:relative; transform: translateX(${level.offset || 0}px)">
                         <div class="level-node ${statusClass}" onclick="openLevel(${idx})">${icon}</div>
                     </div>
                 </div>`;
         });
-        setTimeout(drawDynamicPaths, 50);
+       setTimeout(drawDynamicPaths, 50);
     }
 
     function drawDynamicPaths() {
         const svg = document.getElementById('path-overlay');
-        const container = document.getElementById('sisi-map-view');
-        if (!svg || !container || activeLevels.length < 2) return;
+        const plane = document.getElementById('sisi-map-3d-plane');
+        if (!svg || !plane || activeLevels.length < 2) return;
         
-        // 1. Ensure SVG covers the full scrollable height of the map so lines don't cut off
-        svg.style.height = container.scrollHeight + 'px';
+        const isMapComplete = selectedLevelIdx >= activeLevels.length;
+
+        // 1. Temporarily remove 3D transform to get exact 2D metrics for drawing lines
+        const originalTransform = plane.style.transform;
+        plane.style.transform = 'none';
+
+        // 2. Ensure SVG covers the full scrollable height of the map so lines don't cut off
+        svg.style.height = plane.scrollHeight + 'px';
 
         let html = '';
-        // 2. Get the bounding box of the SVG itself to use as the absolute coordinate baseline
+        // 3. Get the bounding box of the SVG itself to use as the absolute coordinate baseline
         const svgRect = svg.getBoundingClientRect(); 
 
         for (let i = 0; i < activeLevels.length - 1; i++) {
@@ -756,13 +858,29 @@ echo $OUTPUT->header();
             const endX = (endRect.left - svgRect.left) + (endRect.width / 2);
             const endY = (endRect.top - svgRect.top) + (endRect.height / 2);
 
-            const strokeClass = (i < selectedLevelIdx) ? 'game-path-line active' : 'game-path-line';
+            let strokeClass = (i < selectedLevelIdx) ? 'game-path-line active' : 'game-path-line';
+            if (isMapComplete) strokeClass = 'game-path-line gold'; // Render Regal Gold Lines
             const cpY = startY + (endY - startY) / 2;
             
             // Draw S-Curve connecting the exact centers
             html += `<path class="${strokeClass}" d="M ${startX} ${startY} C ${startX} ${cpY}, ${endX} ${cpY}, ${endX} ${endY}" />`;
         }
         svg.innerHTML = html;
+        
+        // Restore 3D transform now that paths are calculated flawlessly
+        plane.style.transform = originalTransform;
+
+        // Tracing path animation for Gold paths
+        if (isMapComplete) {
+            setTimeout(() => {
+                svg.querySelectorAll('.game-path-line.gold').forEach((p, index) => {
+                    const len = p.getTotalLength();
+                    p.style.strokeDasharray = len;
+                    p.style.strokeDashoffset = len;
+                    p.style.animation = `traceGold 1.5s ease-in-out ${index * 0.4}s forwards`;
+                });
+            }, 50);
+        }
     }
 
     function showCustomConfirm(title, message, confirmText, confirmColor, onConfirm, onCancel) {
@@ -825,7 +943,7 @@ echo $OUTPUT->header();
         if (document.getElementById('sisi-quiz-view').style.display === 'flex') {
             quitQuiz(); // If in quiz, trigger quit confirmation
         } else {
-            showBlobUI(activeAdminCourseId, activeCourseName); // Otherwise, back to Categories
+            showBlobUI(activeAdminCourseId, activeCourseName, activeMapData.category_id || 1); // Returns precisely to Category being browsed
         }
     }
 
@@ -869,7 +987,7 @@ function quitQuiz() {
         isReplay ? "Quit" : "Quit (-20 XP)", "#FF3B30", 
         () => {
             if (!isReplay) {                                  // NEW guard
-                xp = Math.max(0, xp - 20); updateStats();
+                updateXP(-20);
                 saveMapProgress(activeMapData.id, selectedLevelIdx, questionIndex);
             }
             closeQuiz();
@@ -891,7 +1009,7 @@ function skipQuestion() {
             : `Skipping this question will deduct ${penalty} XP from your score. Are you sure?`,
         isReplay ? "Skip" : `Skip (-${penalty} XP)`, "#FF9500", 
         () => {
-            if (!isReplay) { xp = Math.max(0, xp - penalty); }   // NEW guard
+            if (!isReplay) { updateXP(-penalty); }   // NEW guard
             streak = 0; updateStats();
             flashQuizIsland(isReplay ? '⏭ Skipped' : `⏭ Skipped · -${penalty} XP`, 'warning', 1200);
             nextQuestion(true);
@@ -975,7 +1093,7 @@ function checkAnswer(selectedIndex, btnElement, event) {
         const earned = qXp + (streak * 10);
 
         if (!isReplay) {                                     // — only real progress earns XP
-            xp += earned; updateStats();
+            updateXP(earned);
             const btnRect = btnElement.getBoundingClientRect();
             const xpRect = document.querySelector('.stat-badge.xp').getBoundingClientRect();
             spawnXPParticles(btnRect.left + btnRect.width/2, btnRect.top, xpRect.left + xpRect.width/2, xpRect.top + xpRect.height/2);
@@ -1027,6 +1145,17 @@ function checkAnswer(selectedIndex, btnElement, event) {
 
     function closeResults() {
         document.getElementById('sisi-results-view').style.display = 'none';
+        // Immediately trigger Golden Completed banner ONLY when playing & beating the ultimate final level
+        if (selectedLevelIdx >= activeLevels.length && playingLevelIdx === selectedLevelIdx - 1) {
+            document.getElementById('sisi-map-complete-view').style.display = 'flex';
+            document.getElementById('sisi-game-container').classList.remove('hide-fab');
+        } else {
+            closeQuiz();
+        }
+    }
+
+    function closeMapComplete() {
+        document.getElementById('sisi-map-complete-view').style.display = 'none';
         closeQuiz();
     }
 
