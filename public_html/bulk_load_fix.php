@@ -15,7 +15,9 @@ $biz_course = $DB->get_record_select('course', "fullname LIKE '%Business Adminis
 $comm_course = $DB->get_record_select('course', "fullname LIKE '%Communication Studies and Language%'", null, 'id');
 $cs_course = $DB->get_record_select('course', "fullname LIKE '%Customer Service%'", null, 'id');
 $entrep_course = $DB->get_record_select('course', "fullname LIKE '%Entrepreneurial Skills%'", null, 'id');
-$fin_course = $DB->get_record_select('course', "fullname LIKE '%Financial Administration%'", null, 'id'); // New
+$fin_course = $DB->get_record_select('course', "fullname LIKE '%Financial Administration%'", null, 'id'); 
+$fire_course = $DB->get_record_select('course', "fullname LIKE '%Fire Fighting%'", null, 'id'); 
+$gm_course = $DB->get_record_select('course', "fullname LIKE '%Generic Management%'", null, 'id');
 
 $target_course_id = $basic_course ? $basic_course->id : 15; 
 $wrong_course_id = $inter_course ? $inter_course->id : 18;
@@ -24,7 +26,10 @@ $biz_course_id = $biz_course ? $biz_course->id : 24;
 $comm_course_id = $comm_course ? $comm_course->id : 27; 
 $cs_course_id = $cs_course ? $cs_course->id : 30; 
 $entrep_course_id = $entrep_course ? $entrep_course->id : 33; 
-$fin_course_id = $fin_course ? $fin_course->id : 36; // New Fallback
+$fin_course_id = $fin_course ? $fin_course->id : 36; 
+$fire_course_id = $fire_course ? $fire_course->id : 39; 
+$gm_course_id = $gm_course ? $gm_course->id : 42; // Fallback
+
 // 1. Fetch current data and REMOVE maps from the wrong course
 $current_data_json = get_config('local_sisizathu', 'journey_data') ?: '[]';
 $current_data = json_decode($current_data_json, true);
@@ -38,9 +43,9 @@ if (is_array($current_data)) {
             continue; 
         }
 
-        // Keep only maps that DO NOT belong to the three courses we are updating
-        if ($map['course_id'] != $wrong_course_id && $map['course_id'] != $target_course_id && $map['course_id'] != $advanced_course_id && $map['course_id'] != $biz_course_id && $map['course_id'] != $comm_course_id && $map['course_id'] != $cs_course_id && $map['course_id'] != $entrep_course_id) {
-            $cleaned_data[] = $map; 
+        // Keep only maps that DO NOT belong to the courses we are updating
+        if ($map['course_id'] != $wrong_course_id && $map['course_id'] != $target_course_id && $map['course_id'] != $advanced_course_id && $map['course_id'] != $biz_course_id && $map['course_id'] != $comm_course_id && $map['course_id'] != $cs_course_id && $map['course_id'] != $entrep_course_id && $map['course_id'] != $fin_course_id && $map['course_id'] != $fire_course_id && $map['course_id'] != $gm_course_id) {
+                $cleaned_data[] = $map; 
         }
         
         if ($map['id'] > $highest_id) {
@@ -4173,8 +4178,1038 @@ $fin_maps = [
     ]
 ];
 
+// ==========================================================
+// FIRE FIGHTING CURRICULUM (Maps 97-108)
+// ==========================================================
+$fire_maps = [
+    // CATEGORY 1: FIRE SCIENCE & SAFETY (Maps 97-100)
+    [
+        "id" => ++$highest_id, "course_id" => $fire_course_id, "category_id" => 1,
+        "title" => "Map 97: The Chemistry of Fire", "desc" => "Understand the fire triangle, stages of fire, and thermal dynamics.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What three elements make up the 'Fire Triangle'?", "options" => ["Water, Wood, Air", "Fuel, Heat, Oxygen", "Gas, Spark, Wind", "Smoke, Heat, Ash"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the fourth element added to create the 'Fire Tetrahedron'?", "options" => ["Carbon Dioxide", "Chemical Chain Reaction", "Nitrogen", "Pressure"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the 'Flash Point' of a liquid?", "options" => ["The temperature at which it boils", "The lowest temperature where it gives off enough vapor to ignite", "The point where it turns to ash", "The temperature of the flame"], "ans" => 1, "xp" => 150],
+                ["q" => "Which stage of fire is characterized by rapid growth and high heat?", "options" => ["Incipient", "Growth", "Fully Developed", "Decay"], "ans" => 2, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Flashover'?", "options" => ["The end of a fire", "A transition where all combustible materials in a room ignite simultaneously", "A small spark", "When water hits a fire"], "ans" => 1, "xp" => 180],
+                ["q" => "What causes a 'Backdraft'?", "options" => ["Too much water", "A sudden introduction of oxygen into an oxygen-depleted, hot environment", "Cold wind", "Using the wrong extinguisher"], "ans" => 1, "xp" => 180],
+                ["q" => "How does heat travel through a solid object (like a metal beam)?", "options" => ["Convection", "Conduction", "Radiation", "Evaporation"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Convection'?", "options" => ["Heat transfer through direct contact", "Heat transfer through the movement of hot air or liquids", "Heat transfer through waves", "Heat created by friction"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Radiation' in fire science?", "options" => ["Nuclear waste", "Heat transfer through electromagnetic waves", "Hot air rising", "Touching a hot pipe"], "ans" => 1, "xp" => 210],
+                ["q" => "Which stage of fire has the lowest oxygen levels?", "options" => ["Incipient", "Growth", "Decay", "Fully Developed"], "ans" => 2, "xp" => 210],
+                ["q" => "What is 'Pyrolysis'?", "options" => ["A type of extinguisher", "Chemical decomposition of a solid fuel by heat", "Mixing water with foam", "The sound of a fire alarm"], "ans" => 1, "xp" => 210],
+                ["q" => "What is the normal concentration of oxygen in the air we breathe?", "options" => ["10%", "21%", "50%", "100%"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "At what oxygen percentage does fire usually begin to die out?", "options" => ["21%", "15-16%", "5%", "2%"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Thermal Layering'?", "options" => ["Putting on a jacket", "The tendency of gases to form into layers according to temperature", "Using two hoses", "Building a brick wall"], "ans" => 1, "xp" => 250],
+                ["q" => "What is the 'Neutral Plane'?", "options" => ["The floor of the building", "The interface between the hot gas layer and the cooler air below", "A safe area outside", "The cockpit of a plane"], "ans" => 1, "xp" => 250],
+                ["q" => "Which fuel type has the highest heat release rate?", "options" => ["Wood", "Polyurethane foam (plastics)", "Paper", "Cotton"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is an 'Endothermic' reaction?", "options" => ["A reaction that releases heat", "A reaction that absorbs heat", "A reaction that explodes", "A reaction that uses no air"], "ans" => 1, "xp" => 300],
+                ["q" => "What is an 'Exothermic' reaction?", "options" => ["A reaction that absorbs heat", "A reaction that releases heat", "A reaction with water", "A reaction that stops fire"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Vapor Density'?", "options" => ["The color of smoke", "The weight of a gas compared to air", "The speed of a flame", "The thickness of liquid"], "ans" => 1, "xp" => 300],
+                ["q" => "If a gas has a vapor density of 0.5, will it rise or sink in air?", "options" => ["Sink", "Rise", "Stay in the middle", "Turn into liquid"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is the 'Autoignition Temperature'?", "options" => ["The temperature of a spark", "The lowest temperature at which a substance will ignite without an external spark", "The boiling point", "The freezing point"], "ans" => 1, "xp" => 400],
+                ["q" => "What color smoke often indicates an oxygen-starved, under-ventilated fire?", "options" => ["White", "Dark Grey or Yellow-Grey", "Clear", "Bright Blue"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Specific Gravity' in fire science?", "options" => ["The weight of smoke", "The weight of a liquid compared to water", "The force of a fire hose", "The height of a flame"], "ans" => 1, "xp" => 400],
+                ["q" => "Which class of fire involves combustible metals like Magnesium?", "options" => ["Class A", "Class B", "Class D", "Class K"], "ans" => 2, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $fire_course_id, "category_id" => 1,
+        "title" => "Map 98: Fire Classes & Extinguishers", "desc" => "Select the right tool for the job. Mastering Classes A through K.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What does a 'Class A' fire involve?", "options" => ["Flammable liquids", "Ordinary combustibles like wood and paper", "Electrical equipment", "Cooking oils"], "ans" => 1, "xp" => 150],
+                ["q" => "What does a 'Class B' fire involve?", "options" => ["Metals", "Flammable liquids and gases", "Wood", "Electricity"], "ans" => 1, "xp" => 150],
+                ["q" => "What does a 'Class C' fire involve?", "options" => ["Kitchen fats", "Energized electrical equipment", "Gasoline", "Paper"], "ans" => 1, "xp" => 150],
+                ["q" => "What acronym is used to remember how to operate an extinguisher?", "options" => ["STOP", "PASS", "FAST", "FIRE"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "In the acronym PASS, what does the first 'P' stand for?", "options" => ["Push the button", "Pull the pin", "Point the nozzle", "Press the lever"], "ans" => 1, "xp" => 180],
+                ["q" => "What does the 'S' at the end of PASS stand for?", "options" => ["Scream", "Sweep side to side", "Stop the fire", "Spray the top"], "ans" => 1, "xp" => 180],
+                ["q" => "Which extinguisher is best for a Class K fire (Commercial Kitchen)?", "options" => ["Water", "Wet Chemical", "CO2", "Dry Powder"], "ans" => 1, "xp" => 180],
+                ["q" => "What happens if you use a standard Water extinguisher on a Class C (Electrical) fire?", "options" => ["The fire goes out faster", "You risk severe electric shock", "The extinguisher explodes", "It creates toxic gas"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the primary cooling agent in a 'Class A' water extinguisher?", "options" => ["Pressure", "Water", "Foam", "Carbon"], "ans" => 1, "xp" => 210],
+                ["q" => "How does a CO2 extinguisher put out a fire?", "options" => ["By cooling it", "By displacing oxygen (smothering)", "By a chemical reaction", "By using high pressure water"], "ans" => 1, "xp" => 210],
+                ["q" => "What color is the label for a Dry Powder (DCP) extinguisher in many standards?", "options" => ["Red", "Blue", "Black", "Yellow"], "ans" => 1, "xp" => 210],
+                ["q" => "What color is the label for a CO2 extinguisher?", "options" => ["Blue", "Black", "Cream", "Green"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "Which fire class involves combustible metals?", "options" => ["Class B", "Class D", "Class K", "Class E"], "ans" => 1, "xp" => 250],
+                ["q" => "Why should you never use water on a Magnesium fire?", "options" => ["It's too expensive", "It can cause a violent explosion and release hydrogen gas", "It makes the metal rusty", "It has no effect"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Saponification'?", "options" => ["A type of wood fire", "A process where wet chemicals turn cooking fats into a soapy foam", "The sound of an alarm", "A gas leak"], "ans" => 1, "xp" => 250],
+                ["q" => "How far should you stand from a fire when starting to use a portable extinguisher?", "options" => ["1 meter", "2 to 3 meters", "10 meters", "Inside the flames"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Halon' (now being phased out)?", "options" => ["A type of wood", "A gas that interrupts the fire's chemical chain reaction", "A fire hose brand", "A type of smoke"], "ans" => 1, "xp" => 300],
+                ["q" => "What is an 'AFFF' extinguisher?", "options" => ["Aqueous Film Forming Foam", "Always Find Fire Fast", "Air Force Fire Fighting", "Automatic Fire Flow Filter"], "ans" => 0, "xp" => 300],
+                ["q" => "When should you NOT use a portable extinguisher?", "options" => ["When the fire is small", "When the fire is spreading beyond the point of origin or blocking your exit", "If you are alone", "If it is daytime"], "ans" => 1, "xp" => 300],
+                ["q" => "What is the 'Pressure Gauge' used for on an extinguisher?", "options" => ["To see how heavy it is", "To ensure it is fully charged and ready for use", "To measure the room temperature", "To see the date of manufacture"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "How often should portable fire extinguishers typically be professionally inspected?", "options" => ["Every week", "Annually", "Every 10 years", "Never"], "ans" => 1, "xp" => 400],
+                ["q" => "What is a 'Dry Chemical' agent?", "options" => ["Frozen water", "A powder that interferes with the chemical reaction of a fire", "A type of gas", "A liquid foam"], "ans" => 1, "xp" => 400],
+                ["q" => "Where should you aim the nozzle of the extinguisher?", "options" => ["At the top of the flames", "At the base of the fire", "At the smoke", "At the ceiling"], "ans" => 1, "xp" => 400],
+                ["q" => "Which fire class is specifically for commercial deep-fat fryers?", "options" => ["Class A", "Class B", "Class K (or F)", "Class D"], "ans" => 2, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $fire_course_id, "category_id" => 1,
+        "title" => "Map 99: PPE & Breathing Apparatus", "desc" => "Protect yourself. Mastering Bunker Gear and SCBA systems.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What does 'PPE' stand for in fire fighting?", "options" => ["Public Protection Entry", "Personal Protective Equipment", "Private Part Exit", "Pressure Power Engine"], "ans" => 1, "xp" => 150],
+                ["q" => "What is another common name for a fire fighter's protective suit?", "options" => ["Tracksuit", "Bunker Gear or Turnout Gear", "Wetsuit", "Hazmat Shield"], "ans" => 1, "xp" => 150],
+                ["q" => "What does 'SCBA' stand for?", "options" => ["Self-Contained Breathing Apparatus", "System Command Battery Access", "Secure Cold Breathing Air", "Standard Combined Belt Assembly"], "ans" => 0, "xp" => 150],
+                ["q" => "What is the primary purpose of the fire fighter's helmet?", "options" => ["To look cool", "To protect the head from impact and falling debris", "To hold a flashlight only", "To keep the hair dry"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What part of the PPE protects the neck and ears from heat?", "options" => ["The boots", "The Nomex hood", "The gloves", "The belt"], "ans" => 1, "xp" => 180],
+                ["q" => "Why are turnout coats made with multiple layers?", "options" => ["To make them heavier", "To provide thermal protection, moisture barriers, and durability", "To look more professional", "To store more tools"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'PASS' device on an SCBA system?", "options" => ["A tool to pull a pin", "A motion-sensing alarm that sounds if a fire fighter is motionless", "A radio", "A spare air tank"], "ans" => 1, "xp" => 180],
+                ["q" => "How should fire fighter gloves be designed?", "options" => ["Thin for better grip", "Heat-resistant and providing protection from cuts/punctures", "Waterproof only", "Made of wool"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the 'Facepiece' of an SCBA?", "options" => ["The oxygen tank", "The mask that fits over the fire fighter's face", "The regulator", "The harness"], "ans" => 1, "xp" => 210],
+                ["q" => "What does the 'Regulator' do in an SCBA system?", "options" => ["Changes the air color", "Reduces high-pressure air from the cylinder to a breathable pressure", "Stores the air", "Cleans the mask"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Cylinder' in SCBA terms?", "options" => ["A type of hat", "The high-pressure tank that stores the air supply", "The hose", "The alarm"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Positive Pressure' in an SCBA mask?", "options" => ["Being happy", "Pressure inside the mask is higher than outside to prevent smoke from entering", "High speed air flow", "Using a fan"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is the standard air pressure in a full 45-minute SCBA cylinder?", "options" => ["100 psi", "4500 psi", "10 psi", "500 psi"], "ans" => 1, "xp" => 250],
+                ["q" => "What is the 'Skip-Breathing' technique?", "options" => ["Holding your breath", "A method of conserving air by taking a breath, holding, and exhaling slowly", "Breathing very fast", "Not using a mask"], "ans" => 1, "xp" => 250],
+                ["q" => "What should you check during your 'Daily SCBA Inspection'?", "options" => ["The color of the tank", "Cylinder pressure, leaks, and alarm functionality", "The brand name", "The price"], "ans" => 1, "xp" => 250],
+                ["q" => "When should you clean your PPE?", "options" => ["Every 5 years", "After every exposure to smoke or hazardous materials", "Only when it looks dirty", "Once a week"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Off-gassing' from PPE?", "options" => ["A fuel leak", "The release of trapped toxic chemicals from gear after a fire", "A steam leak", "Using a radio"], "ans" => 1, "xp" => 300],
+                ["q" => "Why are fire fighter boots usually made with steel toes and shanks?", "options" => ["To be heavy for exercise", "To protect against crushing and puncture from nails/sharp debris", "To keep the feet warm", "To look like work boots"], "ans" => 1, "xp" => 300],
+                ["q" => "What is the 'Low-Air Alarm' on an SCBA?", "options" => ["A bell for lunch", "An alarm that triggers when 25-33% of air remains in the cylinder", "A signal the fire is out", "A radio alert"], "ans" => 1, "xp" => 300],
+                ["q" => "What is an 'IDLH' environment?", "options" => ["Internally Dead Long House", "Immediately Dangerous to Life or Health", "Instant Danger Level High", "In-Depth Low Heat"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Buddy Breathing'?", "options" => ["Talking to a friend", "Sharing air from one SCBA system between two fire fighters in an emergency", "Taking turns sleeping", "A type of exercise"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the 'Drag Strap' on the back of turnout coats for?", "options" => ["Carrying tools", "Dragging an incapacitated fire fighter to safety", "Holding a hose", "Attaching a flashlight"], "ans" => 1, "xp" => 400],
+                ["q" => "How often should SCBA cylinders be hydrostatically tested?", "options" => ["Every month", "Every 3 to 5 years (depending on type)", "Every 50 years", "Never"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the 'Donning' process?", "options" => ["Taking off gear", "Putting on protective equipment and SCBA", "Cleaning the gear", "Ordering new gear"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $fire_course_id, "category_id" => 1,
+        "title" => "Map 100: Fire Safety & Prevention", "desc" => "Stop the fire before it starts. Inspections, alarms, and public safety.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the primary purpose of a Smoke Alarm?", "options" => ["To put out the fire", "To alert occupants of smoke or fire early", "To call the police", "To record video"], "ans" => 1, "xp" => 150],
+                ["q" => "Where is the best place to install a smoke alarm?", "options" => ["Inside a cupboard", "On every level of the home and near bedrooms", "In the garage only", "Next to the floor"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Fire Drill'?", "options" => ["A tool for making holes", "A practice exercise to ensure everyone knows how to evacuate safely", "A type of hose", "A meeting to buy gear"], "ans" => 1, "xp" => 150],
+                ["q" => "Which of these is a common cause of house fires?", "options" => ["Reading books", "Unattended cooking", "Using a TV", "Sleeping with a fan"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Fire Door'?", "options" => ["A door made of fire", "A reinforced door designed to slow the spread of fire and smoke", "A door that is always open", "A door for firefighters only"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Fire Sprinkler' system?", "options" => ["A garden tool", "An automatic system that sprays water when high heat is detected", "A manual hose", "A type of alarm"], "ans" => 1, "xp" => 180],
+                ["q" => "What should you do if your clothes catch fire?", "options" => ["Run as fast as you can", "Stop, Drop, and Roll", "Jump in a pool", "Call for help only"], "ans" => 1, "xp" => 180],
+                ["q" => "What is the 'EDITH' plan?", "options" => ["Every Door Is The Home", "Exit Drills In The Home", "Easy Danger In The House", "Early Detection Is The Help"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Fire Inspector'?", "options" => ["A person who starts fires", "An official who checks buildings for fire hazards and code compliance", "A person who fixes trucks", "An insurance agent"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Housekeeping' in fire safety?", "options" => ["Cleaning for guests", "Keeping work and living areas free of clutter and flammable waste", "Hiring a maid", "Decorating a room"], "ans" => 1, "xp" => 210],
+                ["q" => "Why should you never use an elevator during a fire?", "options" => ["It's too slow", "Smoke can cause it to malfunction or trap you on the fire floor", "It uses too much power", "It's for emergency gear only"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Fire Assembly Point'?", "options" => ["Where fire trucks meet", "A safe designated area where people gather after evacuating a building", "The center of the fire", "A fire station"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Arson'?", "options" => ["A type of hose", "The criminal act of deliberately setting fire to property", "Accidental cooking fire", "A forest fire caused by lightning"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Fire Wall' in a building?", "options" => ["A computer program", "A fire-resistant wall that prevents fire from spreading between sections", "A brick wall outside", "A decorative wall"], "ans" => 1, "xp" => 250],
+                ["q" => "Which gas is known as the 'Silent Killer' in house fires?", "options" => ["Oxygen", "Carbon Monoxide (CO)", "Nitrogen", "Helium"], "ans" => 1, "xp" => 250],
+                ["q" => "What is the purpose of 'Fire Safety Education' for the public?", "options" => ["To scare people", "To teach prevention and survival skills to reduce injury and loss", "To sell extinguishers", "To recruit firefighters"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Fire Loading'?", "options" => ["The weight of a fire truck", "The amount of combustible material in a given space", "The pressure in a hose", "The number of firefighters on a scene"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Structural Integrity'?", "options" => ["Being honest", "The ability of a building to remain standing during a fire", "The height of a building", "The type of paint used"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Pre-Incident Planning'?", "options" => ["Taking photos after a fire", "Firefighters visiting a building before a fire to learn its layout and hazards", "A daily workout", "Writing a report"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Manual Call Point'?", "options" => ["A phone in the office", "A wall-mounted box that anyone can press to trigger a fire alarm", "A doorbell", "A firefighter's radio"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Hydrant' inspection?", "options" => ["Washing the truck", "Checking that water sources are working and provide enough pressure", "Cleaning the station", "Hiring new staff"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Defensible Space' in wildfire prevention?", "options" => ["A brick wall", "Clearing vegetation around a home to prevent fire from reaching it", "A large fence", "A swimming pool"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the 'Fire Code'?", "options" => ["A secret password", "A set of laws that buildings must follow for fire safety", "A training manual", "A type of computer code"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the role of a 'Fire Marshal'?", "options" => ["Starting fires", "Leading fire prevention efforts and investigating fire causes", "Driving the truck", "Fixing the gear"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+
+    // CATEGORY 2: OPERATIONS & SUPPRESSION (Maps 101-104)
+    [
+        "id" => ++$highest_id, "course_id" => $fire_course_id, "category_id" => 2,
+        "title" => "Map 101: Hoses, Nozzles & Streams", "desc" => "Master water delivery. Flow rates, pressure, and hose management.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the standard diameter for a 'Small' attack line?", "options" => ["5 inches", "1.5 to 1.75 inches", "0.5 inches", "10 inches"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Supply Line'?", "options" => ["A line for air", "A large hose used to bring water from a hydrant to the truck", "A line for food", "A radio frequency"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the 'Nozzle'?", "options" => ["The pump", "The device at the end of a hose used to control and shape the water stream", "The water tank", "The hose connector"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'GPM' in fire fighting?", "options" => ["Gases Per Minute", "Gallons Per Minute", "Gear Pressure Mode", "Ground Point Marker"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Solid Stream'?", "options" => ["A spray of mist", "A compact stream of water with high reach and penetration", "A block of ice", "A steam leak"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Fog Stream'?", "options" => ["A compact line", "A stream of fine water droplets used for cooling and protecting firefighters", "Real fog outside", "A broken hose"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Friction Loss'?", "options" => ["Losing your gloves", "Loss of water pressure caused by water rubbing against the inside of the hose", "A slippery floor", "A broken pump"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Water Hammer'?", "options" => ["A tool for breaking walls", "A dangerous surge of pressure caused by closing a nozzle or valve too quickly", "A very large hose", "The sound of a pump"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Coupling'?", "options" => ["A type of truck", "The metal fitting used to connect hoses together", "A firefighting team", "A type of ladder"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Lugan' or 'Pin' on a coupling?", "options" => ["A decoration", "A grip point used to tighten or loosen couplings with a wrench", "A type of light", "A GPS tracker"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Siamese' connection?", "options" => ["A twin firefighter", "A fitting that combines two hoses into one", "A type of cat", "A water hydrant"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Wye' connection?", "options" => ["A question", "A fitting that splits one hose into two", "A way to say yes", "A station sign"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Soft Suction' hose used for?", "options" => ["Drinking water", "Connecting a pumper to a pressurized hydrant", "Vacuuming smoke", "Cleaning the truck"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Hard Suction' hose used for?", "options" => ["A heavy attack line", "Drafting water from a static source like a pond or pool", "A supply line from a hydrant", "A type of ladder"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Head Pressure'?", "options" => ["Headaches", "Pressure created by the weight of water due to height or elevation", "The pressure in a helmet", "The speed of a truck"], "ans" => 1, "xp" => 250],
+                ["q" => "Which stream type is best for cooling a hot gas layer at the ceiling?", "options" => ["Solid Stream", "Fog Stream", "Straight Stream", "No stream"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Master Stream'?", "options" => ["A stream from the captain", "A large-volume water stream (usually over 350 GPM) used for big fires", "A stream of air", "A small garden hose"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Deck Gun'?", "options" => ["A firefighter's pistol", "A large master stream nozzle mounted on a fire truck", "A tool for cleaning the truck", "A type of radio"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Ground Monitor'?", "options" => ["A person who watches the ground", "A portable master stream device that sits on the ground", "A type of camera", "A station computer"], "ans" => 1, "xp" => 300],
+                ["q" => "How should you carry a hose up a ladder?", "options" => ["Hold it with both hands", "Draped over the shoulder with the nozzle uncharged", "Drag it behind you", "You should never do this"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Hose Roll'?", "options" => ["A type of bread", "A method of folding a hose for storage (e.g., donut roll, straight roll)", "A hose that is leaking", "A team exercise"], "ans" => 1, "xp" => 400],
+                ["q" => "What is a 'Spanner Wrench'?", "options" => ["A tool for tightening bolts", "A tool specifically for tightening or loosening hose couplings", "A tool for breaking windows", "A type of screwdriver"], "ans" => 1, "xp" => 400],
+                ["q" => "What is a 'Forward Lay'?", "options" => ["Running forward", "Laying hose from the water source to the fire", "A type of jump", "A firefighting tactic"], "ans" => 1, "xp" => 400],
+                ["q" => "What is a 'Reverse Lay'?", "options" => ["Running backward", "Laying hose from the fire to the water source", "Lying down", "A type of alarm"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $fire_course_id, "category_id" => 2,
+        "title" => "Map 102: Search & Rescue Operations", "desc" => "Save lives in zero visibility. Techniques for entry, search, and victim removal.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Primary Search'?", "options" => ["A slow, thorough search", "A quick, systematic search for victims in a fire building", "Searching the station", "A search done by police"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Secondary Search'?", "options" => ["A fast search", "A thorough search conducted after the fire is under control", "A search with a dog", "A second look at a map"], "ans" => 1, "xp" => 150],
+                ["q" => "How should you move in a smoke-filled room?", "options" => ["Run standing up", "Stay low to the floor where visibility and air are better", "Walk backwards", "Stay in the middle of the room"], "ans" => 1, "xp" => 150],
+                ["q" => "What tool is used to help find victims through walls or thick smoke?", "options" => ["A flashlight", "Thermal Imaging Camera (TIC)", "A radio", "A megaphone"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is the 'Right-Hand Search' method?", "options" => ["Using only your right hand", "Keeping your right hand on the wall to navigate and avoid getting lost", "A type of handshake", "A search done at night"], "ans" => 1, "xp" => 180],
+                ["q" => "What should you do before entering a room to search?", "options" => ["Take off your mask", "Check the door for heat with the back of your hand", "Yell your name", "Call the station"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Victim Drag'?", "options" => ["A type of game", "A technique to move an unconscious person to safety while staying low", "Dragging gear", "A slow firefighter"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Forcible Entry'?", "options" => ["Being rude", "Using tools to gain access to a locked building or room", "Driving through a gate", "Hiring a locksmith"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the 'Irons' tool set?", "options" => ["A golf set", "A Halligan bar and a Flat-Head Axe", "Two heavy hoses", "A metal ladder"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'V.E.I.S.'?", "options" => ["Very Easy Internal Search", "Vent-Enter-Isolate-Search", "Video Entry Internal System", "Verify Every Important Signal"], "ans" => 1, "xp" => 210],
+                ["q" => "Why should you close the door after entering a room to search it?", "options" => ["To have privacy", "To isolate the room and slow the spread of fire/smoke into the room", "To keep it warm", "To hide from victims"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Triage'?", "options" => ["A type of tree", "The process of prioritizing victims based on the severity of their injuries", "A team of three", "A firefighting tool"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "Where are victims often found in a house fire?", "options" => ["In the kitchen only", "Near exits, windows, and in bathrooms or closets", "Under the bed only", "On the roof"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'RIT' or 'RIC' team?", "options" => ["A team that cleans", "Rapid Intervention Team (designated to rescue trapped firefighters)", "Radio Information Team", "Regional Inspection Crew"], "ans" => 1, "xp" => 250],
+                ["q" => "What is the 'Mayday' call used for?", "options" => ["Celebrating May 1st", "An emergency signal for a firefighter in immediate life-threatening danger", "A call for water", "A radio check"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Self-Rescue'?", "options" => ["Saving yourself", "Techniques a firefighter uses to escape a life-threatening situation alone", "A medical kit", "Quitting the job"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Sizing Up' the scene?", "options" => ["Measuring the building", "Ongoing evaluation of the situation to determine tactics and safety", "Weighing the gear", "Counting the staff"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Litter' in rescue?", "options" => ["Trash on the floor", "A stretcher used for carrying victims", "A group of animals", "A type of small fire"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Extrication'?", "options" => ["Extinguishing a fire", "Freeing a person trapped in a vehicle or machinery", "Exiting a building", "Finding a fire hydrant"], "ans" => 1, "xp" => 300],
+                ["q" => "What are 'Cribbing' blocks used for?", "options" => ["Building a house", "Stabilizing a vehicle or heavy object during a rescue", "Keeping a door open", "Storing tools"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'High-Angle' rescue?", "options" => ["Working on a hill", "Rescue operations involving ropes and harnesses on steep terrain or high buildings", "Using a tall ladder only", "A type of water rescue"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Confined Space' rescue?", "options" => ["Rescuing in a park", "Rescue in small, tight areas like tanks, tunnels, or silos", "A rescue outside", "A rescue on a truck"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the 'O-A-T-H' rope signal?", "options" => ["A promise", "A method of communication using tugs on a rope", "A firefighting oath", "A type of knot"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Victim Removal'?", "options" => ["Firing a person", "The physical act of moving a rescued person to a safe zone", "Deleting a record", "Taking a photo of a victim"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $fire_course_id, "category_id" => 2,
+        "title" => "Map 103: Ventilation & Salvage", "desc" => "Control the path of fire and protect property from smoke and water damage.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Ventilation' in fire fighting?", "options" => ["Putting on a fan", "The systematic removal of hot gases and smoke from a building", "Blowing air onto a fire", "Opening all the doors"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Natural Ventilation'?", "options" => ["Using a fan", "Using wind and existing openings (doors/windows) to clear smoke", "The fire going out on its own", "Rain"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Mechanical Ventilation'?", "options" => ["Opening a window", "Using fans or blowers (PPV/NPV) to move air", "Hand-fanning a room", "Waiting for the wind"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Vertical Ventilation'?", "options" => ["Opening a door", "Creating an opening in the roof to let heat and smoke rise out", "Opening two windows", "Using a horizontal fan"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'PPV'?", "options" => ["Positive Pressure Ventilation", "Professional Power Vault", "Private Property Value", "Pressure Pump Valve"], "ans" => 0, "xp" => 180],
+                ["q" => "What is 'NPV'?", "options" => ["New Power Valve", "Negative Pressure Ventilation (sucking smoke out)", "Normal Pressure Value", "National Protection Vault"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Hydraulic Ventilation'?", "options" => ["Using a mechanical fan", "Using a fog stream from a hose to pull smoke out of a window", "Opening a fire hydrant", "Using a truck's engine"], "ans" => 1, "xp" => 180],
+                ["q" => "What is the primary danger of improper ventilation?", "options" => ["It's too loud", "It can pull the fire toward firefighters or spread it to new areas", "It costs money", "It breaks the glass"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Salvage' in fire fighting?", "options" => ["Starting a fire", "Protecting property from smoke and water damage during or after a fire", "Selling old gear", "Finding lost items"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Salvage Cover'?", "options" => ["A blanket for sleeping", "A large waterproof tarp used to cover furniture and electronics", "A firefighter's jacket", "A truck cover"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Overhaul'?", "options" => ["Repairing the truck", "Searching for hidden fire or embers after the main fire is out", "Buying new gear", "Cleaning the station"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Water Chute'?", "options" => ["A water slide", "A device made from tarps to channel water out of a building", "A broken hose", "A type of pump"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Scupper'?", "options" => ["A type of boat", "An opening in a wall to allow water to drain off a floor", "A firefighting tool", "A station alarm"], "ans" => 1, "xp" => 250],
+                ["q" => "Why is it important to check walls and ceilings during Overhaul?", "options" => ["To see the paint", "To find fire that may be burning inside hidden spaces", "To measure the room", "To look for spiders"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Floor Runner'?", "options" => ["A person who runs", "A long tarp used to protect carpets and floors from dirty boots", "A type of ladder", "A station rug"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Mop-up'?", "options" => ["Cleaning the floor", "The final stage of extinguishing a fire, ensuring no hot spots remain", "Getting a refund", "Washing the hose"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Horizontal Ventilation'?", "options" => ["Opening a roof", "Using windows and doors on the same level to clear smoke", "Using a vertical fan", "Opening one floor"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Cross Ventilation'?", "options" => ["Using the roof", "Opening windows on opposite sides of a building to let the wind through", "Blowing air in circles", "A type of drill"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Kerf Cut'?", "options" => ["A deep hole", "A small inspection cut in a roof to see if fire is below", "A type of bandage", "A way to cut wood"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Louver Cut'?", "options" => ["A small hole", "A rectangular roof opening where the decking is pivoted on the rafters", "A round hole", "A decorative cut"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Loss Control'?", "options" => ["Losing your keys", "The combination of Salvage and Overhaul to minimize overall fire damage", "Finding a lost truck", "A type of insurance"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Water Vacuuming'?", "options" => ["Drinking water", "Using specialized machines to suck up water from floors after a fire", "Cleaning a pool", "Using a hose"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Debris Removal'?", "options" => ["Throwing away trash", "Removing burnt and water-soaked items from a building", "Selling gear", "Fixing a wall"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the goal of 'Property Conservation'?", "options" => ["Selling the building", "Returning the property to a safe and usable state as much as possible", "Buying new property", "Moving to a new station"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $fire_course_id, "category_id" => 2,
+        "title" => "Map 104: Wildland Fire Fighting", "desc" => "Battling the elements. Topography, weather, and defensive lines.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Wildland Fire'?", "options" => ["A house fire", "An unplanned fire burning in natural vegetation (forest, grass, brush)", "A fire in a bin", "A campfire"], "ans" => 1, "xp" => 150],
+                ["q" => "What three factors most affect wildland fire behavior?", "options" => ["Water, Air, Gas", "Fuel, Weather, Topography", "Trees, Birds, Rain", "Time, Day, Year"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Fire Line' (or Firebreak)?", "options" => ["A line of firefighters", "A strip of land cleared of all fuel to stop a fire's spread", "A burning log", "A water hose"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Topography'?", "options" => ["A map of trees", "The physical features and slope of the land", "The weather forecast", "A type of fuel"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "Does fire travel faster uphill or downhill?", "options" => ["Downhill", "Uphill (due to preheating of fuel)", "Same speed", "It depends on the trees"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Crown Fire'?", "options" => ["A fire on the ground", "A fire that spreads through the tops of trees", "A fire in a cave", "A fire on a roof"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Surface Fire'?", "options" => ["A fire in the trees", "A fire that burns loose debris and grass on the ground", "A fire underground", "A fire on a lake"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Ground Fire'?", "options" => ["A fire in the grass", "A fire that burns deep in the organic matter/soil (peat/roots)", "A fire on a building", "A fire in a truck"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Fuel Moisture'?", "options" => ["Drinking water for staff", "The amount of water contained in vegetation fuel", "Rain in the forest", "The price of fuel"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Aspect' in wildland fire?", "options" => ["A type of bug", "The direction a slope faces (e.g., North, South)", "The color of a flame", "A firefighter's rank"], "ans" => 1, "xp" => 210],
+                ["q" => "Which slope aspect (in the Southern Hemisphere) typically has drier fuel?", "options" => ["South", "North (gets more sun)", "East", "West"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Spot Fire'?", "options" => ["A very small fire", "A new fire started by flying embers outside the main fire area", "A fire on a dog", "A fire in a house"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Direct Attack' in wildland fire?", "options" => ["Using a helicopter only", "Applying water or building fire lines directly at the fire's edge", "Watching from a distance", "Setting a backfire"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Indirect Attack'?", "options" => ["Not doing anything", "Building fire lines at a distance from the fire and letting it burn toward them", "Using one hose", "Quitting the job"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Pulaski'?", "options" => ["A type of truck", "A combination tool with an axe on one side and an adze (hoe) on the other", "A firefighting team", "A type of radio"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'McLeod'?", "options" => ["A Scottish firefighter", "A tool with a large hoe on one side and a heavy rake on the other", "A type of hose", "A GPS device"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Backfire'?", "options" => ["An accident", "A fire set deliberately in the path of a wildfire to consume fuel", "A truck engine problem", "A small spark"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Fire Shelter'?", "options" => ["A safe house", "A portable, tent-like foil device used as a last resort for survival", "A fire station", "A metal box"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Relative Humidity' importance?", "options" => ["The weight of air", "Low humidity makes fuels drier and easier to ignite", "High humidity causes rain", "It doesn't affect fire"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Slash' in wildland fuel?", "options" => ["A cut on a tree", "Debris left over from logging or thinning forests", "A type of water spray", "A fast runner"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Incident Command System' (ICS) in wildland?", "options" => ["A type of radio", "A standardized management system for organizing fire response", "A secret code", "A computer game"], "ans" => 1, "xp" => 400],
+                ["q" => "What is a 'Heli-tack' crew?", "options" => ["A team of mechanics", "Firefighters who are transported to remote fires by helicopter", "A team that uses ladders", "Staff at the station"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Containment' percentage?", "options" => ["Total profit", "How much of the fire perimeter is surrounded by a fire line", "The number of trees saved", "The amount of water used"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Black' area in wildland fire?", "options" => ["A safe zone", "An area that has already been burned and is relatively safe", "A dangerous zone", "A new forest"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+
+    // CATEGORY 3: SPECIALIZED HAZARDS & COMMAND (Maps 105-108)
+    [
+        "id" => ++$highest_id, "course_id" => $fire_course_id, "category_id" => 3,
+        "title" => "Map 105: HazMat & Chemical Safety", "desc" => "Detect and contain dangerous materials. Identification and mitigation.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What does 'HazMat' stand for?", "options" => ["Hazardous Materials", "High Area Zone Match", "Heating and Zero Management", "Heavy Air Zone Marker"], "ans" => 0, "xp" => 200],
+                ["q" => "Which document contains safety info about a specific chemical?", "options" => ["A map", "SDS (Safety Data Sheet)", "A bank statement", "A payroll log"], "ans" => 1, "xp" => 200],
+                ["q" => "What is the 'Hot Zone'?", "options" => ["The kitchen", "The area immediately surrounding a hazardous material release", "A safe place for staff", "A fire station"], "ans" => 1, "xp" => 200],
+                ["q" => "What is 'Decontamination' (Decon)?", "options" => ["Washing a truck", "The process of removing hazardous materials from people and equipment", "Cleaning the station", "Hiring new staff"], "ans" => 1, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What color in the NFPA 704 diamond represents Health hazards?", "options" => ["Red", "Blue", "Yellow", "White"], "ans" => 1, "xp" => 240],
+                ["q" => "What color represents Flammability in the NFPA diamond?", "options" => ["Blue", "Red", "Yellow", "White"], "ans" => 1, "xp" => 240],
+                ["q" => "What color represents Instability/Reactivity?", "options" => ["Blue", "Yellow", "Red", "White"], "ans" => 1, "xp" => 240],
+                ["q" => "What is a 'UN Number'?", "options" => ["A phone number", "A 4-digit code that identifies specific dangerous chemicals", "A secret password", "A type of tax"], "ans" => 1, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Vapor Pressure'?", "options" => ["The weight of air", "The pressure a liquid exerts as it turns into a gas", "The speed of a fan", "The force of a hose"], "ans" => 1, "xp" => 280],
+                ["q" => "What is a 'Cryogenic' liquid?", "options" => ["Hot liquid", "A liquid that is extremely cold (e.g., Liquid Nitrogen)", "A type of fuel", "A cleaning agent"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'BLEVE'?", "options" => ["Boiling Liquid Expanding Vapor Explosion", "Big Loud Every Vertical Exit", "Base Level Early Value Entry", "Blue Liquid Extra Vault Exit"], "ans" => 0, "xp" => 280],
+                ["q" => "What is 'Containment' in HazMat?", "options" => ["Deleting a file", "Keeping a material in its original container or a designated area", "Throwing it away", "Letting it run into a drain"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is the 'Cold Zone'?", "options" => ["The fridge", "A safe area where no contamination is present, used for command/medical", "The fire area", "The decontamination area"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Absorption' in spill control?", "options" => ["Drinking water", "Using materials (like sand or socks) to soak up a liquid", "Evaporating the spill", "Hiring a maid"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Adsorption'?", "options" => ["Soaking up", "When a liquid sticks to the surface of a solid material", "A type of math", "A firefighting team"], "ans" => 1, "xp" => 350],
+                ["q" => "What is a 'Placard' on a truck?", "options" => ["A driver's license", "A diamond-shaped sign identifying the hazardous cargo", "A company logo", "A marketing flyer"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Toxicology'?", "options" => ["The study of fire", "The study of the adverse effects of chemicals on living organisms", "Learning to read", "A type of engineering"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Acute' exposure?", "options" => ["A long exposure", "A short-term, high-concentration exposure to a chemical", "A small cut", "A type of radio call"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Chronic' exposure?", "options" => ["A fast exposure", "Long-term, low-concentration exposure to a chemical", "A big fire", "A type of hose"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Shelter-in-Place'?", "options" => ["Running outside", "Staying inside a building and sealing it to avoid outdoor contamination", "Closing a bank account", "Going to the fire station"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Diking' a spill?", "options" => ["Cleaning it", "Building a barrier to prevent a liquid from flowing further", "Drying it with heat", "Sucking it up with a vacuum"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'ERG'?", "options" => ["Early Record Guide", "Emergency Response Guidebook (used to identify HazMat)", "Extra Radio Group", "Electronic Response Gate"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Vapor Suppression'?", "options" => ["Turning off a fan", "Using foam or water spray to lower the release of flammable gases", "Ignoring the gas", "Setting a fire"], "ans" => 1, "xp" => 500],
+                ["q" => "What is the primary role of an 'Incident Commander' in HazMat?", "options" => ["To clean the spill", "To manage the scene and ensure safety and containment strategy", "To drive the truck", "To talk to the media only"], "ans" => 1, "xp" => 500]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $fire_course_id, "category_id" => 3,
+        "title" => "Map 106: Vehicle & Machinery Rescue", "desc" => "Advanced extrication. Stabilization, cutting, and patient care.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the first priority at a vehicle accident scene?", "options" => ["Cutting the car", "Scene safety and traffic control", "Taking photos", "Calling the news"], "ans" => 1, "xp" => 200],
+                ["q" => "What are 'Wheel Chocks' used for?", "options" => ["To clean the tires", "To prevent a vehicle from rolling during a rescue", "To lock the doors", "To support the roof"], "ans" => 1, "xp" => 200],
+                ["q" => "What is 'Stabilization' of a vehicle?", "options" => ["Fixing the engine", "Using blocks and struts to stop a vehicle from moving or shaking", "Painting the car", "Hiring a driver"], "ans" => 1, "xp" => 200],
+                ["q" => "What is 'Glass Management'?", "options" => ["Washing windows", "Controlled breaking or removal of windows to prevent injury from shards", "Buying new glass", "A type of mirror"], "ans" => 1, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What are the 'Jaws of Life'?", "options" => ["A medical kit", "Hydraulic spreaders and cutters used for extrication", "A type of ladder", "A firefighter's rank"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'Cribbing'?", "options" => ["Building a crib", "Stacks of wood or plastic used to support a stabilized load", "A type of hose", "A station alarm"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'Dash Displacement'?", "options" => ["Cleaning the dash", "Lifting or pushing a crushed dashboard off a trapped victim", "Painting the car", "A radio call"], "ans" => 1, "xp" => 240],
+                ["q" => "What is a 'Roof Peel'?", "options" => ["Opening a sunroof", "Cutting and removing the entire roof of a car to access victims", "A type of fruit", "Cleaning the roof"], "ans" => 1, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'LOTO'?", "options" => ["Level Out Total Output", "Lock-Out / Tag-Out (disabling machinery power)", "Local Office Time Order", "Low Oxygen Total Oven"], "ans" => 1, "xp" => 280],
+                ["q" => "Why should you disconnect the battery in a crashed car?", "options" => ["To save power", "To prevent airbag deployment and fire from electrical shorts", "To listen to the radio", "To clean the battery"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'Patient Packaging'?", "options" => ["Putting someone in a box", "Preparing a victim for safe transport on a backboard or litter", "A type of mail", "Buying a hospital"], "ans" => 1, "xp" => 280],
+                ["q" => "What is the 'Golden Hour' in trauma?", "options" => ["A sunset", "The critical first hour after injury where survival chances are highest if treated", "A payday", "An office party"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Reciprocating Saw' used for?", "options" => ["Cutting food", "Cutting through metal and vehicle pillars", "A tool for cleaning", "A type of fan"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Hard Protection' for a victim?", "options" => ["A helmet", "Using a heavy shield or board to protect a victim while tools are cutting", "A brick wall", "A firefighter's jacket"], "ans" => 1, "xp" => 350],
+                ["q" => "What is a 'High-Pressure Bag'?", "options" => ["A grocery bag", "An inflatable air bag used to lift heavy vehicles or machinery", "A type of scuba tank", "A fire hose"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Shoring'?", "options" => ["Working on a beach", "Using struts to support a collapsing structure or trench", "Cleaning the truck", "Closing a door"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Trench Rescue'?", "options" => ["Rescue in a park", "Rescuing someone from a collapsed excavation or deep ditch", "A rescue in a building", "A water rescue"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Cave-in'?", "options" => ["A secret hiding place", "The collapse of the walls of an excavation", "A type of firefighting gear", "A small fire"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Hydraulic Fluid' safety?", "options" => ["Drinking fluid", "Fluid in tools is under high pressure and can be dangerous if leaking", "Using fluid for a fire", "A cleaning liquid"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the 'Command' role at an accident?", "options" => ["Managing one tool", "Directing the overall rescue strategy and prioritizing safety", "Driving the truck", "Taking notes"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Industrial Extrication'?", "options" => ["Fixing a machine", "Rescue involving complex factory or construction equipment", "Rescuing a car", "A forest fire"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Patient Assessment'?", "options" => ["Evaluating a person's injuries and level of consciousness", "Hiring a new staff", "Selling products", "Cleaning a station"], "ans" => 0, "xp" => 500],
+                ["q" => "What is 'Spinal Immobilization'?", "options" => ["Moving someone fast", "Using boards and collars to keep the spine still during rescue", "A type of medicine", "A firefighting oath"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Scene Restoration'?", "options" => ["Starting a fire", "Cleaning up debris and ensuring the scene is safe after a rescue", "Painting the truck", "Hiring a manager"], "ans" => 1, "xp" => 500]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $fire_course_id, "category_id" => 3,
+        "title" => "Map 107: Incident Command & Strategy", "desc" => "Manage the chaos. Strategic planning and resource organization.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Incident Command' (IC)?", "options" => ["Managing a radio", "The person responsible for all incident activities and management", "A type of truck", "A fire station"], "ans" => 1, "xp" => 200],
+                ["q" => "What is 'ICS'?", "options" => ["Incident Command System", "International Cold System", "Internal Code Standard", "Instant Communication Service"], "ans" => 0, "xp" => 200],
+                ["q" => "What is a 'Unified Command'?", "options" => ["A secret team", "When multiple agencies share command responsibility", "One person in charge of everything", "A type of radio"], "ans" => 1, "xp" => 200],
+                ["q" => "What is 'Size-up'?", "options" => ["Measuring gear", "The rapid mental process of evaluating a situation", "Counting money", "A daily workout"], "ans" => 1, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Strategic' planning?", "options" => ["Handling one hose", "The high-level overall plan for the entire incident", "Daily chores", "A payroll report"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'Tactical' implementation?", "options" => ["Hiring staff", "Specific actions taken to achieve strategic goals", "Marketing", "Buying a new PC"], "ans" => 1, "xp" => 240],
+                ["q" => "What is a 'Division' in ICS?", "options" => ["Math", "An organization level responsible for operations within a specific geographic area", "A type of hose", "A firefighting team"], "ans" => 1, "xp" => 240],
+                ["q" => "What is a 'Group' in ICS?", "options" => ["A team of friends", "An organization level responsible for a specific functional task (e.g., Search)", "A geographic area", "A radio frequency"], "ans" => 1, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Span of Control'?", "options" => ["Having a fast pulse", "The number of subordinates one supervisor can manage effectively (usually 3 to 7)", "The size of a truck", "The duration of a fire"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'Accountability' in ICS?", "options" => ["Doing math", "Knowing where every person is and what they are doing at all times", "Blaming others", "Working alone"], "ans" => 1, "xp" => 280],
+                ["q" => "What is an 'IAP'?", "options" => ["Incident Action Plan", "Internal Air Pressure", "Independent Account Process", "Instant Area Protection"], "ans" => 0, "xp" => 280],
+                ["q" => "What is 'Staging' area?", "options" => ["A theater stage", "A location where resources wait for tactical assignment", "A safe place for victims", "The fire station"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Logistics' Section?", "options" => ["Logic puzzles", "The part of ICS responsible for providing facilities, services, and materials", "Managing a team", "Fighting the fire"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Operations' Section?", "options" => ["Fixing the truck", "The part of ICS responsible for all tactical activities", "Writing reports", "Paying the bills"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Planning' Section?", "options" => ["Thinking about tomorrow", "The part of ICS responsible for collecting and evaluating info and maintaining status", "Managing a team", "Buying new gear"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Finance' Section?", "options" => ["Counting money", "The part of ICS responsible for tracking costs and administrative records", "Selling products", "Hiring staff"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Mutual Aid'?", "options" => ["Being friends", "An agreement to help other fire departments when they are overwhelmed", "A government grant", "A type of insurance"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Demobilization'?", "options" => ["Moving to a new station", "The orderly return of resources to their original locations", "Hiring new staff", "Cleaning the truck"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Post-Incident Analysis'?", "options" => ["Taking photos after", "A meeting to review what happened and how to improve", "Buying new gear", "A payroll log"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Chain of Command'?", "options" => ["A heavy chain", "The orderly line of authority within an organization", "A type of radio", "A station alarm"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Common Terminology' in ICS?", "options" => ["Using slang", "Using standard words that everyone understands to avoid confusion", "Using secret codes", "Talking fast"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Safety Officer' role?", "options" => ["Starting fires", "Monitoring the incident for hazards and ensuring firefighter safety", "Driving the truck", "Fixing the gear"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Liaison Officer' role?", "options" => ["Talking to media", "Acting as the contact point for assisting and cooperating agencies", "Managing one tool", "Cleaning the station"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Public Information Officer' (PIO)?", "options" => ["A news reporter", "The person who provides information to the media and the public", "Hiring staff", "Driving the truck"], "ans" => 1, "xp" => 500]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $fire_course_id, "category_id" => 3,
+        "title" => "Map 108: Final Fire Capstone", "desc" => "The ultimate test. Combine all your skills to save lives and property.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "SCENARIO: You arrive at a house fire and see grey smoke puffing in and out of windows. What is this a sign of?", "options" => ["The fire is out", "Potential Backdraft", "Rain", "A small fire"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: A victim is found unconscious in a hallway. What is the priority?", "options" => ["Checking their ID", "Immediate removal to a safe environment (Stay Low)", "Calling their family", "Wait for the fire to go out"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: You are fighting an electrical fire. Which extinguisher do you grab?", "options" => ["Water", "CO2 or DCP", "Foam", "Wet Chemical"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: Your SCBA low-air alarm sounds. What must you do?", "options" => ["Ignore it", "Notify your partner and exit the IDLH environment immediately", "Take off your mask", "Scream for help"], "ans" => 1, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "SCENARIO: A truck with a 'Yellow' placard is leaking liquid. What is the first step?", "options" => ["Cleaning it with water", "Identifying the material using the ERG and staying upwind", "Driving the truck away", "Drinking the liquid"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: You need to break a car window for extrication. Where do you hit it?", "options" => ["The center", "A bottom corner", "The top only", "Use your head"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: The Incident Commander tells you to 'Vent the roof'. What are you doing?", "options" => ["Painting it", "Vertical Ventilation", "Cleaning it", "Horizontal Ventilation"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: You find hot spots in a wall after a fire. What process is this?", "options" => ["Starting a fire", "Overhaul", "Salvage", "Triage"], "ans" => 1, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "SCENARIO: A wildland fire is traveling toward a town. You are told to build a 'Fire Line'. What are you doing?", "options" => ["Hiring staff", "Clearing vegetation to bare mineral soil to stop fire spread", "Using a large hose", "Waiting for rain"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: You are in a zero-visibility room and lose your partner. What do you call on the radio?", "options" => ["Hello", "Mayday", "SOS", "Over and out"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: You need to move a 100kg victim from a 2nd floor window. What tool is best?", "options" => ["A small rope", "An aerial ladder or specialized lowering system", "A trampoline", "Carry them on your back"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: You notice your hose has a 'Water Hammer' sound. What should you tell the nozzle operator?", "options" => ["Close it faster", "Close and open the nozzle slowly", "Run away", "Unplug the pump"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "SCENARIO: You see a coworker not wearing their Nomex hood. What do you do?", "options" => ["Ignore it", "Remind them of the safety hazard and insist they wear all PPE", "Laugh", "Tell the media"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: A car is on its side with a victim inside. What is the first priority?", "options" => ["Cutting the door", "Stabilizing the vehicle using struts and cribbing", "Calling a lawyer", "Taking a photo"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: You are assigned to 'Staging'. What are you doing?", "options" => ["Acting", "Waiting with your crew in a designated area for orders", "Fighting the fire", "Cleaning gear"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: A fire is involving a large Magnesium pile. What do you do?", "options" => ["Spray water", "Use a specialized Class D agent or let it burn out under control", "Use a foam extinguisher", "Blow air on it"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "MASTER FINAL: What is the most critical factor for success in fire fighting operations?", "options" => ["The size of the truck", "Teamwork, training, and effective communication", "Having the newest gear", "Being the strongest"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: In any fire incident, what is the highest priority?", "options" => ["Protecting property", "Life Safety (Public and Personnel)", "Incident Stabilization", "Cleaning the station"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: Why is the 'Incident Command System' (ICS) used worldwide?", "options" => ["It's a secret", "It provides a clear, scalable management structure for any emergency", "It's a game", "It's for big cities only"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: What is the true goal of fire fighting?", "options" => ["To look like a hero", "To protect life, property, and the environment through prevention and suppression", "To get a high salary", "To drive fast trucks"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "EXAM: How do Heat, Fuel, and Oxygen interact to create fire?", "options" => ["They are separate", "They combine in a chemical chain reaction to sustain combustion", "They only interact in a lab", "They don't interact"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: Why is 'Situational Awareness' vital for every firefighter?", "options" => ["To see the time", "To recognize changing hazards and ensure the safety of the crew", "To look for food", "To win a prize"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: What is the hallmark of a world-class fire department?", "options" => ["Being aggressive", "Professionalism, discipline, and a commitment to continuous learning", "Having the most money", "Using the newest station"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: What is the core responsibility of a firefighter to their community?", "options" => ["To drive a truck", "To provide a reliable and expert safety net in times of crisis", "To write reports", "To hire staff"], "ans" => 1, "xp" => 600]
+            ]]
+        ]
+    ]
+];
+
+// ==========================================================
+// GENERIC MANAGEMENT CURRICULUM (Maps 109-120)
+// ==========================================================
+$gm_maps = [
+    // CATEGORY 1: MANAGEMENT FOUNDATIONS (Maps 109-112)
+    [
+        "id" => ++$highest_id, "course_id" => $gm_course_id, "category_id" => 1,
+        "title" => "Map 109: Roles & Responsibilities", "desc" => "Understand the fundamental functions of a manager and the skills required for success.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What are the four primary functions of management?", "options" => ["Planning, Organizing, Leading, Controlling", "Hiring, Firing, Selling, Buying", "Typing, Printing, Filing, Calling", "Meetings, Emails, Lunches, Travel"], "ans" => 0, "xp" => 150],
+                ["q" => "A manager who focuses on day-to-day operations is typically at which level?", "options" => ["Top Level", "Middle Level", "Lower/First-line Level", "Board Level"], "ans" => 2, "xp" => 150],
+                ["q" => "What is 'Efficiency' in management?", "options" => ["Doing the right things", "Doing things right (minimizing resource waste)", "Working 24 hours a day", "Having the most employees"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Effectiveness'?", "options" => ["Doing things right", "Doing the right things (achieving goals)", "Being very fast", "Saving money"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "Which skill involves the ability to work well with other people?", "options" => ["Technical Skills", "Conceptual Skills", "Interpersonal/Human Skills", "Mechanical Skills"], "ans" => 2, "xp" => 180],
+                ["q" => "Conceptual skills are most important for which level of management?", "options" => ["First-line managers", "Top-level managers", "Junior supervisors", "Interns"], "ans" => 1, "xp" => 180],
+                ["q" => "What is the 'Managerial Role' of a Liaison?", "options" => ["Distributing mail", "Maintaining a network of outside contacts who provide favors", "Fixing computers", "Disciplining staff"], "ans" => 1, "xp" => 180],
+                ["q" => "Which role involves searching for opportunities and initiating projects to bring about change?", "options" => ["Disturbance Handler", "Entrepreneur", "Resource Allocator", "Negotiator"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Stakeholder Theory'?", "options" => ["Managers only care about owners", "Managers should consider the interests of anyone affected by the business", "The company belongs to the bank", "The office building is most important"], "ans" => 1, "xp" => 210],
+                ["q" => "What is an 'Organizational Chart'?", "options" => ["A map of the city", "A visual representation of a company's structure and hierarchy", "A list of customer names", "A profit report"], "ans" => 1, "xp" => 210],
+                ["q" => "What does 'Authority' refer to in management?", "options" => ["Being mean", "The right to give orders and expect them to be obeyed", "Having the most money", "Knowing everything"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Delegation'?", "options" => ["Doing all the work yourself", "Assigning responsibility and authority to others", "Firing people", "Hiring a new boss"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Span of Control'?", "options" => ["The size of a desk", "The number of subordinates a manager can effectively supervise", "The duration of a meeting", "The length of the work day"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Unity of Command'?", "options" => ["Having 10 bosses", "The principle that an employee should report to only one supervisor", "Working as a single team", "A military exercise"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Centralization'?", "options" => ["Decision-making authority is kept at the top levels", "Everyone makes their own rules", "The office is in the center of town", "Using one computer system"], "ans" => 0, "xp" => 250],
+                ["q" => "What is 'Decentralization'?", "options" => ["Losing control", "Authority is distributed throughout the organization", "Closing the main office", "Moving to the cloud"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Corporate Social Responsibility' (CSR)?", "options" => ["Making the most profit", "A business's concern for the welfare of society", "The CEO's hobby", "Paying taxes"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Flat' structure?", "options" => ["A building with one floor", "An organization with few or no levels of middle management", "A boring company", "A business with no profit"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Accountability'?", "options" => ["Doing math", "The requirement to justify results to those above you in the chain", "Blaming others", "Working alone"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Technical Skill' for a manager?", "options" => ["Fixing a car", "Specialized knowledge or expertise needed to perform specific tasks", "Turning on a computer only", "Knowing how to type fast"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is the primary purpose of 'Controlling'?", "options" => ["To punish people", "To monitor performance and make sure goals are being met", "To stop all spending", "To watch employees on camera"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Ethics' in management?", "options" => ["Following orders", "Principles of right and wrong that guide decision-making", "Making the most money", "Avoiding the law"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Organizational Culture'?", "options" => ["The art in the office", "The system of shared values and beliefs that govern how people behave", "The country's history", "The dress code only"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the 'Scientific Management' approach associated with?", "options" => ["Art", "Analyzing workflows to improve economic efficiency (Frederick Taylor)", "Psychology", "Religion"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $gm_course_id, "category_id" => 1,
+        "title" => "Map 110: Planning & Goal Setting", "desc" => "Master the art of setting objectives and designing the roadmap to achievement.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Strategic Planning'?", "options" => ["Daily task lists", "Long-term planning (3-5 years) done by top management", "Buying office supplies", "Hiring an intern"], "ans" => 1, "xp" => 150],
+                ["q" => "What does the 'S' in SMART goals stand for?", "options" => ["Smart", "Specific", "Simple", "Standard"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Tactical Planning'?", "options" => ["Daily chores", "Short-term planning (1 year or less) to implement strategic goals", "Marketing a logo", "Starting a new company"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Mission Statement'?", "options" => ["A list of items to buy", "A statement of the organization's purpose", "The annual profit", "A secret password"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Operational Planning'?", "options" => ["Strategic goal setting", "Detailed planning for day-to-day activities and work groups", "Fixing a machine", "A type of insurance"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'SWOT Analysis'?", "options" => ["Accounting", "Strengths, Weaknesses, Opportunities, Threats", "Cleaning the office", "A sports drill"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Contingency Planning'?", "options" => ["Planning a party", "Developing alternative courses of action if things go wrong", "Saving money only", "Hiring a lawyer"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Vision Statement'?", "options" => ["A medical test", "A broad description of what the organization aspires to become in the future", "A list of managers", "A marketing flyer"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'MBO'?", "options" => ["Manage By Orders", "Management by Objectives", "Most Better Office", "Main Business Order"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Forecasting'?", "options" => ["Looking at the past", "Estimating future conditions based on current data", "A weather report only", "A type of tax"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Benchmark'?", "options" => ["A seat in a park", "A standard or point of reference against which things may be compared", "A type of computer", "The CEO's bonus"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Policy' vs 'Procedure'?", "options" => ["They are the same", "Policy is a general guide; Procedure is a step-by-step instruction", "Policy is for managers; Procedure is for staff", "Procedure is a law"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Environmental Scanning'?", "options" => ["Cleaning the park", "Collecting info about external forces (competitors, economy) that affect the business", "Using a printer", "Hiring an expert"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'PESTEL' analysis used for?", "options" => ["Accounting", "Analyzing the macro-environment (Political, Economic, Social, etc.)", "Killing bugs", "A math test"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Competitive Advantage'?", "options" => ["Cheating", "A condition that puts a company in a superior business position", "Having more money", "A type of law"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Business Continuity'?", "options" => ["Paying employees", "The ability to maintain essential functions during and after a disaster", "Working 24 hours", "Never changing"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Top-Down' planning?", "options" => ["Planning from the basement", "Goals are set at the top and passed down to lower levels", "Planning while standing", "A type of meeting"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Bottom-Up' planning?", "options" => ["Planning from the roof", "Lower-level employees participate in setting goals", "A type of exercise", "Buying a new office"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Strategic Alignment'?", "options" => ["A straight line", "Ensuring all departments' goals support the overall organizational strategy", "Managing a team", "Hiring more managers"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Single-use Plan'?", "options" => ["A recurring plan", "A plan developed to carry out a course of action that is not likely to be repeated", "A plan for one person", "A secret plan"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is the 'Planning Horizon'?", "options" => ["The sunset", "The length of time into the future that a plan covers", "The size of the office", "A type of marketing"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Crisis Management'?", "options" => ["Daily chores", "Preparation for and response to major, unpredictable negative events", "Hiring staff", "Selling products"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Strategic Control'?", "options" => ["Controlling a remote", "Monitoring the strategy to ensure it is achieving the desired results", "Firing a manager", "Buying new software"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the biggest benefit of planning?", "options" => ["It guarantees success", "It provides direction, reduces uncertainty, and minimizes waste", "It makes everyone happy", "It costs nothing"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $gm_course_id, "category_id" => 1,
+        "title" => "Map 111: Organizing & Structuring", "desc" => "Design efficient departments, delegate authority, and manage resources.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Organizing' in management?", "options" => ["Cleaning a desk", "Arranging resources and activities to achieve goals", "Typing a letter", "Filing papers"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Departmentalization'?", "options" => ["Closing an office", "Grouping related activities into units or departments", "Firing employees", "Writing a report"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Functional' structure?", "options" => ["A structure that works", "Grouping employees by similar skills (e.g., Marketing, Finance)", "A structure with no boss", "A type of computer"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Divisional' structure?", "options" => ["Math", "Grouping employees by product, geography, or customer", "A team of three", "A secret meeting"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Matrix' structure?", "options" => ["A movie", "Employees report to two bosses (Functional and Project)", "A structure made of glass", "A new marketing plan"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Work Specialization'?", "options" => ["Doing everything", "Dividing work activities into separate job tasks", "Being the best", "Working alone"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Chain of Command'?", "options" => ["A heavy metal chain", "The continuous line of authority that extends from the top to the bottom", "A type of radio", "A station alarm"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Authority'?", "options" => ["Being mean", "The right inherent in a managerial position to tell people what to do", "Knowing everything", "Having a high salary"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Responsibility'?", "options" => ["The obligation to perform any assigned duties", "Doing math", "Blaming others", "Working long hours"], "ans" => 0, "xp" => 210],
+                ["q" => "What is 'Accountability'?", "options" => ["Doing math", "Being answerable for the outcome of an assigned task", "Working alone", "Knowing the rules"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Delegation'?", "options" => ["Doing all work", "The assignment of authority to another person to carry out activities", "Firing people", "Hiring staff"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Cross-Functional Team'?", "options" => ["An angry team", "A work team composed of individuals from various functional specialties", "A sports team", "A group of managers only"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Virtual' organization?", "options" => ["A video game", "A small core organization that outsources major business functions", "An office on the moon", "A type of database"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Mechanistic' organization?", "options" => ["A robot company", "A rigid and tightly controlled structure", "A factory only", "A new computer brand"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Organic' organization?", "options" => ["A farm", "A highly adaptive and flexible structure", "A type of food", "A secret organization"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Unity of Direction'?", "options" => ["Walking one way", "The whole organization should move toward the same objective", "A type of compass", "A manager's order"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Line' authority?", "options" => ["Drawing a line", "Authority that entitles a manager to direct the work of an employee", "A type of computer cable", "Working in a line"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Staff' authority?", "options" => ["Authority over a stick", "Positions created to support, assist, and advise line authority holders", "Firing the staff", "Hiring new managers"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Formalization'?", "options" => ["Wearing a suit", "The degree to which jobs within an organization are standardized", "Naming a company", "Buying new furniture"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Organizational Design'?", "options" => ["Drawing a logo", "Creating or changing an organization's structure", "Decorating an office", "Building a website"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Downsizing'?", "options" => ["Buying a small desk", "A planned reduction in the number of employees", "Moving to a new building", "Reducing the price of products"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Outsourcing'?", "options" => ["Working outside", "Hiring external providers to handle functions once done internally", "Selling products", "Hiring more managers"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Project' structure?", "options" => ["A building project", "Employees continuously work on projects", "A list of tasks", "A type of budget"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Learning Organization'?", "options" => ["A school", "An organization that has developed the capacity to continuously learn and change", "A library", "A group of students"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $gm_course_id, "category_id" => 1,
+        "title" => "Map 112: Leading & Team Management", "desc" => "Inspire your team, manage dynamics, and lead through influence.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Leading' in management?", "options" => ["Walking in front", "Motivating, directing, and influencing people to work hard", "Giving orders only", "Being the loudest"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Motivation'?", "options" => ["Being tired", "The processes that account for an individual's intensity and persistence toward a goal", "A salary bonus", "Working 24 hours"], "ans" => 1, "xp" => 150],
+                ["q" => "Which theory is about 'Hierarchy of Needs'?", "options" => ["Taylor's Theory", "Maslow's Theory", "Herzberg's Theory", "McGregor's Theory"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Theory X'?", "options" => ["Employees are lazy and must be controlled", "Employees love work", "A secret project", "A type of computer"], "ans" => 0, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Theory Y'?", "options" => ["Employees are lazy", "Employees are self-directed and enjoy work", "A math equation", "A type of tax"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Autocratic' leadership?", "options" => ["Driving a car", "A leader who dictates work methods and limits participation", "A leader who does no work", "A team-based leader"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Democratic' leadership?", "options" => ["A political system", "A leader who involves employees in decision-making", "A strict leader", "A leader who hides"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Laissez-faire' leadership?", "options" => ["A type of food", "A 'hands-off' leader who lets the group make decisions", "A strict leader", "A fast leader"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Emotional Intelligence' (EQ)?", "options" => ["Being smart", "The ability to manage your own and others' emotions", "Being emotional", "Having a high IQ"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Team'?", "options" => ["A group of friends", "A group whose individual efforts result in performance greater than the sum of parts", "A list of employees", "A soccer club"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Groupthink'?", "options" => ["Thinking as a group", "When group members seek agreement at the expense of realistic appraisal", "A new strategy", "A team meeting"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Conflict'?", "options" => ["Perceived incompatible differences resulting in interference", "A team meeting", "A type of weather", "A promotion"], "ans" => 0, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Transformational' leadership?", "options" => ["Changing clothes", "Leaders who inspire followers to transcend self-interest for the good of the firm", "A strict boss", "Hiring staff"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Transactional' leadership?", "options" => ["Leadership about money", "Leaders who lead primarily by using social exchanges (rewards for work)", "A visionary leader", "A type of banking"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Servant' leadership?", "options" => ["Being a servant", "A leader who focuses on the needs of others and the community", "A leader who does no work", "A strict leader"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Charismatic' leadership?", "options" => ["A funny leader", "An enthusiastic, self-confident leader whose personality influences people", "A quiet leader", "A manager"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the 'Storming' stage of team development?", "options" => ["A weather event", "Conflict as members resist group constraints", "The team finishing a project", "The first meeting"], "ans" => 1, "xp" => 300],
+                ["q" => "What is the 'Norming' stage?", "options" => ["Being normal", "Developing close relationships and cohesiveness", "Fighting", "Ending the team"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Power'?", "options" => ["Electricity", "The capacity to influence the behavior of others", "Money", "A fast car"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Legitimate' power?", "options" => ["Being smart", "Power derived from a person's position in the hierarchy", "Being loud", "Giving gifts"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Expert' power?", "options" => ["Being a boss", "Influence based on special skills or knowledge", "Having money", "Giving orders"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Referent' power?", "options" => ["Reading a book", "Influence based on possession of desirable resources or personal traits", "Hiring people", "Writing a report"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Synergy'?", "options" => ["A type of energy", "When the whole is greater than the sum of its parts", "A type of software", "Working alone"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the key to effective leadership?", "options" => ["Being mean", "Adapting your style to the situation and the people", "Having a high salary", "Using the newest technology"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+
+    // CATEGORY 2: CORE COMPETENCIES (Maps 113-116)
+    [
+        "id" => ++$highest_id, "course_id" => $gm_course_id, "category_id" => 2,
+        "title" => "Map 113: Control & Monitoring", "desc" => "Ensure goals are met through performance standards and corrective action.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Controlling'?", "options" => ["Being a bully", "Monitoring activities to ensure they are being accomplished as planned", "Stopping all work", "Watching cameras"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the first step in the Control Process?", "options" => ["Firing staff", "Measuring actual performance", "Setting standards", "Correcting errors"], "ans" => 2, "xp" => 150],
+                ["q" => "What is a 'Standard'?", "options" => ["A type of car", "A performance goal against which actual performance is compared", "A company flag", "The office floor"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Variance'?", "options" => ["A math error", "The difference between actual performance and the standard", "Spending money", "Total profit"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Feedforward' control?", "options" => ["Control after work", "Control that takes place before a work activity is done", "Giving food to staff", "A type of radio"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Concurrent' control?", "options" => ["Control during work", "Control that takes place while a work activity is in progress", "Control at night", "A type of tax"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Feedback' control?", "options" => ["A loud noise", "Control that takes place after a work activity is done", "A type of payment", "A marketing flyer"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Corrective Action'?", "options" => ["Being mean", "Steps taken to get performance back on track", "Firing everyone", "Buying new gear"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Management by Exception' (MBE)?", "options" => ["Managing everything", "Managers only focus on significant deviations from the standard", "Managing for fun", "A type of insurance"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Budget' as a control tool?", "options" => ["A pile of cash", "A financial plan used to monitor and limit spending", "A list of employees", "A marketing flyer"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Quality Control'?", "options" => ["Being nice", "The process of ensuring products or services meet specific requirements", "A type of sales", "Hiring an expert"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'TQM'?", "options" => ["Total Quality Management", "Technical Quality Mode", "Team Quantity Management", "Total Quick Market"], "ans" => 0, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Ratio Analysis'?", "options" => ["Math homework", "Using financial ratios to evaluate a company's performance", "Dividing food", "A type of graph"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Inventory Control'?", "options" => ["Counting pens", "Managing the amount of stock held by a business", "Buying a new truck", "Selling shares"], "ans" => 1, "xp" => 250],
+                ["q" => "What is an 'Internal Audit'?", "options" => ["A government check", "A systematic review of a company's operations and controls by its own staff", "Firing staff", "Counting cash"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Management Information System' (MIS)?", "options" => ["A type of PC", "A system used to provide managers with needed information", "A secret code", "A station alarm"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Balanced Scorecard'?", "options" => ["A sports score", "A performance metric used to see multiple perspectives (Financial, Customer, etc.)", "A math test", "A type of budget"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Bureaucratic' control?", "options" => ["Control by a desk", "Using rules, regulations, and authority to maintain control", "Control by a computer", "A new strategy"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Clan' control?", "options" => ["Control by family only", "Control based on shared values, norms, and traditions", "Control by a boss", "A type of tax"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'ROI'?", "options" => ["Rate of Interest", "Return on Investment", "Regional Office Income", "Regular Office Index"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Liquidity'?", "options" => ["Water", "How quickly a company can turn assets into cash to pay debts", "The speed of sales", "The office rent"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Benchmarking'?", "options" => ["Buying a bench", "Comparing your performance against industry leaders", "Cleaning the office", "Hiring staff"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Employee Theft' prevention?", "options" => ["Watching everyone", "Implementing controls and a positive culture to reduce shrinkage", "Firing everyone", "Using a safe"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the final goal of control?", "options" => ["To stop all work", "To ensure the organization reaches its goals efficiently and effectively", "To make more money", "To hire more people"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $gm_course_id, "category_id" => 2,
+        "title" => "Map 114: Business Ethics & Law", "desc" => "Navigate the moral and legal landscape of professional management.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Business Ethics'?", "options" => ["Doing math", "Moral principles that guide business behavior", "Company rules on dress code", "A type of accounting"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Compliance'?", "options" => ["Being nice", "The act of obeying laws and regulations", "A promotion", "A marketing plan"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Code of Conduct'?", "options" => ["A type of code", "A set of rules for social behavior in a workplace", "A daily schedule", "A software license"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Transparency'?", "options" => ["A window", "Operating in a way that is easy for others to see actions", "Hiding the truth", "A type of software"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Whistleblowing'?", "options" => ["Playing sports", "Reporting organizational misconduct to higher authorities", "A manager", "A security guard"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Conflict of Interest'?", "options" => ["Disliking your job", "Personal interests influencing professional duties", "Two people fighting", "A broken contract"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Corporate Social Responsibility' (CSR)?", "options" => ["Working on weekends", "Operating in ways that enhance society and the environment", "Paying taxes", "A marketing strategy"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Insider Trading'?", "options" => ["Trading in the office", "Illegal trading based on non-public confidential information", "Selling products", "A team meeting"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Bribery'?", "options" => ["Giving a gift", "Dishonestly persuading someone by money or inducements", "A salary increase", "A marketing plan"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Fiduciary Duty'?", "options" => ["A type of tax", "A legal obligation to act in the best interest of another", "Working hard", "A salary bonus"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Intellectual Property' (IP)?", "options" => ["Owning a house", "Creations of the mind protected by law", "A fast computer", "A smart person"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Copyright'?", "options" => ["The right to copy", "Exclusive legal right to original creative work", "A brand name", "A type of patent"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Trademark'?", "options" => ["A trade mark", "A recognizable sign or design identifying products", "A patent", "A legal contract"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Data Privacy'?", "options" => ["A password", "Protection of personal info from unauthorized access", "A firewall", "Cloud storage"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Discrimination'?", "options" => ["Hiring the best", "Unjust treatment based on category (race, gender, etc.)", "A promotion", "A training session"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Sustainability'?", "options" => ["Working forever", "Meeting current needs without compromising the future", "Saving money", "Marketing"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Labor Law'?", "options" => ["Rules for manual labor", "Law mediating relationship between workers and employers", "Gardening rules", "A type of contract"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Consumer Protection'?", "options" => ["Protecting a store", "Laws protecting people from unfair business practices", "Buying shares", "A bank statement"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Liability' in law?", "options" => ["An asset", "Legal responsibility for one's acts or omissions", "Hiring staff", "A marketing flyer"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Due Diligence'?", "options" => ["Working hard", "Reasonable steps taken to satisfy legal requirements", "Paying taxes", "Hiring a manager"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Equality' vs 'Equity'?", "options" => ["They are the same", "Equality is same for all; Equity is giving what is needed for success", "Equality for pay; Equity for hours", "A type of law"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Work-Life Balance'?", "options" => ["Working and sleeping", "Equilibrium between work and personal life", "Working 24 hours", "Being unemployed"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Corporate Governance'?", "options" => ["Government work", "Rules and processes by which a firm is directed", "Managing a team", "Buying software"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the primary value of integrity?", "options" => ["It makes money", "It builds long-term trust and a sustainable reputation", "It saves time", "It is free"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $gm_course_id, "category_id" => 2,
+        "title" => "Map 115: Performance Management", "desc" => "Develop your people through appraisal, feedback, and career paths.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Performance Management'?", "options" => ["Firing people", "Process of ensuring employees meet goals and improve skills", "Paying payroll", "Hiring staff"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Performance Appraisal'?", "options" => ["Watching a movie", "Formal evaluation of an employee's work over a period", "A salary increase", "A team meeting"], "ans" => 1, "xp" => 150],
+                ["q" => "What is '360-Degree Feedback'?", "options" => ["Spinning around", "Feedback from bosses, peers, subordinates, and customers", "A long meeting", "A type of bonus"], "ans" => 1, "xp" => 150],
+                ["q" => "What are 'KPIs'?", "options" => ["Key Performance Indicators", "Keeping People Informed", "Known Product Items", "Key Process Interactions"], "ans" => 0, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Coaching'?", "options" => ["Yelling at staff", "Providing guidance to help employees improve specific skills", "Doing the work for them", "Playing sports"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Mentoring'?", "options" => ["Teaching a class", "A long-term relationship where a senior person guides a junior one", "Paying for a tutor", "Hiring staff"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Employee Development'?", "options" => ["Buying new chairs", "Improving the skills and knowledge of the workforce", "Firing people", "Writing a report"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Self-Appraisal'?", "options" => ["Boss judging you", "Evaluating your own performance", "Talking to yourself", "A secret"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Constructive Criticism'?", "options" => ["Complaining", "Feedback intended to help someone improve", "Insulting work", "Saying only positive things"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Development Plan'?", "options" => ["A map", "A document outlining an employee's growth goals and steps", "A list of tasks", "A budget"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Incentive'?", "options" => ["A tax", "A reward offered to motivate hard work", "A punishment", "A type of gear"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Merit Pay'?", "options" => ["A loan", "Salary increase based on performance", "A fine", "A gift"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Succession Planning'?", "options" => ["Planning a party", "Identifying and developing future leaders for key roles", "Saving money", "Hiring interns"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Job Rotation'?", "options" => ["Spinning a chair", "Moving employees between different jobs to increase skills", "Firing people", "Working at night"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Underperformance'?", "options" => ["Working too hard", "Failing to meet the required standards of a role", "A type of bonus", "Being fast"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Disciplinary Action'?", "options" => ["Exercise at work", "Steps taken by an employer in response to misconduct", "A promotion", "A meeting"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Intrinsic' motivation?", "options" => ["Money", "Motivation coming from internal satisfaction of the work", "A bonus", "A car"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Extrinsic' motivation?", "options" => ["Love of work", "Motivation from external rewards like money or status", "Internal feelings", "Doing a hobby"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Employee Engagement'?", "options" => ["A wedding", "Emotional commitment to the organization and its goals", "Being busy", "Talking to coworkers"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Talent Management'?", "options" => ["Being a singer", "Strategic process of attracting, developing, and keeping employees", "Fixing computers", "Selling products"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Burnout'?", "options" => ["A fire", "Physical or mental collapse caused by overwork or stress", "Running out of coffee", "Quitting"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Emotional Resilience'?", "options" => ["Being sad", "The ability to recover quickly from difficulties", "Having power", "Working alone"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Soft Skill'?", "options" => ["Typing", "Interpersonal skills like communication and teamwork", "Fixing hardware", "Coding"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the most effective way to improve performance?", "options" => ["Fear", "Clear communication, regular feedback, and support", "Ignoring errors", "Increasing work hours only"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $gm_course_id, "category_id" => 2,
+        "title" => "Map 116: Financial Management for Managers", "desc" => "Understand budgets, cash flow, and cost control without being an accountant.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Budget'?", "options" => ["A pile of cash", "A financial plan for a set period", "A list of employees", "A marketing plan"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Revenue'?", "options" => ["Profit", "Total money received from sales", "Spending money", "Tax"], "ans" => 1, "xp" => 150],
+                ["q" => "What is an 'Expense'?", "options" => ["Money received", "Money spent to generate revenue", "Profit", "A bank deposit"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Profit'?", "options" => ["Total sales", "Revenue minus expenses", "A loan", "Hiding money"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Fixed Cost'?", "options" => ["Cost that changes", "Cost that stays the same regardless of production (e.g. rent)", "A bonus", "A bank fee"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Variable Cost'?", "options" => ["Cost that stays same", "Cost that changes with production volume", "Profit", "Office rent"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Cash Flow'?", "options" => ["Money in a river", "Movement of money in and out of a business", "Total profit", "A bank loan"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Overhead'?", "options" => ["The ceiling", "Ongoing expenses not linked to a specific product", "Boss's salary", "Tax"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Break-even Point'?", "options" => ["Breaking a bone", "When total revenue equals total costs", "Making money", "Losing everything"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Accounts Receivable'?", "options" => ["Money you owe", "Money customers owe you", "The bank account", "Payroll"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Accounts Payable'?", "options" => ["Money customers owe you", "Money you owe to suppliers", "Total revenue", "Petty cash"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'ROI'?", "options" => ["Return on Investment", "Rate of Interest", "Regular Office Item", "Regional Office Income"], "ans" => 0, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Depreciation'?", "options" => ["Gaining value", "Decrease in asset value over time", "A tax", "Saving money"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Working Capital'?", "options" => ["Building", "Current assets minus current liabilities", "A loan", "Office rent"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Balance Sheet'?", "options" => ["Balancing books", "Report of assets, liabilities, and equity", "Daily sales list", "Invoice"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Profit and Loss' (P&L)?", "options" => ["Employee names", "Summary of revenue, costs, and expenses", "A bank loan", "A secret"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Variance Analysis'?", "options" => ["Science experiment", "Comparing actual results to budgeted amounts", "Ignoring errors", "Spending more"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Gross Margin'?", "options" => ["Profit after tax", "Revenue minus Cost of Goods Sold", "Total revenue", "CEO salary"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'CapEx'?", "options" => ["Money for lunch", "Capital Expenditure (buying long-term assets)", "Daily bills", "Taxes"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'OpEx'?", "options" => ["Buying building", "Operating Expenditure (day-to-day running costs)", "Selling shares", "Stock investing"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Audit'?", "options" => ["A room", "Examination of accounts for accuracy", "Spending money", "A loan"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Fiscal Year'?", "options" => ["Leap year", "12-month period for financial reporting", "Calendar year only", "13 months"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Asset'?", "options" => ["Debt", "Something the business owns that has value", "Expense", "Hiring people"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Liability'?", "options" => ["Something you own", "Something the business owes", "Total revenue", "Bonus"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+
+    // CATEGORY 3: STRATEGY & CAPSTONE (Maps 117-120)
+    [
+        "id" => ++$highest_id, "course_id" => $gm_course_id, "category_id" => 3,
+        "title" => "Map 117: Change Management", "desc" => "Lead through transitions, manage resistance, and evolve the organization.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Change Management'?", "options" => ["Changing clothes", "Process of transitioning teams to a future state", "Counting cash", "Hiring staff"], "ans" => 1, "xp" => 150],
+                ["q" => "Why do people often resist change?", "options" => ["They are lazy", "Fear of the unknown and loss of security", "They hate managers", "It's too fast"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Lewin's 3-Step Model'?", "options" => ["Run, Hide, Fight", "Unfreeze, Change, Refreeze", "Hire, Train, Fire", "Plan, Do, Review"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Change Agent'?", "options" => ["A secret spy", "Someone who facilitates and supports the change process", "A robot", "The CEO only"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Incremental' change?", "options" => ["Sudden change", "Small, gradual adjustments over time", "Closing a company", "Massive layoff"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Transformational' change?", "options" => ["Small change", "Radical and fundamental shift in the organization", "Changing a logo", "Hiring an intern"], "ans" => 1, "xp" => 180],
+                ["q" => "What is the key to reducing resistance to change?", "options" => ["Fear", "Communication and participation", "Ignoring complaints", "Paying more"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Force Field Analysis'?", "options" => ["A sci-fi game", "A tool to look at forces for and against change", "Protecting a building", "A math test"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Kotter's 8-Step Process'?", "options" => ["Cooking steps", "A methodology for leading organizational change", "Hiring steps", "Daily chores"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Urgency' in change?", "options" => ["Being late", "Establishing a reason why change is needed NOW", "Running fast", "A medical term"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Guiding Coalition'?", "options" => ["A military group", "A group of influential people who lead the change effort", "A list of tasks", "A secret meeting"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Empowerment' during change?", "options" => ["Giving electricity", "Removing obstacles and giving people authority to act", "Being a boss", "Writing a report"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Short-term Wins' importance?", "options" => ["Losing weight", "Building momentum and showing that the change is working", "Ending the project early", "Paying bonuses"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Organizational Development' (OD)?", "options" => ["Building a house", "System-wide application of behavioral science to planned development", "Hiring staff", "Selling products"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Agility'?", "options" => ["Running", "The ability of an organization to react fast to change", "Strength", "Being old"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Culture' role in change?", "options" => ["No role", "It can be the biggest barrier or the biggest support for change", "It's about art", "It only affects food"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Change Fatigue'?", "options" => ["Being sleepy", "Exhaustion caused by too many changes in a short time", "A broken machine", "Quitting work"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Stakeholder Mapping'?", "options" => ["Drawing a map", "Identifying everyone affected by change and their level of influence", "Selling products", "Hiring staff"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Refreezing'?", "options" => ["Cold weather", "Stabilizing the change so it becomes the new permanent state", "Ice cream", "Stopping work"], "ans" => 1, "xp" => 300],
+                ["q" => "What is the biggest mistake in change management?", "options" => ["Changing too much", "Failure to communicate the vision and rationale for change", "Hiring experts", "Using new software"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Innovation'?", "options" => ["Copying others", "Successful implementation of creative ideas", "Fixing a phone", "Buying new PC"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Disruptive' change?", "options" => ["Loud change", "Change that alters the whole industry (e.g. Uber)", "Broken change", "Type of alarm"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Process Reengineering'?", "options" => ["Fixing truck", "Redesigning work processes to improve efficiency", "Hiring staff", "Writing diary"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the final goal of change management?", "options" => ["To finish work", "To successfully adapt the organization to survive and thrive", "To make profit", "To hire more people"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $gm_course_id, "category_id" => 3,
+        "title" => "Map 118: Conflict & Negotiation", "desc" => "Turn disagreements into productive outcomes using strategic negotiation.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Conflict Management'?", "options" => ["Starting a fight", "Process of limiting negative aspects and increasing positive aspects of conflict", "Ignoring problems", "Firing people"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Functional' conflict?", "options" => ["Conflict that breaks things", "Constructive conflict that supports goals", "A broken machine", "A quiet office"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Dysfunctional' conflict?", "options" => ["Conflict that works", "Destructive conflict that hinders performance", "A secret meeting", "A type of tax"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Negotiation'?", "options" => ["Giving orders", "Process where two parties exchange goods/services and try to agree on an exchange rate", "Fighting", "Silent treatment"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Distributive' bargaining?", "options" => ["Sharing fairly", "Win-lose negotiation over a fixed amount of resources", "Giving things for free", "A bank loan"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Integrative' bargaining?", "options" => ["Lose-lose", "Win-win negotiation that seeks to expand the resources so both parties win", "Fighting for more", "Buying products"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'BATNA'?", "options" => ["Best Alternative To a Negotiated Agreement", "Better Account Total Net Asset", "Big Area Technical New Access", "Business Admin Task New Area"], "ans" => 0, "xp" => 180],
+                ["q" => "What is 'Mediation'?", "options" => ["A judge making a choice", "A neutral third party facilitating a solution", "Fighting", "A team meeting"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Arbitration'?", "options" => ["A friendly talk", "A third party with authority to dictate an agreement", "Ignoring the issue", "Hiring staff"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Avoiding' conflict style?", "options" => ["Fighting", "Ignoring the conflict and hoping it goes away", "Winning", "Talking"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Collaborating' style?", "options" => ["Winning at all costs", "Trying to find a win-win solution that satisfies everyone", "Giving in", "Hiding"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Compromising' style?", "options" => ["Giving up everything", "Each party giving up something to reach a middle ground", "Winning", "Starting a fight"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Accommodating' style?", "options" => ["Fighting", "Putting the other party's needs above your own", "Winning", "Ignoring"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Competing' style?", "options" => ["Helping others", "Pursuing your own interests at the expense of others", "Sharing", "Quitting"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Emotional Intelligence' in conflict?", "options" => ["Being smart", "Ability to remain calm and understand the other person's perspective", "Crying", "Losing control"], "ans" => 1, "xp" => 250],
+                ["q" => "What is the value of 'Empathy' in negotiation?", "options" => ["Giving money", "Understanding the other party's interests and underlying needs", "Winning", "Lying"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Anchor' in negotiation?", "options" => ["A boat tool", "The first offer made which sets the stage for the talk", "The end of a sale", "A type of tax"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Reservation Price'?", "options" => ["Buying a hotel", "The worst offer you are willing to accept before walking away", "The total profit", "A bank fee"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'ZOPA'?", "options" => ["Zone of Possible Agreement", "Zero Office Profit Area", "Zone of Partial Access", "Zebra Office Payment Act"], "ans" => 0, "xp" => 300],
+                ["q" => "What is 'Non-Verbal' cue in negotiation?", "options" => ["Words", "Body language and tone of voice", "Writing a letter", "Sending email"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Diplomacy'?", "options" => ["Politics", "Dealing with people in a sensitive and effective way", "Being aggressive", "Ignoring problems"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Assertiveness'?", "options" => ["Being bully", "Standing up for your interests without attacking others", "Shy", "Giving in"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Rapport'?", "options" => ["A report", "A harmonious connection and trust built with the other party", "Shift end", "A bill"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the biggest secret to winning a negotiation?", "options" => ["Being loud", "Preparation and understanding the other side's needs", "Having more money", "Threatening to quit"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $gm_course_id, "category_id" => 3,
+        "title" => "Map 119: Strategic Management", "desc" => "Design the future of the firm through analysis, choice, and implementation.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Strategic Management'?", "options" => ["Daily task lists", "Ongoing process of creating and implementing strategies for competitive advantage", "Hiring staff", "Selling products"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Competitive Advantage'?", "options" => ["Cheating", "What an organization does better than others", "Having more money", "A type of law"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Core Competency'?", "options" => ["Being good at everything", "Unique skills or assets that give a firm a competitive edge", "Professional skills", "Writing reports"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Vertical Integration'?", "options" => ["Standing up", "When a firm grows by gaining control of its suppliers or distributors", "Hiring more staff", "Merging companies"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Horizontal Integration'?", "options" => ["Lying down", "When a firm grows by combining with competitors", "Quitting", "Salary bonus"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Diversification'?", "options" => ["Hiring different people", "Moving into new industries or products", "Winning prize", "Spending profit"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Blue Ocean Strategy'?", "options" => ["Fishing", "Creating a new, uncontested market space", "Selling near water", "Marketing plan"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Porter's Five Forces'?", "options" => ["A team of five", "A framework to analyze industry competition", "A math test", "A station alarm"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Cost Leadership'?", "options" => ["Being cheap", "Strategy to be the lowest-cost producer in the industry", "Winning prize", "Giving money away"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Differentiation' strategy?", "options" => ["Being the same", "Developing unique products that customers value more than competitors'", "Deleting records", "Hiring manager"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Focus' strategy?", "options" => ["Staring at something", "Concentrating on a narrow market segment (niche)", "The whole world", "Advertising only"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'BCG Matrix' used for?", "options" => ["Math", "Analyzing a company's portfolio of businesses (Stars, Cash Cows, etc.)", "Cleaning office", "Selling shares"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Market Penetration'?", "options" => ["Entering store", "Increasing sales of current products in current markets", "A type of tax", "Buying competitor"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Market Development'?", "options" => ["Building a shop", "Selling current products in new markets", "Slow sales", "Hiring intern"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Product Development'?", "options" => ["Buying factory", "Selling new products in current markets", "A loan", "Selling shares"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Global Strategy'?", "options" => ["Buying a map", "Standardizing products and marketing worldwide", "Moving to new city", "Hiring remote staff"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Scenario Planning'?", "options" => ["Acting", "Identifying multiple future possibilities and planning for them", "Saving money", "Hiring staff"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Merger'?", "options" => ["Hiring manager", "Two companies combining to form a new one", "Closing a shop", "A car accident"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Acquisition'?", "options" => ["Starting a business", "One company buying another", "Selling a truck", "Deleting a file"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Synergy'?", "options" => ["A type of fuel", "When 1+1=3 (combined power is greater than sum of parts)", "A bonus", "Working alone"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'First-mover' advantage?", "options" => ["Being fast runner", "Benefit from being the first to enter a market", "Having first office", "Hiring first person"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Sustainable' strategy?", "options" => ["Growing forever", "Strategy that provides long-term success without harming resources", "Saving money", "Marketing"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Corporate Culture' in strategy?", "options" => ["Art", "Values that must support the strategy to make it successful", "Rules", "Dress code"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the biggest threat to any strategy?", "options" => ["Being cheap", "Poor execution and failure to adapt to environmental changes", "Hiring staff", "Buying new gear"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $gm_course_id, "category_id" => 3,
+        "title" => "Map 120: Generic Management Capstone", "desc" => "The final exam. Integrate all functions of management to lead a high-performing organization.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "SCENARIO: Your department's productivity has dropped by 20%. What is the FIRST step?", "options" => ["Fire the lowest performers", "Measure actual performance and compare it to standards to find the cause", "Increase everyone's hours", "Buy new software"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: You are launching a new 5-year vision. What level of planning is this?", "options" => ["Operational", "Strategic", "Tactical", "Routine"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: An employee is struggling with a specific task but has potential. What do you provide?", "options" => ["A final warning", "Coaching and training", "A pay cut", "Nothing"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: You need to hire someone to bridge the gap between IT and Sales. What skill is most important?", "options" => ["Typing", "Interpersonal/Human Skills", "Mechanical knowledge", "Singing"], "ans" => 1, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "SCENARIO: A major competitor has closed down. What is this in a SWOT analysis?", "options" => ["Strength", "Opportunity", "Weakness", "Threat"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: You are delegating a project. What MUST you give along with the responsibility?", "options" => ["A car", "Authority to make decisions", "A bonus upfront", "A secret password"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: Two managers are fighting over resources. What is the BEST resolution style for a long-term win?", "options" => ["Avoiding", "Collaborating", "Competing", "Accommodating"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: You notice an employee is not following the safety SOP. What do you do?", "options" => ["Ignore it", "Take immediate corrective action", "Tell their friends", "Wait for the annual review"], "ans" => 1, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "SCENARIO: A company wants to be 'King of the Market' by being the cheapest. What is this strategy?", "options" => ["Differentiation", "Cost Leadership", "Focus", "Niche"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: You need to prove you know a password without revealing it. What is this called?", "options" => ["A signature", "A zero-knowledge proof", "A secure email", "A fingerprint"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: The team is in the 'Storming' stage. What should the leader do?", "options" => ["Dissolve the team", "Help members resolve conflicts and define roles", "Ignore the fighting", "Hire a new team"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: You want to measure if customers are likely to recommend you. What metric do you use?", "options" => ["Net Profit", "Net Promoter Score (NPS)", "Employee turnover", "Office rent"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "SCENARIO: A new law requires you to protect personal data. Which act is this in SA?", "options" => ["Labor Law", "POPIA", "Companies Act", "Traffic Act"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: You are spending $10k on ads to get $100k in sales. What is the ROI?", "options" => ["$10k", "900% (or 10:1)", "50%", "Zero"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: You need to move authority away from the head office. What is this process?", "options" => ["Centralization", "Decentralization", "Downsizing", "Outsourcing"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: An employee reports unethical behavior by a supervisor. How do you handle it?", "options" => ["Tell the supervisor", "Follow the Whistleblower policy and protect the employee", "Ignore it", "Fire the employee"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "MASTER FINAL: What is the primary focus of an effective Manager?", "options" => ["Making everyone happy", "Planning, Organizing, Leading, and Controlling to reach goals", "Buying the best computers", "Having the largest office"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: In high-level management, what determines the success of a firm?", "options" => ["The number of employees", "Strategic alignment and operational excellence", "Having a lot of money", "Hiring a famous CEO"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: Why is EQ often more important than IQ for a manager?", "options" => ["It's not", "Because management is about people, and EQ drives collaboration and trust", "Because it's easier to learn", "Because IQ is for interns only"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: What is the 'Triple Bottom Line'?", "options" => ["Profit, Profit, Profit", "People, Planet, Profit", "Sales, Marketing, IT", "Money, Power, Fame"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "EXAM: How do Planning and Controlling interact?", "options" => ["They are separate", "They form a loop where planning sets the goals and control checks if they are met", "They compete for the CEO's attention", "They only interact during parties"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: What is the most critical factor for an organization's survival?", "options" => ["A lot of cash", "The ability to adapt to changes in the environment", "Having the best marketing", "Having the most employees"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: What is the hallmark of a world-class manager?", "options" => ["Being aggressive", "Strategic vision, integrity, and the ability to empower others", "Having a lot of money", "Using the newest software"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: What is the true goal of generic management skills?", "options" => ["Getting a job", "Providing a repeatable and scalable foundation for organizational success", "Winning a prize", "Hiring friends"], "ans" => 1, "xp" => 600]
+            ]]
+        ]
+    ]
+];
+
 // Combine everything
-$final_data = array_merge($cleaned_data, $new_maps, $inter_maps, $advanced_maps, $biz_maps, $comm_maps, $cs_maps, $entrep_maps, $fin_maps);
+$final_data = array_merge($cleaned_data, $new_maps, $inter_maps, $advanced_maps, $biz_maps, $comm_maps, $cs_maps, $entrep_maps, $fin_maps, $fire_maps, $gm_maps);
 
 set_config('journey_data', json_encode($final_data), 'local_sisizathu');
 

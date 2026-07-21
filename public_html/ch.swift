@@ -641,8 +641,13 @@ class AnnouncementCarouselViewModel: ObservableObject {
                     return
                 }
                 
-                self.announcements = querySnapshot?.documents.compactMap { document in
-                    try? document.data(as: Announcement.self)
+               self.announcements = querySnapshot?.documents.compactMap { document -> Announcement? in
+                    do {
+                        return try document.data(as: Announcement.self)
+                    } catch {
+                        print("⚠️ Failed to decode announcement \(document.documentID): \(error)")
+                        return nil
+                    }
                 } ?? []
             }
     }
