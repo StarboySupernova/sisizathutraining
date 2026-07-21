@@ -14,13 +14,17 @@ $advanced_course = $DB->get_record_select('course', "fullname LIKE '%Advanced Co
 $biz_course = $DB->get_record_select('course', "fullname LIKE '%Business Administration%'", null, 'id');
 $comm_course = $DB->get_record_select('course', "fullname LIKE '%Communication Studies and Language%'", null, 'id');
 $cs_course = $DB->get_record_select('course', "fullname LIKE '%Customer Service%'", null, 'id');
+$entrep_course = $DB->get_record_select('course', "fullname LIKE '%Entrepreneurial Skills%'", null, 'id');
+$fin_course = $DB->get_record_select('course', "fullname LIKE '%Financial Administration%'", null, 'id'); // New
 
 $target_course_id = $basic_course ? $basic_course->id : 15; 
 $wrong_course_id = $inter_course ? $inter_course->id : 18;
 $advanced_course_id = $advanced_course ? $advanced_course->id : 21;
 $biz_course_id = $biz_course ? $biz_course->id : 24;
 $comm_course_id = $comm_course ? $comm_course->id : 27; 
-$cs_course_id = $cs_course ? $cs_course->id : 30; // Fallback ID
+$cs_course_id = $cs_course ? $cs_course->id : 30; 
+$entrep_course_id = $entrep_course ? $entrep_course->id : 33; 
+$fin_course_id = $fin_course ? $fin_course->id : 36; // New Fallback
 // 1. Fetch current data and REMOVE maps from the wrong course
 $current_data_json = get_config('local_sisizathu', 'journey_data') ?: '[]';
 $current_data = json_decode($current_data_json, true);
@@ -35,7 +39,7 @@ if (is_array($current_data)) {
         }
 
         // Keep only maps that DO NOT belong to the three courses we are updating
-        if ($map['course_id'] != $wrong_course_id && $map['course_id'] != $target_course_id && $map['course_id'] != $advanced_course_id && $map['course_id'] != $biz_course_id && $map['course_id'] != $comm_course_id && $map['course_id'] != $cs_course_id) {
+        if ($map['course_id'] != $wrong_course_id && $map['course_id'] != $target_course_id && $map['course_id'] != $advanced_course_id && $map['course_id'] != $biz_course_id && $map['course_id'] != $comm_course_id && $map['course_id'] != $cs_course_id && $map['course_id'] != $entrep_course_id) {
             $cleaned_data[] = $map; 
         }
         
@@ -3139,8 +3143,1038 @@ $cs_maps = [
     ]
 ];
 
+// ==========================================================
+// ENTREPRENEURIAL SKILLS CURRICULUM (Maps 73-84)
+// ==========================================================
+$entrep_maps = [
+    // CATEGORY 1: IDEATION & VALIDATION (Maps 73-76)
+    [
+        "id" => ++$highest_id, "course_id" => $entrep_course_id, "category_id" => 1,
+        "title" => "Map 73: The Entrepreneurial Mindset", "desc" => "Develop the grit, vision, and problem-solving skills of a founder.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the primary definition of an Entrepreneur?", "options" => ["An employee with a high salary", "A person who organizes and operates a business, taking on financial risk", "A government official", "A person who only works alone"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Intrapreneurship'?", "options" => ["Working for yourself", "Acting like an entrepreneur within a large organization", "Hiring your family", "Selling products in a different country"], "ans" => 1, "xp" => 150],
+                ["q" => "Which trait is most associated with successful founders?", "options" => ["Fear of failure", "Resilience and adaptability", "Strictly following orders", "Avoiding all risks"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the 'Opportunity Cost'?", "options" => ["The price of an advertisement", "The value of the next best alternative foregone when making a decision", "The total cost of starting a business", "The cost of hiring an accountant"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Pain Point' in entrepreneurship?", "options" => ["A physical injury", "A specific problem that prospective customers are experiencing", "The cost of office rent", "A disagreement between partners"], "ans" => 1, "xp" => 180],
+                ["q" => "What does it mean to have a 'Growth Mindset'?", "options" => ["Thinking you are already perfect", "Believing that abilities can be developed through dedication and hard work", "Only caring about company size", "Expecting instant success"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Bootstrapping'?", "options" => ["Buying expensive shoes", "Starting a company with little capital, relying on personal savings and revenue", "Getting a massive bank loan", "Selling shares to the public"], "ans" => 1, "xp" => 180],
+                ["q" => "Why is 'Failure' often seen differently in entrepreneurship?", "options" => ["It's always bad", "It's viewed as a learning opportunity and a stepping stone to success", "It's illegal", "It means you should never try again"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'First-Mover Advantage'?", "options" => ["Being the fastest runner", "The advantage gained by the first significant occupant of a market segment", "Having the first office in a building", "Hiring the first employee"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Design Thinking'?", "options" => ["Drawing pretty pictures", "A human-centered approach to innovation and problem solving", "Choosing a logo", "Thinking about fashion"], "ans" => 1, "xp" => 210],
+                ["q" => "What is an 'Iterative Process'?", "options" => ["Doing something once", "A process for arriving at a decision or a desired result by repeating rounds of analysis", "A mathematical error", "Hiring a consultant"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Risk Mitigation'?", "options" => ["Taking as much risk as possible", "The process of reducing the impact or likelihood of potential risks", "Ignoring problems", "Closing a business early"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Serial Entrepreneur'?", "options" => ["Someone who sells breakfast food", "An individual who continuously comes up with new ideas and starts new businesses", "A person who works for 20 years at one job", "A business lawyer"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Disruptive Innovation'?", "options" => ["Innovation that breaks the law", "An innovation that creates a new market and value network, displacing established firms", "A loud office environment", "A software bug"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Vision' in entrepreneurship?", "options" => ["A medical term for eyes", "The long-term goal and direction of the company", "A type of dream", "A marketing flyer"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Social Entrepreneurship'?", "options" => ["Hiring friends", "Startups that develop solutions to social, cultural, or environmental issues", "Hosting office parties", "Using social media for sales"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Self-Efficacy'?", "options" => ["Being selfish", "One's belief in one's ability to succeed in specific situations", "Working without help", "Earning a high salary"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Blue Ocean' vs 'Red Ocean'?", "options" => ["Blue is new markets; Red is existing crowded markets", "Blue is cold; Red is hot", "Blue is for technology; Red is for food", "There is no difference"], "ans" => 0, "xp" => 300],
+                ["q" => "What is 'Lean Startup' methodology?", "options" => ["A startup with no employees", "Focusing on creating a product and getting feedback as quickly as possible to reduce waste", "A startup with no money", "Working in a small office"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Pivot'?", "options" => ["Closing the business", "A fundamental change in business strategy when the current path isn't working", "Spinning in a circle", "Firing the CEO"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Creative Destruction'?", "options" => ["Breaking office furniture", "The process where new innovations replace older, less efficient technologies and businesses", "A type of art", "A failed startup"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Effectuation'?", "options" => ["Being effective", "A way of thinking where entrepreneurs start with the resources they have to create effects", "Following a 50-page plan", "Waiting for investors"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the 'Founder's Dilemma'?", "options" => ["Choosing a name", "The choice between maintaining control (King) vs. growing the company's value (Rich)", "Deciding where to open an office", "Hiring the first manager"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Scalability'?", "options" => ["How heavy a product is", "The ability of a business to grow its revenue significantly while keeping costs low", "The height of an office building", "A type of marketing"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $entrep_course_id, "category_id" => 1,
+        "title" => "Map 74: Market Research & Validation", "desc" => "Prove your idea works before spending a cent.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Market Research'?", "options" => ["Selling products at a market", "Gathering info about consumers' needs and preferences", "Buying a new office", "Designing a logo"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Primary Research'?", "options" => ["Data you collect yourself (surveys, interviews)", "Data someone else collected (articles, reports)", "Research done in primary school", "The first page of a report"], "ans" => 0, "xp" => 150],
+                ["q" => "What is 'Secondary Research'?", "options" => ["The second part of a study", "Using existing data and reports from others", "Research that is not important", "Research done with 2 people"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Target Market'?", "options" => ["A store named Target", "A specific group of consumers at which a product or service is aimed", "Everyone in the world", "Your competitors"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Customer Validation'?", "options" => ["Being nice to customers", "Proving that customers will actually pay for your solution", "Counting the number of people in a store", "Asking your mom if she likes your idea"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Focus Group'?", "options" => ["A group of managers", "A small group of people whose reactions are studied in market research", "A team of researchers", "A type of social media group"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Quantitative Research'?", "options" => ["Research about quality", "Research focused on numbers and statistics", "Asking for opinions", "Writing a story"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Qualitative Research'?", "options" => ["Research about quantity", "Research focused on understanding underlying reasons and opinions", "A spreadsheet of numbers", "A math test"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Persona' in marketing?", "options" => ["Your real personality", "A fictional character that represents a segment of your target audience", "The CEO's public image", "A type of advertisement"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'TAM'?", "options" => ["Total Available Market", "Target Area Management", "Total Asset Money", "Technical Admin Mode"], "ans" => 0, "xp" => 210],
+                ["q" => "What is 'SAM'?", "options" => ["Serviceable Addressable Market", "Sales and Marketing", "Small Area Management", "Single Asset Model"], "ans" => 0, "xp" => 210],
+                ["q" => "What is 'SOM'?", "options" => ["Serviceable Obtainable Market (the portion you can actually capture)", "Sales on Monday", "System of Management", "Standard Office Mode"], "ans" => 0, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Competitive Analysis'?", "options" => ["Fighting with others", "Evaluating the strengths and weaknesses of current and potential competitors", "Watching sports", "Winning a race"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Product-Market Fit'?", "options" => ["When a product fits in a box", "When a product satisfies a strong market demand", "When a store has enough shelf space", "When a product is cheap"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Smoke Test' in validation?", "options" => ["Testing for fire", "Testing demand by offering a product before it exists (e.g., a landing page)", "Burning a prototype", "A factory inspection"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Early Adopter'?", "options" => ["Someone who wakes up early", "The first group of people to use a new product or technology", "A person who buys used goods", "A professional critic"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Ethnographic Research'?", "options" => ["Research on history", "Observing customers in their natural environment", "Online surveys only", "Reading a dictionary"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'B2B'?", "options" => ["Business to Business", "Back to Base", "Buy to Build", "Better to Best"], "ans" => 0, "xp" => 300],
+                ["q" => "What is 'B2C'?", "options" => ["Business to Consumer", "Back to Center", "Better to Create", "Budget to Capital"], "ans" => 0, "xp" => 300],
+                ["q" => "What is 'Psychographics'?", "options" => ["A horror movie", "Study of consumers based on psychological traits, values, and lifestyles", "Physical measurements", "Geographic locations"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'A/B Testing'?", "options" => ["Testing two products", "Comparing two versions of something (like a webpage) to see which performs better", "A school grade", "A type of battery"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Net Promoter Score' (NPS)?", "options" => ["A financial report", "A metric used to measure customer loyalty", "The price of a share", "A sports score"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Customer Acquisition Cost' (CAC)?", "options" => ["The salary of a salesman", "The total cost of convincing a potential customer to buy a product", "The price of the product", "Office rent"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Churn Rate'?", "options" => ["The speed of production", "The percentage of customers who stop using your service over time", "Making butter", "The amount of new sales"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $entrep_course_id, "category_id" => 1,
+        "title" => "Map 75: Business Models & Value", "desc" => "Define how your company creates, delivers, and captures value.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Business Model'?", "options" => ["A 3D model of an office", "The plan for how a company generates revenue and makes a profit", "A fashion model", "A type of computer"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Value Proposition'?", "options" => ["A price tag", "A statement explaining why a customer should choose your product over others", "A wedding proposal", "A list of expenses"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the 'Business Model Canvas'?", "options" => ["A large painting", "A strategic management tool used to visualize business components", "A type of tent", "A marketing flyer"], "ans" => 1, "xp" => 150],
+                ["q" => "Which of these is a 'Revenue Stream'?", "options" => ["Paying rent", "Money coming in from sales, subscriptions, or fees", "Hiring staff", "Buying inventory"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Subscription' model?", "options" => ["A one-time payment", "Customers pay a recurring fee at regular intervals", "Getting things for free", "A government grant"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Freemium' model?", "options" => ["Everything is free forever", "Offering basic services for free while charging for premium features", "A high-priced product", "Free advertising"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Direct-to-Consumer' (DTC) model?", "options" => ["Selling through a retailer", "Selling products directly to customers without intermediaries", "Selling to other businesses", "Giving products away"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Value Creation'?", "options" => ["Making money", "The process of making a product or service that is useful to customers", "Printing a receipt", "Hiring a manager"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Cost Structure'?", "options" => ["The shape of a building", "The types and relative proportions of fixed and variable costs in a business", "The price of the product", "Total profit"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Channel' in the Business Model Canvas?", "options" => ["A TV station", "The way a company communicates with and reaches its customer segments", "A river", "A type of product"], "ans" => 1, "xp" => 210],
+                ["q" => "What are 'Key Activities'?", "options" => ["The office party", "The most important things a company must do to make its business model work", "Daily exercise", "Watching competitors"], "ans" => 1, "xp" => 210],
+                ["q" => "What are 'Key Resources'?", "options" => ["Money only", "The assets required to offer and deliver the value proposition", "A list of friends", "Old documents"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Value Delivery'?", "options" => ["Using a courier", "The process of getting the value proposition to the customer", "Paying the staff", "Deleting a file"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Value Capture'?", "options" => ["Taking a photo", "The process of retaining a portion of the value created as profit", "Buying a competitor", "Hiring an accountant"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Loss Leader'?", "options" => ["A manager who fails", "A product sold at a loss to attract customers for other profitable products", "A broken machine", "A bad marketing plan"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Platform' business model?", "options" => ["A stage", "A business that facilitates interactions between two or more groups (e.g., Uber, Airbnb)", "A type of shoe", "A standard office"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Unfair Advantage'?", "options" => ["Cheating", "Something that cannot be easily copied or bought by competitors", "Having more money", "Being the loudest"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Unit Economics'?", "options" => ["The economy of a country", "The direct revenues and costs associated with a single unit of a product sold", "The cost of one machine", "Government taxes"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Market Fragmentation'?", "options" => ["Breaking a glass", "A market with no clear dominant leader, composed of many small players", "A type of marketing", "A global monopoly"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Economies of Scale'?", "options" => ["A weighing scale", "The cost advantage that arises with increased output of a product", "The size of an office", "A type of tax"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Monetization' strategy?", "options" => ["Printing money", "The process of converting an asset or service into cash/revenue", "Giving things for free", "Fixing a computer"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Recurring Revenue'?", "options" => ["A one-time sale", "Revenue that is likely to continue in the future (like a monthly fee)", "A lucky win", "A bank loan"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Disintermediation'?", "options" => ["Hiring a middleman", "Cutting out the 'middleman' in a supply chain", "Closing the business", "Working with more partners"], "ans" => 1, "xp" => 400],
+                ["q" => "What is a 'Scalable' Business Model?", "options" => ["A model made of clay", "A model where revenue can increase significantly without a matching increase in costs", "A model for a small shop", "A model that is free"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $entrep_course_id, "category_id" => 1,
+        "title" => "Map 76: Legal & MVP Basics", "desc" => "Register your business and build your Minimum Viable Product.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is an 'MVP'?", "options" => ["Most Valuable Player", "Minimum Viable Product", "Main Visual Project", "Managed Value Process"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the purpose of an MVP?", "options" => ["To make as much money as possible", "To test the core product idea with real users using minimal resources", "To show off to investors", "To build a perfect product"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Sole Proprietorship'?", "options" => ["A business with 100 owners", "A business owned and operated by one single person", "A government department", "A large corporation"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Limited Liability'?", "options" => ["Being responsible for everything", "Legal protection where owners aren't personally responsible for business debts", "Having no responsibility", "A type of insurance"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Partnership Agreement'?", "options" => ["A handshake", "A legal document outlining how a business is run by two or more people", "A marriage certificate", "A marketing plan"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Intellectual Property' (IP)?", "options" => ["Owning a house", "Creations of the mind (inventions, designs, logos) protected by law", "A fast computer", "A smart person"], "ans" => 1, "xp" => 180],
+                ["q" => "What does 'Trademark' protect?", "options" => ["An invention", "Brand names and logos", "A book's text", "A secret recipe"], "ans" => 1, "xp" => 180],
+                ["q" => "What does 'Copyright' protect?", "options" => ["A logo", "Original creative works (writing, music, art)", "A business name", "A machine"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'CIPC' in South Africa?", "options" => ["A type of bank", "Companies and Intellectual Property Commission (where you register businesses)", "A police department", "A marketing agency"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'PTY (LTD)'?", "options" => ["A public company", "Proprietary Limited (a private company structure)", "A non-profit", "A sports club"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Shareholder'?", "options" => ["A person who works for free", "A person or institution that owns at least one share of a company's stock", "A manager", "A customer"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Articles of Association'?", "options" => ["A list of products", "A document that defines a company's purpose and the duties of its directors", "A marketing flyer", "An invoice"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Compliance'?", "options" => ["Being friendly", "The act of obeying laws, regulations, and rules", "A type of advertising", "Hiring staff"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Tax Clearance'?", "options" => ["Paying no tax", "A document from the tax authority showing that a company's tax affairs are in order", "A type of bank loan", "A secret password"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'UI' in product design?", "options" => ["User Interface (how the product looks)", "User Interaction", "Universal Interest", "Unit Integration"], "ans" => 0, "xp" => 250],
+                ["q" => "What is 'UX'?", "options" => ["User Experience (how the user feels using the product)", "Unit Exercise", "Universal Exchange", "User Extra"], "ans" => 0, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is an 'NDA'?", "options" => ["New Digital Account", "Non-Disclosure Agreement (to keep secrets)", "No Data Allowed", "National Debt Agency"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Prototyping'?", "options" => ["Building a perfect product", "Creating a preliminary version of a product to test a concept", "Mass manufacturing", "Advertising"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Market Entry' strategy?", "options" => ["Opening the door", "The planned method of delivering goods or services to a new target market", "A type of tax", "Hiring a manager"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Product Life Cycle'?", "options" => ["The time it takes to build a product", "The stages a product goes through from launch to being taken off the market", "The batteries in a product", "A marketing flyer"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Vetting'?", "options" => ["A medical check for pets", "The process of performing a background check on someone before hiring or partnering", "Cleaning an office", "Selling shares"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Employment Equity'?", "options" => ["Paying everyone the same", "Ensuring equal opportunities for people from designated groups in the workplace", "Giving everyone a desk", "A type of tax"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'B-BBEE'?", "options" => ["A type of bee", "Broad-Based Black Economic Empowerment", "Business Building and Economic Entry", "Basic Business and Employee Equity"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the 'Board of Directors'?", "options" => ["The people who answer the phones", "A group of individuals elected to represent shareholders and oversee the company", "A list of customers", "A marketing team"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+
+    // CATEGORY 2: FINANCE & GROWTH (Maps 77-80)
+    [
+        "id" => ++$highest_id, "course_id" => $entrep_course_id, "category_id" => 2,
+        "title" => "Map 77: Entrepreneurial Finance", "desc" => "Manage cash flow, burn rate, and financial projections.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Cash Flow'?", "options" => ["Money in a river", "The total amount of money being transferred in and out of a business", "Total profit", "A bank loan"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Burn Rate'?", "options" => ["How fast the office is heating", "The rate at which a new company uses up its startup capital before generating positive cash flow", "The speed of sales", "The cost of electricity"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Runway' in a startup?", "options" => ["A path for airplanes", "The amount of time the business has until it runs out of money (Capital / Burn Rate)", "The size of the office", "A marketing plan"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Seed Capital'?", "options" => ["Money for gardening", "The initial funding used when starting a business", "A government tax", "Profit from sales"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Equity' in a business?", "options" => ["Being fair", "Ownership interest in a corporation (shares)", "A type of debt", "A bank statement"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Balance Sheet'?", "options" => ["A sheet for balancing", "A financial statement that reports assets, liabilities, and equity", "A list of daily sales", "A marketing flyer"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Profit and Loss' (P&L) statement?", "options" => ["A list of all users", "A summary of the revenues, costs, and expenses incurred during a specific period", "A bank loan document", "An invoice"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Gross Margin'?", "options" => ["Profit after tax", "Revenue minus Cost of Goods Sold (COGS)", "Total revenue", "The CEO's salary"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Break-even Point'?", "options" => ["Breaking a bone", "The point at which total revenue equals total costs", "Making a lot of money", "Losing everything"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Working Capital'?", "options" => ["Capital for a job", "The difference between current assets and current liabilities", "The office building", "A bank loan"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'ROI'?", "options" => ["Rate of Interest", "Return on Investment", "Regional Office Income", "Regular Office Index"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Accounts Receivable'?", "options" => ["Money you owe", "Money owed to the business by its customers", "The bank account", "Payroll"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Accounts Payable'?", "options" => ["Money customers owe you", "Money the business owes to its suppliers", "Total revenue", "Petty cash"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Depreciation'?", "options" => ["Gaining value", "The decrease in value of an asset over time", "A type of tax", "Saving money"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Pro Forma' statement?", "options" => ["A document for pros", "A financial projection based on assumptions and hypothetical scenarios", "A legal contract", "A receipt"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Valuation'?", "options" => ["A medical test", "The process of determining the present worth of an asset or a company", "The company name", "A marketing plan"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Debt Financing'?", "options" => ["Selling shares", "Borrowing money that must be repaid with interest", "Winning a prize", "Spending profit"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Equity Financing'?", "options" => ["Borrowing from a bank", "Raising capital by selling shares of the company", "Paying taxes", "A salary increase"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Capital Expenditure' (CapEx)?", "options" => ["Money for lunch", "Funds used by a company to acquire, upgrade, and maintain physical assets", "Daily utility bills", "Taxes"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Operating Expenditure' (OpEx)?", "options" => ["Buying a building", "The day-to-day expenses to keep the business running (rent, salaries)", "Selling shares", "Investing in stocks"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Liquidity'?", "options" => ["Being a liquid", "How quickly an asset can be converted into cash", "Being very fast", "Working underwater"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Financial Modeling'?", "options" => ["Fashion for bankers", "The task of building an abstract representation of a real world financial situation", "Drawing a bank", "Buying software"], "ans" => 1, "xp" => 400],
+                ["q" => "What is a 'Financial Audit'?", "options" => ["A large room", "An objective examination and evaluation of the financial statements of an organization", "A marketing plan", "Hiring staff"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'SaaS' metrics like LTV?", "options" => ["Lifetime Value (total revenue from one customer)", "Large Total Volume", "Legal Tax Value", "Lower Tier Version"], "ans" => 0, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $entrep_course_id, "category_id" => 2,
+        "title" => "Map 78: Branding & Digital Presence", "desc" => "Create a voice and identity that attracts and keeps customers.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Brand'?", "options" => ["Just a logo", "The perception and emotional response customers have toward a company", "The company name only", "An advertisement"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'SEO'?", "options" => ["Searching for Every Option", "Search Engine Optimization", "Secure Entry Office", "System Entry Order"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Social Media Marketing'?", "options" => ["Talking to friends", "Using social platforms to connect with your audience and build your brand", "Watching videos", "Deleting comments"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Content Marketing'?", "options" => ["Selling data", "Creating and sharing valuable free content to attract and convert prospects", "Buying advertisements", "Printing flyers"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Brand Identity'?", "options" => ["The CEO's ID card", "The visible elements of a brand, such as color, design, and logo", "A secret code", "A list of employees"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Call to Action' (CTA)?", "options" => ["A phone call", "A prompt that tells the user to perform a specific action (e.g., 'Buy Now')", "The title of a page", "A thank you message"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Email Marketing'?", "options" => ["Sending spam", "Sending commercial messages to a group of people using email", "Writing a letter", "Calling a customer"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Brand Awareness'?", "options" => ["Knowing the rules", "The extent to which customers are able to recall or recognize a brand", "Being smart", "Reading the news"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'PPC'?", "options" => ["Pay Per Click (advertising)", "Private Project Code", "Price Per Customer", "Public Phone Call"], "ans" => 0, "xp" => 210],
+                ["q" => "What is an 'Influencer'?", "options" => ["A boss", "A person who has the power to affect the purchasing decisions of others", "A fast computer", "A government official"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Engagement Rate'?", "options" => ["A wedding", "A metric that measures the level of interaction an audience has with your content", "The speed of sales", "The number of employees"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'User-Generated Content' (UGC)?", "options" => ["Professional news", "Content created by customers rather than the brand (e.g., reviews)", "A software code", "A textbook"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Landing Page'?", "options" => ["An airplane runway", "A standalone web page created specifically for a marketing campaign", "The home page", "A deleted page"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Conversion Rate'?", "options" => ["Changing money", "The percentage of users who take a desired action (e.g., making a purchase)", "A type of translation", "A salary increase"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Backlinking'?", "options" => ["Walking backwards", "When one website links to another (important for SEO)", "A broken link", "A type of virus"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Keywords'?", "options" => ["Passwords", "Specific words and phrases people use in search engines", "The title of a book", "A list of managers"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Brand Loyalty'?", "options" => ["Liking a company", "The tendency of consumers to continuously purchase one brand's products over others", "Buying things for free", "A type of discount"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Viral Marketing'?", "options" => ["A computer virus", "A method of marketing where consumers are encouraged to share information about a product via the internet", "A hospital ad", "A slow marketing plan"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Omnichannel'?", "options" => ["Using one phone", "Providing a seamless customer experience across all channels (Online, Store, Phone)", "A new TV station", "A marketing award"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Affiliate Marketing'?", "options" => ["Selling to family", "A performance-based marketing where a business rewards affiliates for each visitor or customer brought", "A type of loan", "A bank statement"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Retargeting'?", "options" => ["Aiming a gun", "Showing ads to people who have already visited your website", "Finding new customers", "Deleting old ads"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Copywriting'?", "options" => ["Copying a book", "The act of writing text for the purpose of advertising or other forms of marketing", "A legal right", "Typing fast"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Aesthetics' in branding?", "options" => ["The office furniture", "The visual principles of beauty and taste in design", "The price of the product", "The marketing plan"], "ans" => 1, "xp" => 400],
+                ["q" => "What is a 'Niche' market?", "options" => ["A hole in the wall", "A small, specialized segment of the market for a particular kind of product or service", "The whole world", "A type of store"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $entrep_course_id, "category_id" => 2,
+        "title" => "Map 79: Sales & Networking", "desc" => "Close deals, build partnerships, and expand your reach.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Sales Funnel'?", "options" => ["A tool for pouring oil", "The journey potential customers go through on the way to purchase", "A list of employees", "A type of factory"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Networking'?", "options" => ["Connecting computers", "Building and maintaining relationships with other professionals", "Using social media only", "Talking to yourself"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Prospect'?", "options" => ["A gold miner", "A potential customer who has been qualified", "A current employee", "A competitor"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Lead Generation'?", "options" => ["Creating metal", "The process of identifying and cultivating potential customers", "Hiring staff", "Selling products"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Closing the Deal'?", "options" => ["Locking the office", "The final stage of the sales process where the customer makes a purchase", "Ending a meeting", "Sending an email"], "ans" => 1, "xp" => 180],
+                ["q" => "What is an 'Elevator Pitch'?", "options" => ["A ride in an elevator", "A short, persuasive speech used to spark interest in what your organization does", "A 50-page document", "A movie script"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'B2B Sales'?", "options" => ["Selling to individuals", "Selling products or services from one business to another", "A type of bank loan", "Selling at a market"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Cold Calling'?", "options" => ["A call in winter", "Making an unsolicited visit or telephone call to someone in an attempt to sell goods", "Hanging up", "A technical support call"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Referral'?", "options" => ["A mistake", "When a customer recommends your business to another person", "A type of tax", "A bank loan"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'CRM'?", "options" => ["Company Relationship Management", "Customer Relationship Management", "Common Resource Model", "Corporate Record Management"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Handling Objections'?", "options" => ["Arguing with a client", "Addressing customer concerns and barriers to purchase", "Ignoring the client", "Crying during a sale"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Social Selling'?", "options" => ["Selling at a party", "Using social media to find, connect with, and nurture sales prospects", "Hiring friends", "Giving products for free"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Active Listening' in sales?", "options" => ["Nodding without listening", "Fully focusing on what is being said to understand the customer's needs", "Talking while they talk", "Ignoring the client"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Upselling'?", "options" => ["Selling things on a hill", "Encouraging a customer to purchase a more expensive version of a product", "Selling things for free", "Ignoring a customer"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Cross-selling'?", "options" => ["Selling to angry customers", "Selling related or complementary products to a customer", "Selling to a competitor", "Selling in a different language"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Soft Sell'?", "options" => ["Selling a pillow", "An advertising or sales approach that is subtle and low-pressure", "Selling for a low price", "Hiring a salesman"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Strategic Partnership'?", "options" => ["A friendship", "A mutually beneficial relationship between two companies to reach a common goal", "A legal battle", "A bank loan"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Sales Qualification'?", "options" => ["Getting a degree", "Determining if a lead is likely to become a customer", "Hiring staff", "Selling products"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Negotiation'?", "options" => ["Fighting", "A discussion aimed at reaching an agreement", "A command", "A secret"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Empathy' in sales?", "options" => ["Feeling sorry", "Understanding the customer's perspective and feelings", "Agreeing with a lie", "Being loud"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Value-Based Selling'?", "options" => ["Selling for the lowest price", "Selling based on the benefits and outcomes the customer receives", "Selling expensive items only", "Giving things for free"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Sales Velocity'?", "options" => ["The speed of a car", "The speed at which leads move through your sales funnel and generate revenue", "The volume of a voice", "A type of tax"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Rapport'?", "options" => ["A legal report", "A harmonious connection and mutual trust with a person", "The end of a shift", "A bill"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the 'Golden Rule' of networking?", "options" => ["Ask for money first", "Give more value than you take", "Hand out 1,000 flyers", "Talk as fast as you can"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $entrep_course_id, "category_id" => 2,
+        "title" => "Map 80: Operations & Supply Chain", "desc" => "Manage the engine room of your business.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Operations Management'?", "options" => ["Fixing machinery", "Designing and controlling the process of production and business operations", "Managing the cleaning staff", "Hiring employees"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Supply Chain'?", "options" => ["A chain made of metal", "The network of individuals and companies involved in creating and delivering a product", "A list of office keys", "A type of software"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Logistics'?", "options" => ["Logic puzzles", "The detailed coordination of a complex operation involving many people or supplies", "Writing an agenda", "Designing a logo"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Inventory'?", "options" => ["A discovery", "A complete list of items such as property or goods in stock", "A type of tax", "A bank account"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Just-in-Time' (JIT) production?", "options" => ["Being late", "A strategy to increase efficiency by receiving goods only as they are needed in production", "A fast computer", "A government law"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Outsourcing'?", "options" => ["Working outside the office", "Hiring an external party to perform services", "Selling office equipment", "Hiring more managers"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Quality Control'?", "options" => ["Being nice to staff", "A system of maintaining standards in manufactured products", "A type of sales", "Hiring an accountant"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Procurement'?", "options" => ["Cleaning the office", "The act of obtaining goods or services for business purposes", "Selling products", "Hiring staff"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Workflow'?", "options" => ["The speed of the internet", "The sequence of processes through which a piece of work passes from start to finish", "Working in a gym", "The office air conditioning"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Vendor Management'?", "options" => ["Managing a shop", "The process of managing relationships with third-party suppliers", "Hiring new employees", "Designing products"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Scalability'?", "options" => ["How heavy a product is", "The ability of a system to handle a growing amount of work by adding resources", "The number of stairs in the building", "The color of the logo"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Standard Operating Procedure' (SOP)?", "options" => ["A type of software", "Established step-by-step instructions for routine activities", "The company's legal name", "The layout of the office"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Lead Time'?", "options" => ["The time spent leading", "The time between the start and completion of a production process", "The duration of a meeting", "A type of clock"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Customer Fulfillment'?", "options" => ["Making customers happy", "The process of receiving, packaging, and shipping orders to customers", "Hiring more staff", "Asking for money"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'E-commerce'?", "options" => ["Selling only books", "Commercial transactions conducted electronically over the internet", "A type of engine", "A fast computer"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Cloud Computing' for ops?", "options" => ["Working in the rain", "Using remote servers to store and process data rather than a local server", "A weather report", "A type of airplane"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Automation'?", "options" => ["A type of car", "The use of technology to perform tasks with reduced human assistance", "Fixing machinery", "A new marketing plan"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Risk Management' in ops?", "options" => ["Taking risks", "Identifying and preparing for potential operational failures", "Buying insurance", "Ignoring problems"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Asset Management'?", "options" => ["Managing a bank account", "The process of tracking and managing the physical and digital assets of an organization", "A type of backup", "A software update"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Lean Manufacturing'?", "options" => ["A small factory", "A systematic method for waste minimization within a manufacturing system", "Making low-calorie food", "Working alone"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Six Sigma'?", "options" => ["A brand of car", "A set of techniques for process improvement and reducing errors", "A programming language", "A type of phone"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Agile' in operations?", "options" => ["Being very fast", "An iterative approach that focuses on flexibility and speed", "A programming language", "A type of server"], "ans" => 1, "xp" => 400],
+                ["q" => "What is a 'Bottleneck'?", "options" => ["A part of a bottle", "A point in a process where the workflow is slowed down or stopped", "A very fast PC", "A type of cooling"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Operational Efficiency'?", "options" => ["Being nice to everyone", "The ability of an organization to deliver products in the most cost-effective manner", "Having the most employees", "Using the newest computers"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+
+    // CATEGORY 3: STRATEGY & CAPSTONE (Maps 81-84)
+    [
+        "id" => ++$highest_id, "course_id" => $entrep_course_id, "category_id" => 3,
+        "title" => "Map 81: Funding & Capital Raising", "desc" => "Pitch to investors and secure the resources to grow.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Venture Capital'?", "options" => ["A bank loan", "Funding provided to startups that have high growth potential", "A government grant", "Personal savings"], "ans" => 1, "xp" => 150],
+                ["q" => "What is an 'Angel Investor'?", "options" => ["A religious figure", "A wealthy individual who provides capital for a business start-up", "A manager", "A government agency"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Crowdfunding'?", "options" => ["Borrowing from one person", "Raising small amounts of money from a large number of people, typically via the internet", "A bank loan", "Selling products at a market"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Equity' in investment?", "options" => ["Being fair", "Giving up a percentage of ownership in exchange for capital", "A type of debt", "A bank statement"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Pitch Deck'?", "options" => ["A pack of cards", "A brief presentation used to provide an overview of your business plan to investors", "A 50-page document", "A movie script"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Valuation'?", "options" => ["A medical test", "Determining the present worth of a company", "The company name", "A marketing plan"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Burn Rate'?", "options" => ["Heating an office", "The rate at which a company is losing money", "The speed of sales", "The cost of electricity"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Bootstrapping'?", "options" => ["Buying shoes", "Self-funding your startup using your own savings and revenue", "Getting a massive loan", "Selling shares"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Due Diligence'?", "options" => ["Working hard", "The investigation an investor does before making an investment", "Paying taxes", "Hiring a manager"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Series A' round?", "options" => ["The first ever money", "The first significant round of venture capital financing", "A bank loan", "A small prize"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Dilution'?", "options" => ["Adding water", "When a founder's ownership percentage decreases as new shares are issued to investors", "Selling the company", "Hiring staff"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Convertible Debt'?", "options" => ["A car loan", "A loan that can be converted into equity at a later date", "A gift", "A type of tax"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is an 'Exit Strategy'?", "options" => ["The door to the building", "A founder's plan to sell their ownership in a company to investors or another company", "A fire drill", "Quitting your job"], "ans" => 1, "xp" => 250],
+                ["q" => "What is an 'IPO'?", "options" => ["Internal Project Order", "Initial Public Offering (selling shares to the public)", "International Price Office", "Instant Profit Only"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Acquisition'?", "options" => ["Buying a competitor", "When one company purchases most or all of another company's shares", "Starting a business", "Closing a shop"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Term Sheet'?", "options" => ["A dictionary", "A non-binding document outlining the basic terms and conditions of an investment", "A school test", "A list of users"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Pre-money' valuation?", "options" => ["Money in the bank", "The value of a company before it receives investment", "The profit from last year", "A bank loan"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Post-money' valuation?", "options" => ["Money after tax", "The value of a company after it receives investment (Pre-money + Investment)", "The total sales", "The CEO's salary"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Burn Multiple'?", "options" => ["Burning a forest", "A metric that evaluates how much a startup is burning in order to generate net new revenue", "A type of tax", "A salary bonus"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Smart Money'?", "options" => ["Money with brains", "Capital that comes with valuable advice, connections, and expertise from investors", "A bank loan", "Winning a prize"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Cap Table'?", "options" => ["A table for hats", "A spreadsheet showing the ownership stakes in a company", "A financial audit", "A list of office furniture"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Vesting'?", "options" => ["Wearing a vest", "The process of earning the right to shares over time", "Selling shares quickly", "Giving away profit"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Down Round'?", "options" => ["A sad song", "A round of financing where a company's valuation is lower than its previous round", "A type of tax", "Closing the company"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the 'Valley of Death'?", "options" => ["A scary movie", "The period between starting a business and generating positive cash flow when risk is highest", "A failed startup", "A type of marketing"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $entrep_course_id, "category_id" => 3,
+        "title" => "Map 82: Growth & Scaling", "desc" => "Take your business from a small team to a global player.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Growth Hacking'?", "options" => ["Hacking into computers", "Using low-cost, creative strategies to help a business acquire as many customers as possible", "Hiring more people", "Buying ads"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Scaling'?", "options" => ["Weighing a product", "The process of growing a business's revenue much faster than its costs", "Buying a larger office", "Increasing the font size"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Viral Loop'?", "options" => ["A computer virus", "A mechanism where users invite others, creating exponential growth", "A circular logic", "A type of marketing"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Customer Acquisition Cost' (CAC)?", "options" => ["The salary of a salesman", "The total cost of convincing a potential customer to buy", "The price of the product", "Office rent"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Lifetime Value' (LTV)?", "options" => ["The weight of a client", "The total revenue a business expects from a single customer over time", "The duration of a sale", "The age of the founder"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Blitzscaling'?", "options" => ["A type of weather", "Prioritizing speed over efficiency in an environment of uncertainty", "Slow and steady growth", "Closing the business"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Product-Led Growth'?", "options" => ["Marketing leading growth", "When the product itself is the main driver of customer acquisition and retention", "Sales leading growth", "Hiring more managers"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Global Expansion'?", "options" => ["Buying a map", "Entering international markets to grow a business", "Moving to a new city", "Hiring remote staff"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Franchising'?", "options" => ["A type of law", "Granting a license to another to trade under your brand name for a fee", "Selling your company", "Starting a new business"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Market Saturation'?", "options" => ["Getting wet", "When the volume of a product in a market has reached its maximum potential", "A type of marketing", "Buying a competitor"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Retention Rate'?", "options" => ["Firing people", "The percentage of customers who continue to use a service over time", "Changing shifts", "Promoting people"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Organic Growth'?", "options" => ["Gardening", "Growth achieved through internal expansion and sales rather than acquisition", "Buying a competitor", "Getting a loan"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Inorganic Growth'?", "options" => ["Artificial food", "Growth through mergers or acquisitions", "Slow sales", "Hiring an intern"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Strategic Pivot'?", "options" => ["Closing the business", "A fundamental change in the company's direction to foster growth", "A type of dance", "A small change"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Sustainability' in growth?", "options" => ["Growing forever", "Growing at a pace that can be maintained without crashing", "Saving money", "A type of marketing"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Leverage'?", "options" => ["A tool for moving heavy things", "Using existing resources or debt to increase the potential return of an investment", "Being loud", "Working alone"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Human Capital' in scaling?", "options" => ["Money owned by humans", "The collective skills and knowledge of the team needed for growth", "The company building", "A list of employees"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Organizational Culture' during scaling?", "options" => ["The art in the office", "The shared values that must be maintained even as the company grows", "The company rules", "The dress code"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Leadership Transition'?", "options" => ["Hiring a new intern", "The process of moving from a founder-led to a manager-led organization", "Changing clothes", "Moving offices"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Bureaucracy' in large startups?", "options" => ["A type of desk", "Complex systems and rules that can slow down growth and innovation", "A fast computer", "A government law"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Exit' in entrepreneurship?", "options" => ["The door", "Selling the company or going public (IPO)", "Quitting your job", "A fire drill"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Acqui-hiring'?", "options" => ["Hiring a new manager", "Acquiring a company primarily for its talented employees", "Firing a team", "A type of training"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Synergy' in mergers?", "options" => ["Fighting", "The combined power of two companies being greater than the sum of their parts", "A type of software", "Buying a competitor"], "ans" => 1, "xp" => 400],
+                ["q" => "What is a 'Global Mindset'?", "options" => ["Buying a map", "The ability to recognize and adapt to cultural and economic differences worldwide", "Knowing every country", "Speaking many languages"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $entrep_course_id, "category_id" => 3,
+        "title" => "Map 83: Ethics, Leadership & Future", "desc" => "Lead with integrity and prepare for the next wave of technology.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Entrepreneurial Ethics'?", "options" => ["Doing math at work", "The application of moral principles to business behavior and decisions", "The company's rules on dress code", "A type of accounting"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Corporate Social Responsibility' (CSR)?", "options" => ["Working on the weekend", "A model where companies operate in ways that enhance society", "Paying taxes", "A marketing strategy"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Transparency'?", "options" => ["A clear window", "Operating in a way that is easy for others to see what actions are performed", "A type of software", "Hiding the truth"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Integrity' in leadership?", "options" => ["Being smart", "The quality of being honest and having strong moral principles", "Knowing the rules", "Following orders"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Social Impact'?", "options" => ["Being famous", "The effect an organization's actions have on the well-being of the community", "A type of advertising", "The number of followers"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Sustainability'?", "options" => ["Working forever", "Meeting current needs without compromising future generations", "Saving money", "A type of marketing"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Conscious Capitalism'?", "options" => ["Greed is good", "A philosophy that businesses should serve all stakeholders, not just owners", "Being unconscious", "A government law"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Triple Bottom Line'?", "options" => ["Profit, Profit, Profit", "People, Planet, Profit", "Sales, Marketing, IT", "Money, Power, Fame"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Servant Leadership'?", "options" => ["Being a servant", "A leadership philosophy where the main goal of the leader is to serve", "A strict leader", "A leader who does no work"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Emotional Intelligence' (EQ)?", "options" => ["Being smart", "The capacity to be aware of and handle interpersonal relationships judiciously", "Being emotional", "Crying at work"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Delegation'?", "options" => ["Doing all the work", "Entrusting a task or responsibility to another person", "Hiring new staff", "Quitting a job"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Team Building'?", "options" => ["Building a house", "The process of creating a team that works well together", "A type of software", "A team meeting"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Conflict Resolution'?", "options" => ["Starting a fight", "The process of finding a peaceful solution to a disagreement", "Ignoring the problem", "Telling the boss"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Change Management'?", "options" => ["Counting cash", "The process of transitioning individuals or teams to a future state", "Changing the office", "Updating software"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Mentorship'?", "options" => ["Teaching a class", "A relationship where a more experienced person guides a less experienced one", "Paying for a tutor", "Hiring a new manager"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Authentic Leadership'?", "options" => ["Being fake", "Leading in a way that is true to one's own values and personality", "Following a script", "Being loud"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Disruptive Technology'?", "options" => ["Technology that breaks", "An innovation that significantly alters the way industries operate", "A loud computer", "A type of firewall"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Artificial Intelligence' (AI) in startups?", "options" => ["A robot person", "Simulation of human intelligence by machines to improve business processes", "A fast computer", "A fake computer"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Blockchain' for entrepreneurship?", "options" => ["A metal chain", "A decentralized ledger that can improve transparency and trust in transactions", "A security fence", "A backup system"], "ans" => 1, "xp" => 300],
+                ["q" => "What is the 'Fourth Industrial Revolution'?", "options" => ["A war", "The fusion of technologies blurring the lines between physical, digital, and biological spheres", "A history lesson", "A new computer brand"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Future-Proofing'?", "options" => ["Buying a time machine", "Anticipating the future and developing methods of minimizing the effects of shocks", "Saving money only", "Hiring more staff"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Inclusive Innovation'?", "options" => ["Hiring everyone", "Innovation that includes and benefits people who are marginalized or excluded", "A private secret", "A type of code"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Economic Sovereignty'?", "options" => ["Owning a bank", "The power of a country or group to make its own economic decisions", "Free data", "High-quality data"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Visionary Leadership'?", "options" => ["Being a boss", "The ability to see the potential for change and inspire others to achieve a common goal", "Having good eyes", "Following orders"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $entrep_course_id, "category_id" => 3,
+        "title" => "Map 84: Capstone: The Pitch Deck", "desc" => "The final exam. Bring it all together in one world-class business pitch.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "SCENARIO: You have an idea but no money. What is the BEST first step?", "options" => ["Ask for a $1M loan", "Build an MVP and validate the idea with potential customers", "Rent a fancy office", "Hire 10 employees"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: Your burn rate is $10k/month and you have $20k in the bank. What is your runway?", "options" => ["2 months", "1 year", "6 months", "10 days"], "ans" => 0, "xp" => 200],
+                ["q" => "SCENARIO: A customer loves your product but wants a feature you didn't plan. What is this?", "options" => ["A distraction", "Valuable feedback for the next iteration", "A reason to quit", "A mistake"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: You need to pitch to an investor in 2 minutes. What do you use?", "options" => ["A 50-page report", "An Elevator Pitch", "A silent video", "A list of every expense"], "ans" => 1, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "SCENARIO: Your product isn't selling. What is the entrepreneurial term for changing direction?", "options" => ["Failing", "Pivoting", "Quitting", "Closing"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: You want to ensure you aren't personally liable for company debts. What structure do you use?", "options" => ["Sole Proprietor", "PTY (LTD) / Private Company", "Partnership", "Informal group"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: You need to protect your unique invention from being copied. What do you apply for?", "options" => ["A Trademark", "A Patent", "A Copyright", "A secret"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: You are spending $100 to get one customer who spends $500. Is this good unit economics?", "options" => ["No, you lost money", "Yes, LTV is higher than CAC", "It depends on the weather", "No, CAC is too low"], "ans" => 1, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "SCENARIO: You are hiring your first employee. What should you prioritize?", "options" => ["Low salary", "Cultural fit and multi-skilled adaptability", "Family members only", "Being the boss"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: A competitor launches a similar product for half the price. What analysis do you do?", "options" => ["SWOT and Competitive Analysis", "Give up immediately", "Call the police", "Lower your price blindly"], "ans" => 0, "xp" => 280],
+                ["q" => "SCENARIO: You want to grow exponentially using your current users. What do you build?", "options" => ["A billboard", "A Viral Loop / Referral System", "A larger factory", "A new website"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: You need to raise $500k for expansion. Which group do you pitch to?", "options" => ["Your bank only", "Venture Capitalists or Angel Investors", "Your employees", "Random people on the street"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "SCENARIO: You found a way to cut costs while doubling output. What is this called?", "options" => ["Operational Efficiency", "Marketing", "Branding", "Ethics"], "ans" => 0, "xp" => 350],
+                ["q" => "SCENARIO: You discover your business is harming the environment. What is the ethical action?", "options" => ["Hide it", "Implement a CSR / Sustainability strategy", "Close the business", "Blame the supplier"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: You want to reach a global audience with low costs. What do you prioritize?", "options" => ["Opening 10 offices", "Digital Marketing and E-commerce", "Hiring 100 sales people", "Printing 1 million flyers"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: You are preparing a pitch deck. What should the first slide be?", "options" => ["The budget", "The Problem and Value Proposition", "The CEO's photo", "A list of all tools"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "MASTER FINAL: What is the primary focus of an effective Entrepreneur?", "options" => ["Making everyone happy", "Problem-solving, value creation, and sustainable growth", "Buying the best computers", "Having the largest office"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: In high-level scaling, what determines the success of the company?", "options" => ["The number of employees", "Strategic alignment, culture, and operational efficiency", "Having a lot of money", "Hiring a famous CEO"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: Why is validation more important than the idea itself?", "options" => ["It's not", "Because an idea is worthless if no one is willing to pay for it", "Because ideas are free", "Because validation is fun"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: What is 'Grit' in entrepreneurship?", "options" => ["Sand", "Passion and perseverance for long-term goals", "Being angry", "Working 1 hour a day"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "EXAM: How do Marketing, Finance, and Ops interact in a startup?", "options" => ["They are separate", "They are interdependent; Marketing finds users, Ops delivers value, and Finance manages the capital", "They compete for resources", "They only interact during parties"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: What is the most critical factor for a startup's long-term survival?", "options" => ["A lot of cash", "Adaptability and Product-Market Fit", "A famous founder", "The best logo"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: What is the true goal of an entrepreneur's journey?", "options" => ["Getting a job", "Building a scalable and repeatable business model that creates value", "Winning a prize", "Hiring friends"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: What is the hallmark of a world-class founder?", "options" => ["Being aggressive", "Vision, resilience, and the ability to empower a high-performing team", "Making all decisions alone", "A high salary"], "ans" => 1, "xp" => 600]
+            ]]
+        ]
+    ]
+];
+
+// ==========================================================
+// FINANCIAL ADMINISTRATION CURRICULUM (Maps 85-96)
+// ==========================================================
+$fin_maps = [
+    // CATEGORY 1: TRANSACTIONAL OPERATIONS (Maps 85-88)
+    [
+        "id" => ++$highest_id, "course_id" => $fin_course_id, "category_id" => 1,
+        "title" => "Map 85: Intro to Financial Admin", "desc" => "The role of the finance office, ethics, and basic accounting cycles.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the primary objective of Financial Administration?", "options" => ["To hide money from the government", "To record, manage, and report on the financial health of an entity", "To only pay the CEO", "To fix computer hardware"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the 'Accounting Equation'?", "options" => ["Revenue - Tax = Profit", "Assets = Liabilities + Equity", "Cash + Bank = Debt", "Income x 2 = Wealth"], "ans" => 1, "xp" => 150],
+                ["q" => "Which of these is considered a 'Current Asset'?", "options" => ["A building", "Cash and Bank balances", "Long-term loans", "The company's brand name"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Double-Entry' bookkeeping?", "options" => ["Writing the same number twice", "The system where every transaction affects at least two accounts (Debit and Credit)", "Hiring two accountants", "Printing two copies of every receipt"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What does 'GAAP' stand for?", "options" => ["General Asset and Account Plan", "Generally Accepted Accounting Principles", "Global Accounting and Audit Policy", "Government Approved Account Process"], "ans" => 1, "xp" => 180],
+                ["q" => "What is the 'Fiscal Year'?", "options" => ["A year with 13 months", "A 12-month period used for financial reporting", "The calendar year only", "The time it takes to audit a firm"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Liability'?", "options" => ["Something you own", "Something the business owes to an outside party", "Total sales revenue", "An employee's salary"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Equity'?", "options" => ["The amount of debt", "The owner's residual interest in the assets after deducting liabilities", "The total cash in the safe", "A type of tax"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the 'General Ledger'?", "options" => ["A book of company rules", "The master record of all the company's financial transactions", "A list of employee names", "A marketing plan"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Debit' (DR)?", "options" => ["An entry on the right side of an account", "An entry on the left side of an account", "A type of bank card only", "A refund from a customer"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Credit' (CR)?", "options" => ["An entry on the left side of an account", "An entry on the right side of an account", "Getting a loan", "The same as revenue"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Trial Balance' used for?", "options" => ["To calculate tax", "To ensure total debits equal total credits", "To see who is the best employee", "To pay suppliers"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Depreciation'?", "options" => ["An increase in value", "The systematic reduction of the recorded cost of a fixed asset over its useful life", "A bank fee", "Hiding money"], "ans" => 1, "xp" => 250],
+                ["q" => "What are 'Fixed Assets'?", "options" => ["Cash in hand", "Long-term resources like machinery, buildings, and vehicles", "Stationery and pens", "Monthly sales"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Liquidity'?", "options" => ["Water in the office", "The ability of a business to pay its short-term debts", "The total value of a company", "The speed of the internet"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Chart of Accounts'?", "options" => ["A map of the office", "A list of all accounts used by a business to record transactions", "A list of customers", "A graph of sales"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the 'Accrual' basis of accounting?", "options" => ["Recording transactions only when cash moves", "Recording transactions when they occur, regardless of when cash is exchanged", "Paying taxes early", "Ignoring small expenses"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Cash-based' accounting?", "options" => ["Accounting with no computers", "Recording income and expenses only when cash is actually received or paid", "Using only physical coins", "Hiding money in a safe"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Materiality' in finance?", "options" => ["The type of paper used", "Whether an omission or misstatement of info could influence decisions", "The weight of the safe", "The office furniture"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Financial Audit'?", "options" => ["A type of meeting", "An independent examination of financial statements to ensure accuracy and compliance", "Counting the inventory", "Buying new software"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Ethical Conduct' in finance?", "options" => ["Following the boss blindly", "Maintaining integrity, objectivity, and confidentiality", "Making as much profit as possible at any cost", "Deleting records to save space"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Prudence' in accounting?", "options" => ["Being very fast", "Being cautious and not overstating assets or income", "Paying the highest tax", "Ignoring risks"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Transparency'?", "options" => ["A glass window", "Clear and open disclosure of financial information", "Hiding debt from investors", "Using secret codes"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the primary role of an 'Administrator' in finance?", "options" => ["To sign all checks", "To facilitate, organize, and ensure the accuracy of financial processes", "To trade on the stock market", "To fix the printer"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $fin_course_id, "category_id" => 1,
+        "title" => "Map 86: Banking & Cash Management", "desc" => "Reconciliations, internal controls, and electronic payments.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Bank Reconciliation'?", "options" => ["Closing a bank account", "Matching the bank statement balance with the company's internal records", "Asking for a loan", "Changing the bank password"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Petty Cash'?", "options" => ["Money for pets", "A small amount of physical cash for minor office expenses", "The CEO's bonus", "Money in a bank vault"], "ans" => 1, "xp" => 150],
+                ["q" => "What is an 'EFT'?", "options" => ["Electronic Fund Transfer", "Easy Financial Time", "Every Fund Total", "End Fast Transaction"], "ans" => 0, "xp" => 150],
+                ["q" => "What is 'Float' in a cash drawer?", "options" => ["Money in a river", "The starting amount of cash used to provide change to customers", "The profit for the day", "A type of tax"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Debit Order'?", "options" => ["A customer paying cash", "An instruction to a bank to pay a third party a recurring amount from your account", "A refund to a supplier", "Closing the business"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Cash Flow' management?", "options" => ["Counting coins", "Ensuring there is enough cash on hand to meet obligations as they fall due", "Making the most profit", "Hiding money"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Stop Payment'?", "options" => ["Quitting your job", "An instruction to a bank not to honor a specific check or payment", "Unplugging the ATM", "A bank holiday"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Internal Control' over cash?", "options" => ["A locked door", "Policies like 'separation of duties' to prevent theft and errors", "Having only one person touch money", "Having no records"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Separation of Duties'?", "options" => ["Firing half the staff", "Ensuring the person who handles cash is not the same person who records it", "Working in two offices", "Dividing the profit"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Overdraft'?", "options" => ["A draft in the office", "When you spend more money than is in your bank account", "A type of investment", "A salary bonus"], "ans" => 1, "xp" => 210],
+                ["q" => "What is an 'Outstanding Check'?", "options" => ["A check that is very good", "A check written by the company but not yet cleared by the bank", "A fake check", "A check for a million dollars"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Deposit in Transit'?", "options" => ["Money lost in the mail", "A deposit made but not yet reflected on the bank statement", "A bank loan", "Money given to a supplier"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'KYC' in banking?", "options" => ["Keep Your Cash", "Know Your Customer (anti-fraud process)", "Kill Your Costs", "Key Yield Calculation"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Money Laundering'?", "options" => ["Cleaning money with soap", "Disguising the origins of illegally obtained money", "Saving money in a bank", "Spending too much cash"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Swift Code' used for?", "options" => ["Speeding up a PC", "Identifying a specific bank during international transfers", "A secret password", "A type of tax"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Fiduciary' relationship?", "options" => ["Being friends", "A relationship of trust where one party manages money for another", "A legal battle", "Hiring a new intern"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Interest' income?", "options" => ["Liking your job", "Money earned for lending money or keeping it in a savings account", "Total sales", "A type of tax"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Bank Charge'?", "options" => ["A physical charge", "A fee the bank takes for maintaining your account or processing transactions", "A battery for the safe", "A loan from the bank"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Liquidity Ratio'?", "options" => ["A math problem", "A metric used to determine a company's ability to pay off its short-term debts", "The speed of sales", "The office rent"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Cash Equivalents'?", "options" => ["Fake money", "Short-term, highly liquid investments that are easily converted to cash", "A type of coin", "The company's furniture"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Lockbox' system?", "options" => ["A safe in the wall", "A service where a bank receives and processes payments on behalf of a company", "A type of computer code", "A marketing plan"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Float' in banking reconciliation?", "options" => ["Being lazy", "The time it takes for money to move from one account to another", "The size of the bank", "The number of customers"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Positive Pay'?", "options" => ["Paying employees more", "An anti-fraud service where a bank only pays checks that match a provided list", "Winning a prize", "Being happy at work"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the 'Cash Accounting' cycle?", "options" => ["A bike ride", "The process of tracking cash from receipt to disbursement", "A type of tax", "Buying shares"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $fin_course_id, "category_id" => 1,
+        "title" => "Map 87: Invoicing & Accounts Receivable", "desc" => "Master the billing process, credit terms, and debt collection.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is an 'Invoice'?", "options" => ["A receipt", "A document requesting payment for goods or services", "A bank statement", "A marketing flyer"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Accounts Receivable' (AR)?", "options" => ["Money you owe", "Money customers owe to the business", "The company bank account", "Tax paid"], "ans" => 1, "xp" => 150],
+                ["q" => "What are 'Credit Terms'?", "options" => ["Names for employees", "The agreed-upon timeframe and conditions for payment (e.g., Net 30)", "A type of bank loan", "The price of the product"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Statement' in AR?", "options" => ["A speech", "A summary of all invoices and payments for a customer over a period", "A legal contract", "A marketing plan"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Aging' of accounts receivable?", "options" => ["Getting old", "Categorizing unpaid invoices by how long they have been outstanding", "Deleting old records", "Giving a discount"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Credit Limit'?", "options" => ["The amount of debt", "The maximum amount of credit a business allows a customer to have", "A bank fee", "The price of an office"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Bad Debt'?", "options" => ["Money you owe", "Money owed to you that is unlikely to be collected", "A type of tax", "A bank loan"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Write-off'?", "options" => ["Writing a book", "Removing an uncollectible debt from the accounting records", "Paying a bill", "Giving a bonus"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Credit Note'?", "options" => ["A thank you note", "A document issued by a seller to reduce the amount the buyer owes", "A bank loan", "A marketing flyer"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Pro-forma Invoice'?", "options" => ["A formal invoice", "A preliminary bill sent in advance of a shipment of goods", "A final receipt", "A type of tax"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Dunning'?", "options" => ["A type of food", "The process of methodically communicating with customers to collect debts", "Closing a business", "Hiring staff"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Factoring' of receivables?", "options" => ["Math", "Selling your unpaid invoices to a third party at a discount for immediate cash", "Hiring an accountant", "Deleting records"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Sales Tax' (VAT)?", "options" => ["Profit", "An indirect tax on the consumption of goods and services", "A salary bonus", "A bank fee"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Revenue Recognition'?", "options" => ["Making money", "The accounting principle that determines when revenue is officially recorded", "Hiding profit", "Buying a new PC"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Trade Credit'?", "options" => ["Trading goods", "When a business buys goods and pays for them at a later date", "A bank loan", "A type of share"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Remittance Advice'?", "options" => ["A doctor's note", "A document sent by a customer to a seller informing them that an invoice has been paid", "A marketing flyer", "An invoice"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Collection Ratio'?", "options" => ["A math problem", "A metric showing how well a company is collecting its receivables", "Total sales", "A type of tax"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Provision for Doubtful Debts'?", "options" => ["Hiding money", "An estimation of the amount of accounts receivable that may become bad debt", "A bank account", "Paying tax"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Customer Credit Risk'?", "options" => ["Buying a computer", "The risk that a customer will not be able to pay their bills", "A marketing plan", "Hiring staff"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Automation' in AR?", "options" => ["A type of car", "Using software to automatically generate and send invoices/reminders", "Fixing a phone", "Doing math on paper"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'DSO' (Days Sales Outstanding)?", "options" => ["A type of tax", "The average number of days it takes for a company to collect payment after a sale", "The speed of light", "Total profit"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Recourse' in factoring?", "options" => ["A type of food", "The right of the factor to claim back money if a customer doesn't pay", "Closing a shop", "Hiring a new manager"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Deferred Revenue'?", "options" => ["Total profit", "Money received for goods or services not yet delivered", "A bank loan", "A salary bonus"], "ans" => 1, "xp" => 400],
+                ["q" => "What is a 'Consignment' sale?", "options" => ["A fast sale", "When a seller sends goods to a buyer but retains ownership until they are sold", "A type of tax", "Hiding inventory"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $fin_course_id, "category_id" => 1,
+        "title" => "Map 88: Accounts Payable & Vendors", "desc" => "Manage suppliers, purchase orders, and outgoing payments.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Accounts Payable' (AP)?", "options" => ["Money customers owe you", "Money the business owes to its suppliers", "Total profit", "A salary bonus"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Purchase Order' (PO)?", "options" => ["A receipt", "A formal request/contract from a buyer to a seller to purchase goods", "A bank statement", "A marketing flyer"], "ans" => 1, "xp" => 150],
+                ["q" => "Who is a 'Vendor'?", "options" => ["An employee", "A person or company offering something for sale (a supplier)", "A manager", "A customer"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Disbursement'?", "options" => ["Receiving money", "The act of paying out money from a fund or account", "A type of tax", "Hiding cash"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Three-way Matching'?", "options" => ["Matching 3 people", "Verifying the Purchase Order, Receiving Report, and Vendor Invoice before payment", "Buying 3 items", "Closing 3 accounts"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Vendor Statement'?", "options" => ["A marketing speech", "A report from a supplier showing all open and paid invoices", "A bank loan", "An employee review"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Accrued Expense'?", "options" => ["Money you already paid", "An expense that has been incurred but not yet paid", "Total profit", "A type of tax"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Trade Discount'?", "options" => ["A marketing flyer", "A reduction in the price of a product offered by a seller to a buyer", "A bank fee", "Hiring staff"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Cash Discount' (e.g., 2/10 Net 30)?", "options" => ["Getting money for free", "A discount for paying an invoice early", "A type of tax", "A bank loan"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Blanket Purchase Order'?", "options" => ["A warm PO", "A PO that covers multiple deliveries over a period of time", "A fake PO", "A deleted record"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Expenditure'?", "options" => ["Receiving money", "The action of spending funds", "A type of share", "Hiring a new manager"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Authorized Signatory'?", "options" => ["A person who writes books", "Someone with legal authority to sign documents/payments on behalf of a company", "A junior clerk", "A customer"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'E-procurement'?", "options" => ["Using a courier", "Purchasing goods and services over the internet", "A type of battery", "Hiding records"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Vouching'?", "options" => ["Yelling", "The process of verifying accounting entries against supporting documents", "Writing a diary", "Buying an office"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Use Tax'?", "options" => ["Profit", "A tax on goods purchased from out of state/province for use in the business", "A salary bonus", "A bank fee"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Inventory Turnover'?", "options" => ["A type of pastry", "A ratio showing how many times a company has sold and replaced inventory during a period", "The speed of sales", "The number of employees"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Supply Chain' management?", "options" => ["Managing a safe", "Handling the entire production flow of a good or service", "Hiring staff", "Selling shares"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Master Vendor File'?", "options" => ["A list of employees", "A centralized database of all information about suppliers", "A bank statement", "An invoice"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Capital Commitment'?", "options" => ["Getting married", "A firm obligation to spend money on capital projects in the future", "A type of tax", "Saving money"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Procure-to-Pay' (P2P)?", "options" => ["A fast computer", "The end-to-end process from requesting goods to paying the supplier", "A bank loan", "A type of share"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Conflict of Interest' in AP?", "options" => ["Being rude", "When an employee has a personal interest in a supplier that might affect their objectivity", "A disagreement", "Hiring family"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Vendor Auditing'?", "options" => ["Asking for a gift", "Reviewing a supplier's performance and compliance with contracts", "Cleaning an office", "Selling shares"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Duplicate Payment' prevention?", "options" => ["Paying twice", "Controls to ensure an invoice is not paid more than once", "Getting a refund", "A type of tax"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Strategic Sourcing'?", "options" => ["Buying from a shop", "An approach to supply chain management that formalizes the way info is gathered and used", "Buying the cheapest item only", "Working alone"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+
+    // CATEGORY 2: COMPLIANCE & REPORTING (Maps 89-92)
+    [
+        "id" => ++$highest_id, "course_id" => $fin_course_id, "category_id" => 2,
+        "title" => "Map 89: Payroll Administration", "desc" => "Gross pay, deductions, tax compliance, and benefits.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Gross Pay'?", "options" => ["Pay after tax", "The total amount of employee's earnings before any deductions are made", "A type of bonus", "The cost of a building"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Net Pay'?", "options" => ["Total earnings", "The amount an employee takes home after all deductions (Take-home pay)", "Pay before tax", "A bank loan"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'PAYE' in South Africa?", "options" => ["Pay All Your Expenses", "Pay As You Earn (income tax)", "Professional Account Yearly Entry", "Price After Yearly Earnings"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Deduction'?", "options" => ["A math problem", "An amount taken out of an employee's gross pay (tax, pension, etc.)", "A bonus", "A salary increase"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'UIF' in South Africa?", "options" => ["Unemployment Insurance Fund", "Universal Interest Fee", "Unique Financial Item", "Underground Infrastructure Fund"], "ans" => 0, "xp" => 180],
+                ["q" => "What is 'SDL'?", "options" => ["Skills Development Levy", "Simple Debt Loan", "Salary Deduction Level", "Secret Deposit Log"], "ans" => 0, "xp" => 180],
+                ["q" => "What is a 'Payslip'?", "options" => ["A mistake at work", "A document given to an employee outlining their pay and deductions", "A bank statement", "A marketing flyer"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Overtime'?", "options" => ["Time spent at lunch", "Hours worked beyond the standard work week, usually paid at a higher rate", "A new computer", "Being late"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Fringe Benefit'?", "options" => ["Haircuts for staff", "Extra benefits (like a car or housing) that are taxable", "A salary increase", "Hiring family"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Leave Pay'?", "options" => ["Pay when you quit", "Pay received while on annual or sick leave", "A bonus for working hard", "Money given to a supplier"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Statutory Deduction'?", "options" => ["A voluntary payment", "A deduction required by law (like tax)", "Paying for lunch", "A bank fee"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Payroll Tax'?", "options" => ["Profit tax", "Tax an employer withholds from employees' salaries and pays to the government", "A type of bank loan", "Tax on buildings"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Garnishment'?", "options" => ["Cooking", "A legal process where a portion of an employee's pay is withheld to pay a debt", "A salary bonus", "A type of tax"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Payroll Software'?", "options" => ["A game", "Programs used to automate the calculation of pay and tax", "A website", "Fixing hardware"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Remuneration'?", "options" => ["Firing someone", "Money paid for work or a service", "A type of bank loan", "A secret password"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Basic Salary'?", "options" => ["The highest salary", "The fixed amount of money an employee earns before bonuses or overtime", "Pay after tax", "A marketing flyer"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Severance Pay'?", "options" => ["Pay for training", "Amount paid to an employee whose employment is terminated by the company", "A salary bonus", "Hiring a manager"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Cost to Company' (CTC)?", "options" => ["Total profit", "The total amount an employer spends on an employee per year (Salary + Benefits + Taxes)", "Pay after tax", "The price of an office"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Payroll Audit'?", "options" => ["Watching a movie", "An examination of a company's payroll records to ensure accuracy and compliance", "A team meeting", "Hiring staff"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Medical Aid' contribution?", "options" => ["A type of tax", "Payments made by the employer/employee toward healthcare insurance", "A salary bonus", "A bank loan"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Ghost Employee' fraud?", "options" => ["A scary story", "Creating fake employees in the payroll system to steal money", "An employee who is lazy", "A type of virus"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'TCC' (Tax Compliance Certificate)?", "options" => ["Total Cash Code", "A document from SARS showing the company is up to date with taxes", "A payroll record", "A bank statement"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'IRP5'?", "options" => ["A type of tax", "A South African tax certificate issued to employees showing earnings and tax paid", "A marketing plan", "A bank loan"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Provident Fund'?", "options" => ["A safe", "A retirement fund where employer and employee make regular contributions", "A type of bank account", "A marketing award"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $fin_course_id, "category_id" => 2,
+        "title" => "Map 90: Taxation Fundamentals", "desc" => "Direct and indirect taxes, SARS compliance, and deadlines.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'VAT'?", "options" => ["Value Added Tax", "Very Awesome Time", "Variable Asset Total", "Virtual Account Transfer"], "ans" => 0, "xp" => 150],
+                ["q" => "What is 'Income Tax'?", "options" => ["Tax on spending", "Tax levied by a government directly on income", "A bank fee", "Hiding money"], "ans" => 1, "xp" => 150],
+                ["q" => "Who is 'SARS'?", "options" => ["A type of illness", "South African Revenue Service", "Special Account Revenue System", "Strategic Area Resource Service"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Taxpayer'?", "options" => ["A person who hates taxes", "Any individual or entity that is required to pay tax", "Only big companies", "A government official"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Tax Deductible'?", "options" => ["Something that increases tax", "An expense that can be subtracted from gross income to reduce tax owed", "A salary bonus", "A bank loan"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Output VAT'?", "options" => ["VAT paid on purchases", "VAT charged by a business to its customers on sales", "A salary bonus", "Total profit"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Input VAT'?", "options" => ["VAT charged on sales", "VAT paid by a business to its suppliers on purchases", "A bank loan", "Total revenue"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Tax Compliance'?", "options" => ["Breaking the law", "The process of meeting all tax obligations as required by law", "Paying no tax", "Being friendly to SARS"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Provisional Tax'?", "options" => ["Fake tax", "Payments made toward income tax in advance based on estimated income", "A final tax bill", "A type of share"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Corporate Tax'?", "options" => ["Tax on individuals", "Tax paid by companies on their profits", "A marketing plan", "Hiring staff"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Tax Return'?", "options" => ["Getting money back", "The formal document submitted to the tax authority reporting income and tax owed", "A bank statement", "An invoice"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Tax Avoidance'?", "options" => ["Hiding money illegally", "Using legal methods to minimize tax liability", "Breaking the law", "Ignoring tax laws"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Tax Evasion'?", "options" => ["Saving money legally", "The illegal non-payment or underpayment of taxes", "A salary bonus", "A bank fee"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Capital Gains Tax' (CGT)?", "options" => ["Tax on salary", "Tax on the profit made from selling an asset (like property or shares)", "A type of sales tax", "Hiding profit"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Zero-rated' item in VAT?", "options" => ["An item with no value", "Goods or services where VAT is 0% (e.g., basic foods like bread)", "An illegal item", "A type of loan"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Exempt' from VAT?", "options" => ["Everything", "Goods and services on which VAT is not charged at all (e.g., certain educational services)", "Basic food", "Hiding income"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Customs Duty'?", "options" => ["Being a polite person", "Tax on goods imported into or exported from a country", "A salary increase", "Office rent"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Dividend Tax'?", "options" => ["Tax on spending", "Tax levied on dividends received by shareholders", "A bank fee", "Total profit"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Double Taxation'?", "options" => ["Paying twice for lunch", "Being taxed twice on the same income (e.g., in two different countries)", "Winning a prize", "Saving money"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Tax Rebate'?", "options" => ["A tax increase", "A refund from the tax authority when you have overpaid tax", "A bank loan", "A secret password"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Transfer Pricing'?", "options" => ["The price of a taxi", "Setting prices for transactions between related companies to manage tax", "Buying a new PC", "Hiring staff"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Tax Resident'?", "options" => ["A person who lives in a house", "Someone who is liable for tax in a country because they live there for a certain period", "A visitor", "A manager"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Tax Amnesty'?", "options" => ["A type of law", "A limited-time opportunity for taxpayers to pay taxes without penalties", "A marketing plan", "Hiring an accountant"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Secondary Tax on Companies' (STC)?", "options" => ["A primary tax", "A legacy South African tax on dividends paid by companies (replaced by Dividend Tax)", "A type of sales tax", "Hiding profit"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $fin_course_id, "category_id" => 2,
+        "title" => "Map 91: Bookkeeping & The Ledger", "desc" => "Advanced journal entries, suspense accounts, and year-end closing.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Journal Entry'?", "options" => ["Writing a diary", "The record of a financial transaction in the accounting books", "A list of employees", "A marketing plan"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'General Ledger'?", "options" => ["A book of rules", "The master record of all the company's financial transactions", "A list of employee names", "A marketing plan"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Debit' (DR)?", "options" => ["An entry on the right side of an account", "An entry on the left side of an account", "A type of bank card only", "A refund from a customer"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Credit' (CR)?", "options" => ["An entry on the left side of an account", "An entry on the right side of an account", "Getting a loan", "The same as revenue"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Trial Balance' used for?", "options" => ["To calculate tax", "To ensure total debits equal total credits", "To see who is the best employee", "To pay suppliers"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Suspense Account'?", "options" => ["A scary story", "A temporary account used when the correct destination for an entry is unknown", "A bank loan", "A marketing plan"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Posting' in bookkeeping?", "options" => ["Sending mail", "The process of transferring journal entries to the ledger", "Writing a letter", "Deleting records"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Subsidiary Ledger'?", "options" => ["A smaller book", "A group of accounts that contain the details of a general ledger control account", "Hiring family", "Selling products"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is an 'Adjusting Entry'?", "options" => ["Fixing a chair", "Entries made at the end of an accounting period to assign income and expenses to the correct period", "A salary bonus", "Buying an office"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Depreciation'?", "options" => ["An increase in value", "The systematic reduction of the recorded cost of a fixed asset over its useful life", "A bank fee", "Hiding money"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Closing Entry'?", "options" => ["Locking the office", "Entries made at the end of the year to reset temporary accounts to zero", "Ending a meeting", "Firing staff"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Control Account'?", "options" => ["Controlling a remote", "An account in the general ledger that summarizes the detail in a subsidiary ledger", "Managing a team", "Buying new software"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Bad Debt'?", "options" => ["Money you owe", "Money owed to you that is unlikely to be collected", "A type of tax", "A bank loan"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Write-off'?", "options" => ["Writing a book", "Removing an uncollectible debt from the accounting records", "Paying a bill", "Giving a bonus"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Petty Cash' book?", "options" => ["A story for kids", "A record of small office expenditures paid with cash", "A bank statement", "A marketing flyer"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Reconciliation' in bookkeeping?", "options" => ["Being friends", "The process of ensuring two sets of records are in agreement", "A bank loan", "Deleting records"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Materiality' in bookkeeping?", "options" => ["The type of paper", "Whether an error is large enough to influence financial decisions", "The office building", "A type of tax"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Cost of Goods Sold' (COGS)?", "options" => ["Total sales", "The direct costs of producing the goods sold by a company", "Paying taxes", "Office rent"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Inventory Valuation'?", "options" => ["Counting items", "Calculating the value of goods on hand at the end of a period", "Selling shares", "Hiring a manager"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Accrued Income'?", "options" => ["Money you already received", "Income that has been earned but not yet received", "Total profit", "A type of tax"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Goodwill' in accounting?", "options" => ["Being a nice person", "The excess value paid for a company above its physical assets", "Total cash", "Hiring staff"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Impairment'?", "options" => ["Getting better", "A permanent reduction in the value of an asset", "A salary bonus", "Total profit"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Owner's Drawings'?", "options" => ["A painting by the boss", "When an owner takes cash or assets out of the business for personal use", "A type of loan", "Hiring a new manager"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Statement of Retained Earnings'?", "options" => ["A list of employees", "A report showing how a company's profits have changed over time", "A bank statement", "A marketing plan"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $fin_course_id, "category_id" => 2,
+        "title" => "Map 92: Financial Reporting", "desc" => "Produce Balance Sheets, Income Statements, and Cash Flow reports.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is an 'Income Statement'?", "options" => ["A bank statement", "A report showing profit or loss over a specific period", "A list of employee salaries", "A marketing flyer"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Balance Sheet'?", "options" => ["A sheet for balancing", "A financial statement that reports assets, liabilities, and equity at a point in time", "A list of daily sales", "A marketing flyer"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Revenue'?", "options" => ["Profit", "The total amount of money received from sales", "Spending money", "A type of tax"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Expense'?", "options" => ["Money received", "Money spent to generate revenue", "A type of income", "A bank deposit"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Net Profit'?", "options" => ["Total sales", "The amount of money left after all expenses and taxes are paid", "The amount of money in the bank", "Total revenue"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Gross Profit'?", "options" => ["Profit after tax", "Revenue minus the cost of goods sold", "Total revenue", "The salary of the CEO"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Cash Flow' statement?", "options" => ["Money in a river", "A report showing how cash moved into and out of the business", "Total profit", "A bank loan"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Liability'?", "options" => ["An asset", "Something a person or company owes, usually a sum of money", "A type of income", "A company car"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Working Capital'?", "options" => ["Capital for a job", "The difference between current assets and current liabilities", "The office building", "A bank loan"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'ROI'?", "options" => ["Rate of Interest", "Return on Investment", "Regional Office Income", "Regular Office Index"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Operating Profit'?", "options" => ["Total sales", "Profit from core business activities before interest and tax", "Paying the CEO", "A type of loan"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'EPS'?", "options" => ["Easy Pay System", "Earnings Per Share", "Every Project Solution", "Electronic Process Service"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'IFRS'?", "options" => ["International Financial Reporting Standards", "Income For Really Smart", "Internal Fund Resource System", "Independent Financial Record Service"], "ans" => 0, "xp" => 250],
+                ["q" => "What is 'Consolidated' financial statement?", "options" => ["A broken report", "Combined results of a parent company and its subsidiaries", "Hiring an accountant", "Deleting records"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Auditor's Opinion'?", "options" => ["An angry shout", "A formal statement on the accuracy of financial statements", "A type of tax", "Hiring a new manager"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Fiscal' year-end?", "options" => ["A holiday", "The end of the 12-month period used for financial reporting", "The calendar year end", "A type of bank account"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Solvency'?", "options" => ["Solving a problem", "The ability of a company to meet its long-term debts", "Being very fast", "Working underwater"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Financial Modeling'?", "options" => ["Fashion for bankers", "Building an abstract representation of a real-world financial situation", "Drawing a bank", "Buying software"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Financial Audit'?", "options" => ["A large room", "An objective examination of financial statements", "A marketing plan", "Hiring staff"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Debt-to-Equity' ratio?", "options" => ["A type of share", "A metric used to measure a company's financial leverage", "A bank loan", "Total profit"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Liquidity'?", "options" => ["Being a liquid", "How quickly an asset can be converted into cash", "Being very fast", "Working underwater"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'EBITDA'?", "options" => ["Every Boss Is Totally Done Always", "Earnings Before Interest, Taxes, Depreciation, and Amortization", "Each Bank Item Total Daily Account", "Electronic Banking in the Digital Age"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Profit Margin'?", "options" => ["The edge of a building", "The percentage of revenue that exceeds costs", "Total revenue", "The CEO's salary"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Financial Sustainability'?", "options" => ["Working forever", "The ability to generate enough income to meet goals for the foreseeable future", "Saving money", "A type of marketing"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+
+    // CATEGORY 3: STRATEGY & RISK (Maps 93-96)
+    [
+        "id" => ++$highest_id, "course_id" => $fin_course_id, "category_id" => 3,
+        "title" => "Map 93: Auditing & Internal Control", "desc" => "Advanced forensics, fraud detection, and system checks.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is an 'Internal Audit'?", "options" => ["A government inspection", "A process to check and improve a company's internal controls and efficiency", "Firing staff", "Counting cash"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Separation of Duties'?", "options" => ["Firing half the staff", "Ensuring the person who handles cash is not the same person who records it", "Working in two offices", "Dividing the profit"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Fraud' in finance?", "options" => ["Working hard", "Deception intended to result in financial gain", "A bank fee", "Being late"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Compliance'?", "options" => ["Being friendly", "Obeying laws, regulations, and rules", "A promotion", "A marketing plan"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Forensic Accounting'?", "options" => ["Studying fossils", "Using accounting skills to investigate fraud or legal disputes", "Working in a lab", "Deleting records"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Vulnerability' in financial systems?", "options" => ["A strong password", "A weakness that could be exploited to cause a financial loss", "A fast computer", "Hiring more staff"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Risk Assessment'?", "options" => ["Taking risks", "Identifying and analyzing potential problems that could occur", "Buying insurance", "Ignoring issues"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Whistleblower'?", "options" => ["A sports coach", "An employee who reports illegal or unethical behavior", "A manager", "A customer"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Due Diligence'?", "options" => ["Working hard", "The investigation an auditor or investor does before making a decision", "Paying taxes", "Hiring a manager"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Anti-Money Laundering' (AML)?", "options" => ["Cleaning money", "Laws and procedures to prevent criminals from making illegal money look legal", "Saving money", "A bank loan"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Shadow Audit'?", "options" => ["An audit in the dark", "An informal or secondary audit to check a primary audit", "Hiring family", "Deleting records"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Inventory Shrinkage'?", "options" => ["Smaller items", "Loss of products due to theft, damage, or errors", "A type of sales tax", "Hiring more staff"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Sarbanes-Oxley' (SOX)?", "options" => ["A type of car", "A law that set new standards for all US public company boards and accounting firms", "A salary bonus", "A bank fee"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Internal Control Environment'?", "options" => ["The office air", "The overall attitude and awareness of a company regarding controls", "Hiring more managers", "Paying taxes"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Data Integrity'?", "options" => ["Being honest at work", "Ensuring that data remains accurate and consistent over time", "A type of encryption", "Having a lot of data"], "ans" => 1, "xp" => 250],
+                ["q" => "What is an 'Unqualified Opinion' in auditing?", "options" => ["A bad opinion", "A report stating that financial statements are fair and accurate", "An angry shout", "Hiring family"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Substantive Testing'?", "options" => ["Eating food", "Audit procedures to find errors in transactions or balances", "Writing a diary", "Buying an office"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Sampling' in auditing?", "options" => ["Eating small bits of food", "Checking a small portion of transactions to represent the whole", "Testing new computers", "Hiring staff"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Material Misstatement'?", "options" => ["A small typo", "A significant error that could change the interpretation of financial statements", "A bank statement", "A marketing plan"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Segregation of Duties' (SoD)?", "options" => ["Firing staff", "Ensuring no one person has total control over a transaction from start to finish", "Dividing profit", "Hiring a new manager"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Ethics' in finance?", "options" => ["Doing math", "Following moral principles in all professional activities", "Making as much money as possible", "Ignoring rules"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Fiduciary Duty'?", "options" => ["A type of tax", "A legal obligation of one party to act in the best interest of another", "Working long hours", "Buying an office"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Regulatory Compliance'?", "options" => ["Hiring staff", "Following laws and regulations relevant to the industry", "Winning a prize", "Spending profit"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Corporate Governance'?", "options" => ["Government work", "The system of rules, practices, and processes by which a company is directed", "Managing a team", "Buying new software"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $fin_course_id, "category_id" => 3,
+        "title" => "Map 94: Cost Control & Budgeting", "desc" => "Strategic spending, variance analysis, and future planning.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Budgeting'?", "options" => ["Counting cash", "Planning future income and expenses", "Selling shares", "Hiring staff"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Fixed Cost'?", "options" => ["A cost that changes", "A cost that stays the same regardless of production (e.g., rent)", "A salary bonus", "A bank fee"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Variable Cost'?", "options" => ["A cost that stays the same", "A cost that changes in proportion to production volume", "Total profit", "Office rent"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Variance Analysis'?", "options" => ["A science experiment", "Comparing actual financial results against the budgeted amounts", "Ignoring errors", "Spending more money"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Zero-based Budgeting'?", "options" => ["Having zero money", "Starting every budget from zero and justifying every expense", "Giving up on budgeting", "Paying zero tax"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Overhead'?", "options" => ["The ceiling", "Ongoing business expenses not directly linked to a specific product or service", "The CEO's salary", "A type of tax"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Break-even Point'?", "options" => ["Breaking a bone", "The point where total revenue equals total expenses", "Making a lot of money", "Losing everything"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Direct Cost'?", "options" => ["A cost from the bank", "A price that can be completely attributed to the production of specific goods", "Total profit", "Office rent"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Cost Control'?", "options" => ["Counting money", "The process of managing and reducing business expenses to increase profit", "Buying everything", "Hiring family"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Standard Costing'?", "options" => ["Being unique", "Estimating the expected cost of a production process", "Hiring a new intern", "Selling products"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Favorable Variance'?", "options" => ["Losing money", "When actual costs are lower than budgeted costs", "Paying more tax", "A salary decrease"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Adverse Variance'?", "options" => ["Making money", "When actual costs are higher than budgeted costs", "A salary bonus", "Winning a prize"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Cost Benefit Analysis'?", "options" => ["A math test", "Comparing the costs of an action against the benefits it will provide", "Buying an office", "Hiring staff"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Economies of Scale'?", "options" => ["A weighing scale", "Cost advantages gained by a company when it increases production", "Office size", "A type of tax"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Operating Leverage'?", "options" => ["A tool for moving safe", "The degree to which a company uses fixed costs in its operations", "A bank loan", "Hiring staff"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Sunk Cost'?", "options" => ["Money in a boat", "A cost that has already been incurred and cannot be recovered", "A type of investment", "A salary bonus"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Activity Based Costing' (ABC)?", "options" => ["Simple math", "A costing method that identifies activities and assigns costs based on their consumption", "Hiring staff", "Selling products"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Margin of Safety'?", "options" => ["A safe in the office", "The amount by which actual sales exceed the break-even point", "A type of insurance", "Hiding money"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Cash Flow Projection'?", "options" => ["Spending money", "An estimate of the timing and amounts of cash inflows and outflows", "A bank statement", "An invoice"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Capital Budgeting'?", "options" => ["A map", "Planning for long-term investments in assets like machinery or buildings", "Paying taxes", "Hiring staff"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Lean' finance?", "options" => ["A small safe", "Focusing on eliminating waste and non-value-added activities in financial processes", "Hiring fewer people", "Working faster"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Rolling Forecast'?", "options" => ["A spinning globe", "A budget that is continuously updated throughout the year", "A final bill", "A bank loan"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Allocation' of overheads?", "options" => ["Spending money", "The process of assigning indirect costs to different departments or products", "Buying a new PC", "Hiring a manager"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Internal Rate of Return' (IRR)?", "options" => ["The interest rate", "A metric used to estimate the profitability of potential investments", "A type of tax", "A salary bonus"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $fin_course_id, "category_id" => 3,
+        "title" => "Map 95: Financial Risk & Insurance", "desc" => "Mitigate loss, understand policy coverage, and manage interest risk.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Financial Risk'?", "options" => ["Taking a walk", "The possibility of losing money on an investment or business venture", "Working hard", "Buying new software"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Insurance'?", "options" => ["A type of debt", "A contract where a company provides protection against financial loss in exchange for a premium", "A bank loan", "Hiding money"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Premium' in insurance?", "options" => ["A prize", "The amount you pay regularly to maintain an insurance policy", "A type of safe", "A bank fee"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Deductible' (or Excess)?", "options" => ["A discount", "The amount the policyholder must pay out of pocket before the insurance covers a claim", "Hiding money", "A type of tax"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Credit Risk'?", "options" => ["Buying a computer", "The risk that a borrower will fail to make required payments", "A marketing plan", "Hiring staff"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Market Risk'?", "options" => ["Selling products", "The risk of losses in positions arising from movements in market prices", "Hiring a new manager", "Office rent"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Operational Risk'?", "options" => ["Buying a factory", "The risk of loss resulting from inadequate or failed internal processes, people, or systems", "A bank loan", "Selling shares"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Interest Rate Risk'?", "options" => ["Being bored", "The danger that the value of an investment will change due to a change in interest rates", "A bank fee", "Hiring family"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Hedging'?", "options" => ["Gardening", "Using financial instruments to offset the risk of any adverse price movements", "Selling shares", "Buying an office"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Diversification'?", "options" => ["Hiring different people", "Spreading investments across different assets to reduce risk", "Winning a prize", "Spending profit"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Public Liability Insurance'?", "options" => ["Insurance for buildings", "Protects a business if a member of the public is injured on their premises", "A type of tax", "Hiring staff"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Professional Indemnity Insurance'?", "options" => ["Insurance for a car", "Protects against legal liability for breach of professional duty", "A bank loan", "Total profit"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Currency Risk'?", "options" => ["Losing your wallet", "The risk that a change in exchange rates will negatively affect a business transaction", "Hiring family", "Deleting records"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Asset Protection'?", "options" => ["Buying a safe", "Legal strategies used to protect wealth from claims of creditors", "Printing money", "Hiring a manager"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Solvency' risk?", "options" => ["A math problem", "The risk that a company will not have enough assets to cover its long-term liabilities", "Buying a new PC", "Hiring staff"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Fidelity' insurance?", "options" => ["Insurance for a dog", "Protects against losses caused by dishonest acts of employees (e.g., theft)", "A type of tax", "A bank loan"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Quantitative Risk Analysis'?", "options" => ["A feeling", "Using mathematical models to calculate the probability of a risk", "Asking a friend", "Guessing"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Qualitative Risk Analysis'?", "options" => ["A math test", "Evaluating risks based on subjective factors like impact and probability", "Selling shares", "Hiring family"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Contingency Fund'?", "options" => ["Money for a party", "A reserve of money set aside for unexpected costs or emergencies", "Total profit", "A bank loan"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Risk Appetite'?", "options" => ["Being hungry", "The level of risk an organization is willing to accept in pursuit of its goals", "Winning a prize", "Spending money"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Systemic Risk'?", "options" => ["Risk to one PC", "The possibility that an event at the company level could trigger severe instability in an entire industry", "A type of computer virus", "Hiring a new manager"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Reinsurance'?", "options" => ["Insurance for a bank", "When insurance companies buy insurance to protect themselves from huge claims", "A bank fee", "Hiring staff"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Indemnity'?", "options" => ["Being rude", "Restoring a person or entity to their financial position before a loss occurred", "A type of tax", "Hiding money"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the 'Golden Rule' of risk management?", "options" => ["Take as much risk as possible", "Never risk more than you can afford to lose", "Ignore all risks", "Talk as fast as you can"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $fin_course_id, "category_id" => 3,
+        "title" => "Map 96: Final Financial Capstone", "desc" => "The ultimate challenge. Manage a full business cycle and prove your mastery.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "SCENARIO: A bank reconciliation shows $500 more in the bank than on the books. What is the MOST likely cause?", "options" => ["The bank gave you free money", "An unrecorded EFT deposit from a customer", "Hacking", "A math error on the safe"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: An employee's gross pay is $1000. Total deductions are $200. What is their net pay?", "options" => ["$1200", "$800", "$1000", "$500"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: You notice an invoice has been paid twice. What should you request from the vendor?", "options" => ["A thank you note", "A credit note or a refund", "A new invoice", "A bank statement"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: You need to buy a $50k machine. Which budget handles this?", "options" => ["Petty Cash", "Capital Budget (CapEx)", "Operating Budget (OpEx)", "Marketing Budget"], "ans" => 1, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "SCENARIO: A customer hasn't paid an invoice for 90 days. What is the first step in the aging process?", "options" => ["Sue them", "Categorize the debt in the '90 Days+' column and send a dunning letter", "Delete the record", "Give them a discount"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: You are spending $20k a month and only making $15k. What is your 'Burn Rate'?", "options" => ["$35k", "$5k per month", "$15k", "$20k"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: You suspect an employee is stealing cash from the till. Which control did you likely fail to implement?", "options" => ["Good lighting", "Separation of duties and regular cash counts", "A new computer", "Paying a high salary"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: You want to know if the business can pay its debts today. Which ratio do you check?", "options" => ["Total Sales", "Liquidity/Current Ratio", "The color of the logo", "The number of staff"], "ans" => 1, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "SCENARIO: SARS is conducting a VAT audit. Which documents must you produce?", "options" => ["Your diary", "Tax Invoices (Input and Output records)", "A list of employee hobbies", "Bank passwords"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: You buy a vehicle for $100k. It will last 5 years. What is the yearly depreciation (Straight Line)?", "options" => ["$50k", "$20k", "$100k", "$5k"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: The trial balance doesn't match by $10. Where do you put the $10 temporarily?", "options" => ["In your pocket", "A Suspense Account", "In the CEO's bonus", "Delete it"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: You are hiring a person to manage the safe and the books. What risk is this?", "options" => ["No risk", "Operational Risk (specifically lack of separation of duties)", "Market Risk", "Interest Rate Risk"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "SCENARIO: The company profit is high, but there is no cash in the bank. Why?", "options" => ["Someone stole it", "Profit is on an accrual basis; cash might be tied up in unpaid invoices (AR)", "The bank is closed", "A math error"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: You need to prove you know a password without revealing it. What do you use?", "options" => ["A signature", "A zero-knowledge proof", "A secure email", "A fingerprint"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: A supplier offers a 5% discount if you pay in 7 days. This is an example of what?", "options" => ["A bribe", "A cash discount (settlement discount)", "A mistake", "A bank fee"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: You are preparing financial statements for international investors. Which standard do you use?", "options" => ["Local rules", "IFRS (International Financial Reporting Standards)", "Excel defaults", "SARS rules only"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "MASTER FINAL: What is the most critical duty of a Financial Administrator?", "options" => ["Counting coins", "Ensuring data integrity, compliance, and accurate financial reporting", "Making as much money as possible", "Fixing computers"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: Why is the 'Accounting Equation' always balanced?", "options" => ["Because math is fun", "Because every transaction has a double-sided effect on assets and their funding sources", "It isn't always balanced", "The bank balances it for you"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: What does 'Fiduciary Responsibility' imply?", "options" => ["Being a boss", "An ethical and legal obligation to act solely in the interest of the business/shareholders", "Having a lot of money", "Paying tax"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: What is the purpose of 'Internal Controls'?", "options" => ["To control people", "To safeguard assets, ensure accurate reporting, and prevent fraud", "To save money", "To speed up work"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "EXAM: How do Payroll, Tax, and AR interact in a business?", "options" => ["They are separate", "They are interdependent; sales (AR) generate cash, which pays salaries (Payroll) and taxes (Tax)", "They compete for the CEO's attention", "They only interact during parties"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: What is the value of 'Financial Transparency'?", "options" => ["Hiding debt", "Building trust with stakeholders, lenders, and investors", "Lowering tax", "Spending more money"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: What is the hallmark of a world-class Finance Office?", "options" => ["Being aggressive", "Precision, ethical conduct, and strategic data-driven insight", "Having a lot of money", "Using the newest safe"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: What is the true goal of financial administration?", "options" => ["Getting a job", "Providing a reliable and clear foundation for organizational decision-making", "Winning a prize", "Hiring friends"], "ans" => 1, "xp" => 600]
+            ]]
+        ]
+    ]
+];
+
 // Combine everything
-$final_data = array_merge($cleaned_data, $new_maps, $inter_maps, $advanced_maps, $biz_maps, $comm_maps, $cs_maps);
+$final_data = array_merge($cleaned_data, $new_maps, $inter_maps, $advanced_maps, $biz_maps, $comm_maps, $cs_maps, $entrep_maps, $fin_maps);
 
 set_config('journey_data', json_encode($final_data), 'local_sisizathu');
 
