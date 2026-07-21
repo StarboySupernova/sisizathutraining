@@ -18,6 +18,14 @@ $entrep_course = $DB->get_record_select('course', "fullname LIKE '%Entrepreneuri
 $fin_course = $DB->get_record_select('course', "fullname LIKE '%Financial Administration%'", null, 'id'); 
 $fire_course = $DB->get_record_select('course', "fullname LIKE '%Fire Fighting%'", null, 'id'); 
 $gm_course = $DB->get_record_select('course', "fullname LIKE '%Generic Management%'", null, 'id');
+$fa_course = $DB->get_record_select('course', "fullname LIKE '%First Aid%'", null, 'id');
+$nvc_course = $DB->get_record_select('course', "fullname LIKE '%New Venture Creation%'", null, 'id');
+$ohs_course = $DB->get_record_select('course', "fullname LIKE '%Occupational Health and Safety%'", null, 'id');
+$oa_course = $DB->get_record_select('course', "fullname LIKE '%Office Administration%'", null, 'id');
+$sd_course = $DB->get_record_select('course', "fullname LIKE '%System Development%'", null, 'id');
+$tech_course = $DB->get_record_select('course', "fullname LIKE '%Technical Support%'", null, 'id');
+$tele_course = $DB->get_record_select('course', "fullname LIKE '%Telephone Etiquette%'", null, 'id');
+$web_course = $DB->get_record_select('course', "fullname LIKE '%Web Designing%'", null, 'id');
 
 $target_course_id = $basic_course ? $basic_course->id : 15; 
 $wrong_course_id = $inter_course ? $inter_course->id : 18;
@@ -28,7 +36,15 @@ $cs_course_id = $cs_course ? $cs_course->id : 30;
 $entrep_course_id = $entrep_course ? $entrep_course->id : 33; 
 $fin_course_id = $fin_course ? $fin_course->id : 36; 
 $fire_course_id = $fire_course ? $fire_course->id : 39; 
-$gm_course_id = $gm_course ? $gm_course->id : 42; // Fallback
+$gm_course_id = $gm_course ? $gm_course->id : 42; 
+$fa_course_id = $fa_course ? $fa_course->id : 45; 
+$nvc_course_id = $nvc_course ? $nvc_course->id : 48; 
+$ohs_course_id = $ohs_course ? $ohs_course->id : 51; 
+$oa_course_id = $oa_course ? $oa_course->id : 54; 
+$sd_course_id = $sd_course ? $sd_course->id : 57;
+$tech_course_id = $tech_course ? $tech_course->id : 60;
+$tele_course_id = $tele_course ? $tele_course->id : 63;
+$web_course_id = $web_course ? $web_course->id : 66;
 
 // 1. Fetch current data and REMOVE maps from the wrong course
 $current_data_json = get_config('local_sisizathu', 'journey_data') ?: '[]';
@@ -44,8 +60,8 @@ if (is_array($current_data)) {
         }
 
         // Keep only maps that DO NOT belong to the courses we are updating
-        if ($map['course_id'] != $wrong_course_id && $map['course_id'] != $target_course_id && $map['course_id'] != $advanced_course_id && $map['course_id'] != $biz_course_id && $map['course_id'] != $comm_course_id && $map['course_id'] != $cs_course_id && $map['course_id'] != $entrep_course_id && $map['course_id'] != $fin_course_id && $map['course_id'] != $fire_course_id && $map['course_id'] != $gm_course_id) {
-                $cleaned_data[] = $map; 
+        if ($map['course_id'] != $wrong_course_id && $map['course_id'] != $target_course_id && $map['course_id'] != $advanced_course_id && $map['course_id'] != $biz_course_id && $map['course_id'] != $comm_course_id && $map['course_id'] != $cs_course_id && $map['course_id'] != $entrep_course_id && $map['course_id'] != $fin_course_id && $map['course_id'] != $fire_course_id && $map['course_id'] != $gm_course_id && $map['course_id'] != $fa_course_id && $map['course_id'] != $nvc_course_id && $map['course_id'] != $ohs_course_id && $map['course_id'] != $oa_course_id && $map['course_id'] != $sd_course_id && $map['course_id'] != $tech_course_id && $map['course_id'] != $tele_course_id && $map['course_id'] != $web_course_id) {
+                    $cleaned_data[] = $map; 
         }
         
         if ($map['id'] > $highest_id) {
@@ -5209,7 +5225,4128 @@ $gm_maps = [
 ];
 
 // Combine everything
-$final_data = array_merge($cleaned_data, $new_maps, $inter_maps, $advanced_maps, $biz_maps, $comm_maps, $cs_maps, $entrep_maps, $fin_maps, $fire_maps, $gm_maps);
+// ==========================================================
+// FIRST AID CURRICULUM (Maps 121-132)
+// ==========================================================
+$fa_maps = [
+    // CATEGORY 1: LIFE-SAVING BASICS (Maps 121-124)
+    [
+        "id" => ++$highest_id, "course_id" => $fa_course_id, "category_id" => 1,
+        "title" => "Map 121: DRSABCD & Scene Safety", "desc" => "The fundamental protocol for any emergency responder.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the first step in the DRSABCD protocol?", "options" => ["Danger", "Response", "Send for Help", "Airway"], "ans" => 0, "xp" => 150],
+                ["q" => "Why is checking for 'Danger' the priority?", "options" => ["To see who caused the accident", "To ensure the rescuer does not become a second victim", "To take a photo", "To identify the victim"], "ans" => 1, "xp" => 150],
+                ["q" => "How do you check for a 'Response' in an unconscious adult?", "options" => ["Shake them violently", "Squeeze their hand and shout (Talk & Touch)", "Pour water on them", "Check their pulse immediately"], "ans" => 1, "xp" => 150],
+                ["q" => "What does the 'S' in DRSABCD stand for?", "options" => ["Stay calm", "Send for Help", "Stop the bleeding", "Start CPR"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What should you check when assessing the 'Airway'?", "options" => ["The victim's pockets", "If the airway is clear of obstructions", "The victim's blood type", "If the person has a fever"], "ans" => 1, "xp" => 180],
+                ["q" => "How do you open the airway of an unconscious victim?", "options" => ["Pull their tongue", "Head tilt and chin lift", "Sit them up", "Turn them face down"], "ans" => 1, "xp" => 180],
+                ["q" => "When checking for 'Breathing', how long should you look, listen, and feel?", "options" => ["1 minute", "No more than 10 seconds", "30 seconds", "As long as it takes"], "ans" => 1, "xp" => 180],
+                ["q" => "If a victim is unconscious but breathing normally, what should you do?", "options" => ["Start CPR", "Place them in the Recovery Position", "Leave them alone", "Give them a drink of water"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What does the 'D' at the END of DRSABCD stand for?", "options" => ["Danger", "Defibrillation", "Doctors", "Drugs"], "ans" => 1, "xp" => 210],
+                ["q" => "What is the primary role of a First Aider?", "options" => ["To perform surgery", "To preserve life, prevent worsening, and promote recovery", "To drive the ambulance", "To prescribe medication"], "ans" => 1, "xp" => 210],
+                ["q" => "What is the emergency number in South Africa?", "options" => ["911", "10111 or 112", "999", "000"], "ans" => 1, "xp" => 210],
+                ["q" => "What info is most critical to tell the emergency dispatcher?", "options" => ["The victim's name", "Exact location and nature of the emergency", "The weather", "Your favorite color"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What are 'Universal Precautions' in first aid?", "options" => ["Always wearing a hat", "Treating all blood and fluids as potentially infectious", "Calling the police for every cut", "Using only water to clean"], "ans" => 1, "xp" => 250],
+                ["q" => "What is the best way to prevent cross-contamination?", "options" => ["Washing hands later", "Wearing disposable gloves", "Using a used bandage", "Blowing on a wound"], "ans" => 1, "xp" => 250],
+                ["q" => "What should you do if you are exposed to a victim's blood?", "options" => ["Ignore it", "Wash the area immediately and seek medical advice", "Apply a bandage to yourself", "Wipe it on your clothes"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Secondary Survey'?", "options" => ["The second time you call help", "A more detailed head-to-toe check once life-threats are managed", "Checking the scene for fire", "Asking witnesses for their IDs"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "In 'DRSABCD', when do you start CPR?", "options" => ["Before checking danger", "If the victim is unconscious AND not breathing normally", "Only if the heart stops for 10 minutes", "If they have a broken arm"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Duty of Care'?", "options" => ["Paying for medical bills", "A legal obligation to provide reasonable assistance once you start helping", "Being a doctor", "Ignoring an accident"], "ans" => 1, "xp" => 300],
+                ["q" => "Can you be sued for helping someone in good faith (Good Samaritan laws)?", "options" => ["Yes, always", "Generally no, if you act within your training and without gross negligence", "Only in South Africa", "Yes, if the victim dies"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Consent' in first aid?", "options" => ["A type of bandage", "Asking permission to treat a conscious victim", "A medical degree", "Signing a contract"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "If a victim is unconscious, is consent implied?", "options" => ["No, you must wait", "Yes, it is legally implied to save a life", "Only if they have an ID", "Only if a family member is there"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the 'AVPU' scale used for?", "options" => ["Checking blood pressure", "Assessing a victim's level of consciousness", "Measuring height", "Counting respirations"], "ans" => 1, "xp" => 400],
+                ["q" => "What does the 'P' in AVPU stand for?", "options" => ["Pulse", "Pain (responds only to painful stimuli)", "Pressure", "Patient"], "ans" => 1, "xp" => 400],
+                ["q" => "What should you do if the scene becomes unsafe while you are helping?", "options" => ["Stay and fight the danger", "Move yourself and the victim (if possible) to safety immediately", "Finish the bandage first", "Close your eyes"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $fa_course_id, "category_id" => 1,
+        "title" => "Map 122: CPR & AED Usage", "desc" => "Master the cycle of chest compressions and the use of the Defibrillator.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the correct ratio of compressions to breaths in adult CPR?", "options" => ["15:2", "30:2", "5:1", "50:2"], "ans" => 1, "xp" => 150],
+                ["q" => "Where should you place your hands for adult chest compressions?", "options" => ["On the stomach", "Center of the chest (sternum)", "Over the heart (left side)", "On the neck"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the recommended depth for adult chest compressions?", "options" => ["1 cm", "At least 5 cm (about 2 inches)", "10 cm", "As deep as you can push"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the correct rate for chest compressions?", "options" => ["60 per minute", "100-120 per minute", "200 per minute", "10 per minute"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What does 'AED' stand for?", "options" => ["Automated External Defibrillator", "Advanced Energy Device", "Automatic Emergency Doctor", "All Electric Deliverer"], "ans" => 0, "xp" => 180],
+                ["q" => "What is the first thing you should do when the AED arrives?", "options" => ["Wait for the ambulance", "Turn it on", "Put the pads on the victim's back", "Plug it into a wall outlet"], "ans" => 1, "xp" => 180],
+                ["q" => "Where is the standard placement for AED pads on an adult?", "options" => ["Both on the stomach", "Upper right chest and lower left side", "On both arms", "On the neck and forehead"], "ans" => 1, "xp" => 180],
+                ["q" => "What should you do while the AED is 'analyzing' the heart rhythm?", "options" => ["Continue compressions", "Ensure nobody is touching the victim", "Turn off the device", "Yell for help"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "When should you stop performing CPR?", "options" => ["When you get tired", "When paramedics arrive, the victim recovers, or an AED tells you to stop", "After 5 minutes", "When you think it's not working"], "ans" => 1, "xp" => 210],
+                ["q" => "What is the purpose of chest compressions?", "options" => ["To restart the heart", "To manually pump blood to the brain and vital organs", "To clear the airway", "To wake the victim up"], "ans" => 1, "xp" => 210],
+                ["q" => "Should you remove an AED pad if the victim starts breathing?", "options" => ["Yes, immediately", "No, leave it on until professional help arrives", "Only if it starts smoking", "Switch it to the other side"], "ans" => 1, "xp" => 210],
+                ["q" => "Can you use an AED on a victim lying in a puddle of water?", "options" => ["Yes, it doesn't matter", "No, move them to a dry area first", "Only if you wear rubber boots", "Only if the water is salty"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is the compression depth for an INFANT (under 1 year)?", "options" => ["1 cm", "About 4 cm (1/3 the depth of the chest)", "10 cm", "Same as an adult"], "ans" => 1, "xp" => 250],
+                ["q" => "What technique is used for infant compressions?", "options" => ["Two palms", "Two fingers in the center of the chest", "The elbow", "Using one foot"], "ans" => 1, "xp" => 250],
+                ["q" => "If you are alone with an infant and must perform CPR, when do you call for help?", "options" => ["Immediately", "After 2 minutes (5 cycles) of CPR", "After 1 hour", "Never"], "ans" => 1, "xp" => 250],
+                ["q" => "How do you check for a response in an infant?", "options" => ["Shake their shoulders", "Flick the sole of their foot and shout", "Pour cold water", "Pinch their nose"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What does a defibrillator actually do to the heart?", "options" => ["Gives it more energy", "Stops the irregular twitching (VF) so the heart can restart a normal rhythm", "Heats up the blood", "Massages the heart muscle"], "ans" => 1, "xp" => 300],
+                ["q" => "If the AED says 'No Shock Advised', what should you do?", "options" => ["Pack up the device", "Immediately resume CPR starting with compressions", "Stop everything and wait", "Turn the victim over"], "ans" => 1, "xp" => 300],
+                ["q" => "Can you use adult AED pads on a child over 8 years old?", "options" => ["No, never", "Yes", "Only if you cut them in half", "Only if you have a doctor's permission"], "ans" => 1, "xp" => 300],
+                ["q" => "What should you do if the victim has a hairy chest and the AED pads won't stick?", "options" => ["Give up", "Shave the area or use a spare set of pads to rip the hair off", "Use tape", "Apply water"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Gastric Inflation' during CPR?", "options" => ["Fast breathing", "Air entering the stomach instead of the lungs (usually from breathing too hard)", "A type of virus", "A healthy response"], "ans" => 1, "xp" => 400],
+                ["q" => "Why must you allow 'Full Chest Recoil' between compressions?", "options" => ["To take a break", "To allow the heart to refill with blood", "To check the time", "To avoid breaking ribs"], "ans" => 1, "xp" => 400],
+                ["q" => "What should you do if you hear ribs cracking during CPR?", "options" => ["Stop immediately", "Continue; rib fractures are common and less dangerous than death", "Press softer", "Call the police"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the 'Agonal Gasp'?", "options" => ["Normal breathing", "Occasional, irregular gasps of air that are NOT normal breathing (requires CPR)", "A sign of recovery", "A hiccup"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $fa_course_id, "category_id" => 1,
+        "title" => "Map 123: Choking & Airway Obstruction", "desc" => "Save someone from a blocked airway. Mastering the Heimlich and back blows.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "If a victim is choking but COUGHING forcefully, what should you do?", "options" => ["Hit them on the back", "Encourage them to keep coughing and monitor them", "Perform the Heimlich maneuver", "Give them water"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the universal sign for choking?", "options" => ["Pointing at the mouth", "Clutching the throat with one or both hands", "Waving the arms", "Lying on the floor"], "ans" => 1, "xp" => 150],
+                ["q" => "What are the two actions for a SEVERE airway obstruction in a conscious adult?", "options" => ["Water and bread", "5 Back Blows followed by 5 Chest Thrusts", "10 minutes of rest", "Yelling for help only"], "ans" => 1, "xp" => 150],
+                ["q" => "Where should you deliver back blows?", "options" => ["On the lower back", "Between the shoulder blades with the heel of your hand", "On the back of the head", "On the stomach"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "Where do you place your hands for chest thrusts on a conscious choking adult?", "options" => ["On the belly button", "Center of the chest (same as CPR)", "On the hips", "Under the armpits"], "ans" => 1, "xp" => 180],
+                ["q" => "How do you position a choking INFANT for back blows?", "options" => ["Face up on your lap", "Face down along your forearm, supported by your thigh, with head lower than chest", "Holding them by their feet", "Sitting upright"], "ans" => 1, "xp" => 180],
+                ["q" => "What should you do if a choking victim becomes UNCONSCIOUS?", "options" => ["Continue back blows", "Lower them to the ground and start CPR (checking the mouth before breaths)", "Leave them to find a doctor", "Try to stand them back up"], "ans" => 1, "xp" => 180],
+                ["q" => "Should you perform a 'Blind Finger Sweep' if you can't see an object in the mouth?", "options" => ["Yes, always", "No, it may push the object deeper", "Only if the victim is a child", "Only if you have long fingers"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "How many back blows and chest thrusts are in one cycle for a choking child?", "options" => ["1 and 1", "5 and 5", "10 and 10", "30 and 2"], "ans" => 1, "xp" => 210],
+                ["q" => "If a choking victim is pregnant or very obese, where should you perform thrusts?", "options" => ["On the stomach", "High on the chest (Chest Thrusts)", "On the back only", "Don't help them"], "ans" => 1, "xp" => 210],
+                ["q" => "What is the main danger of a complete airway obstruction?", "options" => ["Broken teeth", "Hypoxia (lack of oxygen to the brain) and cardiac arrest", "Stomach ache", "Losing your voice"], "ans" => 1, "xp" => 210],
+                ["q" => "Should you take a choking victim to see a doctor even if the object is removed?", "options" => ["No, if they are fine", "Yes, to check for internal injuries from the thrusts or remaining particles", "Only if they ask", "Only if they are bleeding"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is the 'Heimlich Maneuver' also known as?", "options" => ["Chest Thrusts", "Abdominal Thrusts", "Back Blows", "CPR"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Partial Obstruction'?", "options" => ["Can't breathe at all", "Some air can pass, victim can often speak, cry, or cough", "The victim is asleep", "The victim is hungry"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Total Obstruction'?", "options" => ["Coughing loudly", "No air can pass, victim cannot speak or breathe", "Sneezing", "Talking with a rasp"], "ans" => 1, "xp" => 250],
+                ["q" => "What is the best way to prevent an infant from choking?", "options" => ["Feed them while they run", "Keep small objects out of reach and cut food into tiny pieces", "Only give them liquids", "Always use a straw"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "Which of these is a common choking hazard for adults?", "options" => ["Water", "Poorly chewed meat", "Soup", "Ice cream"], "ans" => 1, "xp" => 300],
+                ["q" => "If you are choking and ALONE, how can you perform thrusts on yourself?", "options" => ["Jump up and down", "Lean your abdomen over the back of a chair or hard edge", "Hold your breath", "Drink oil"], "ans" => 1, "xp" => 300],
+                ["q" => "What is the 'Croup' in children?", "options" => ["Choking on a toy", "A viral infection causing a barking cough and airway swelling", "A type of food", "A fall"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Anaphylaxis' relative to the airway?", "options" => ["A broken neck", "A severe allergic reaction causing the airway to swell shut", "A very fast heart rate", "A type of flu"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What sound does a person with a partially blocked airway often make?", "options" => ["Whistling or wheezing (Stridor)", "Singing", "Sneezing", "Laughing"], "ans" => 0, "xp" => 400],
+                ["q" => "What color does a victim's face usually turn during severe choking?", "options" => ["White", "Blue or Purple (Cyanosis)", "Bright Green", "Yellow"], "ans" => 1, "xp" => 400],
+                ["q" => "Why are abdominal thrusts NOT used on infants?", "options" => ["They are too small", "It can cause severe damage to their internal organs", "It's too difficult to do", "They don't have stomachs"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the priority after successfully clearing an airway?", "options" => ["Going home", "Monitoring for secondary issues and seeking medical review", "Buying a new meal", "Telling a joke"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $fa_course_id, "category_id" => 1,
+        "title" => "Map 124: Bleeding & Shock", "desc" => "Control the flow and prevent system collapse. Pressure, elevation, and tourniquets.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the first step to control external bleeding?", "options" => ["Wash the wound", "Apply direct pressure", "Apply a tourniquet immediately", "Give the victim an aspirin"], "ans" => 1, "xp" => 150],
+                ["q" => "Which type of bleeding is bright red and spurts in time with the heartbeat?", "options" => ["Venous", "Arterial", "Capillary", "Internal"], "ans" => 1, "xp" => 150],
+                ["q" => "Which type of bleeding is dark red and flows steadily?", "options" => ["Arterial", "Venous", "Capillary", "Subcutaneous"], "ans" => 1, "xp" => 150],
+                ["q" => "What should you do if blood soaks through the first bandage?", "options" => ["Remove it and start over", "Apply a second bandage directly over the first one", "Wash it off", "Use a hairdryer"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Shock' in first aid?", "options" => ["An electric shock", "A life-threatening condition where the body's organs don't get enough blood/oxygen", "Being very surprised", "A type of bruise"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a common sign of shock?", "options" => ["Warm, dry skin", "Pale, cold, and clammy skin", "High fever", "Extreme hunger"], "ans" => 1, "xp" => 180],
+                ["q" => "How should you position a victim in shock (if no leg fractures)?", "options" => ["Sitting up", "Lying flat with legs elevated about 30cm", "Standing up", "Lying on their stomach"], "ans" => 1, "xp" => 180],
+                ["q" => "Should you give a person in shock something to eat or drink?", "options" => ["Yes, to give them energy", "No, it may cause vomiting or interfere with surgery", "Only if it's soda", "Only if they are very thirsty"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "When should a 'Tourniquet' be used?", "options" => ["For every small cut", "Only as a last resort for life-threatening limb bleeding that cannot be stopped by pressure", "To hold a bandage in place", "To check a pulse"], "ans" => 1, "xp" => 210],
+                ["q" => "Where should a tourniquet be placed?", "options" => ["Directly on the wound", "5-7cm above the wound (between the wound and the heart)", "On the neck", "Below the wound"], "ans" => 1, "xp" => 210],
+                ["q" => "What should you do if an object (like glass) is embedded in a wound?", "options" => ["Pull it out immediately", "Apply pressure around the object and pad it to keep it from moving", "Wash it with soap", "Ignore it"], "ans" => 1, "xp" => 210],
+                ["q" => "What is an 'Amputation' first aid priority?", "options" => ["Throw the part away", "Control bleeding of the stump and keep the severed part cool and dry (in a bag in ice)", "Wash the part in hot water", "Sew it back on yourself"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Internal Bleeding'?", "options" => ["A nosebleed", "Bleeding inside the body cavity, often caused by blunt force trauma", "Bleeding from a small scratch", "A type of headache"], "ans" => 1, "xp" => 250],
+                ["q" => "Which of these is a sign of internal bleeding?", "options" => ["Laughing", "Rigid, painful abdomen or bruising over a large area", "Sneezing", "Increased appetite"], "ans" => 1, "xp" => 250],
+                ["q" => "How do you treat a 'Nosebleed'?", "options" => ["Tilt head back", "Sit up and lean forward, pinching the soft part of the nose for 10 minutes", "Lie flat on your back", "Stuff it with tissues and exercise"], "ans" => 1, "xp" => 250],
+                ["q" => "What is the 'Capillary Refill Test' used for?", "options" => ["Checking for a fever", "Assessing circulation (pressing a fingernail and seeing how fast color returns)", "Measuring height", "Checking for a broken bone"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Hypovolemic Shock'?", "options" => ["Shock from a loud noise", "Shock caused by severe blood or fluid loss", "Shock from a bee sting", "Shock from a heart attack"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Haemostatic Dressing'?", "options" => ["A fancy suit", "A bandage treated with chemicals to help blood clot faster", "A type of plastic wrap", "A dirty cloth"], "ans" => 1, "xp" => 300],
+                ["q" => "If a victim is in shock, what should you do with their body temperature?", "options" => ["Cool them down with ice", "Keep them warm with a blanket", "Make them run", "Pour water on them"], "ans" => 1, "xp" => 300],
+                ["q" => "Can a person bleed to death from a severed artery in less than 5 minutes?", "options" => ["No, it takes hours", "Yes", "Only if they are old", "Only if it is cold"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Traumatic Amputation'?", "options" => ["A bad dream", "The loss of a body part due to injury", "A broken leg", "A small cut"], "ans" => 1, "xp" => 400],
+                ["q" => "Why should you never remove a tourniquet once it is applied by a first aider?", "options" => ["It's a waste of time", "It can release toxins and cause sudden cardiac arrest (crush syndrome)", "It's too difficult", "The ambulance needs to see it"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Anaphylactic Shock'?", "options" => ["Shock from blood loss", "Shock caused by a severe allergic reaction", "Shock from electricity", "Shock from fear"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the 'First Priority' in managing a major trauma scene with multiple bleeders?", "options" => ["Giving water", "Controlling 'Exsanguinating' (catastrophic) hemorrhage first", "Cleaning the floor", "Taking IDs"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+
+    // CATEGORY 2: INJURIES & MEDICAL (Maps 125-128)
+    [
+        "id" => ++$highest_id, "course_id" => $fa_course_id, "category_id" => 2,
+        "title" => "Map 125: Burns & Scalds", "desc" => "Cool the burn, manage the pain, and prevent infection.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the immediate first aid for a thermal burn?", "options" => ["Apply butter", "Cool the burn with running cool water for at least 20 minutes", "Apply ice directly", "Burst the blisters"], "ans" => 1, "xp" => 150],
+                ["q" => "Which of these should NEVER be applied to a fresh burn?", "options" => ["Cool water", "Butter, grease, or toothpaste", "A sterile dressing", "A loose plastic wrap"], "ans" => 1, "xp" => 150],
+                ["q" => "What defines a 'First-Degree' (Superficial) burn?", "options" => ["Charred skin", "Redness and pain (like a sunburn) without blisters", "Blisters and deep pain", "No pain and white skin"], "ans" => 1, "xp" => 150],
+                ["q" => "What defines a 'Second-Degree' (Partial Thickness) burn?", "options" => ["Just redness", "Redness, severe pain, and blisters", "No pain", "A small scratch"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "Why is a 'Third-Degree' (Full Thickness) burn often painless?", "options" => ["Because it's not serious", "The nerve endings in the skin have been destroyed", "The victim is in shock", "The water cooled it too much"], "ans" => 1, "xp" => 180],
+                ["q" => "Should you remove clothing that is STUCK to a burn?", "options" => ["Yes, pull it off", "No, cut around it and leave the stuck part for doctors", "Only if it is expensive", "Only if it is wet"], "ans" => 1, "xp" => 180],
+                ["q" => "What should you do with jewelry (like rings) near a burn?", "options" => ["Leave it", "Remove it gently before the area starts to swell", "Wait until the doctor arrives", "Clean it with soap"], "ans" => 1, "xp" => 180],
+                ["q" => "What is the best dressing for a burn after cooling?", "options" => ["Fluffy cotton wool", "Non-adherent sterile dressing or loose plastic wrap", "A tight adhesive bandage", "A dirty towel"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the first step for a CHEMICAL burn?", "options" => ["Apply a bandage", "Brush off dry chemicals (if any) and flush with water for 20+ minutes", "Neutralize with another chemical", "Give a drink of water"], "ans" => 1, "xp" => 210],
+                ["q" => "How do you treat an ELECTRICAL burn?", "options" => ["Pour water on the victim", "Ensure power is OFF, check DRSABCD, and treat entry/exit wounds", "Rub the area", "Wait for the power to come back on"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Inhalation' burn?", "options" => ["Burning your hand", "Damage to the airway from breathing in hot smoke or chemicals", "A burn on the nose", "A type of sunburn"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a sign of an inhalation burn?", "options" => ["Sore feet", "Soot around the nose/mouth and a hoarse voice", "Bright red eyes", "Hunger"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is the 'Rule of Nines' used for?", "options" => ["Counting to nine", "Estimating the percentage of body surface area burned", "Measuring the depth of a cut", "Checking a pulse"], "ans" => 1, "xp" => 250],
+                ["q" => "At what percentage of body burn in an adult is it considered a major emergency?", "options" => ["1%", "Over 10-15%", "90% only", "0.5%"], "ans" => 1, "xp" => 250],
+                ["q" => "Should you put a burn victim in a very cold bath or ice?", "options" => ["Yes, the colder the better", "No, it can cause hypothermia or further tissue damage", "Only if they are hot", "Only in summer"], "ans" => 1, "xp" => 250],
+                ["q" => "What is the primary danger of a large burn?", "options" => ["A scar", "Fluid loss (shock) and infection", "A bad smell", "Being thirsty"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "How do you treat a burn to the EYE?", "options" => ["Rub it", "Flush with water gently for 20 minutes from the inner to outer corner", "Use eye drops", "Close the eye and sleep"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Scald'?", "options" => ["A burn from fire", "A burn caused by hot liquid or steam", "A burn from a chemical", "A cold injury"], "ans" => 1, "xp" => 300],
+                ["q" => "Should you apply a wet dressing to a burn for a long period?", "options" => ["Yes, keep it wet for hours", "No, it may cause the victim to become too cold (hypothermia)", "Only if the water is hot", "Only if you have no bandage"], "ans" => 1, "xp" => 300],
+                ["q" => "What should you do if a burn victim starts shivering?", "options" => ["Stop cooling and cover the unburnt areas to keep them warm", "Add more ice", "Fan them", "Give them a cold drink"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Airway Edema' in burn victims?", "options" => ["A fast heart", "Swelling of the airway that can lead to total blockage", "A type of rash", "A healthy response"], "ans" => 1, "xp" => 400],
+                ["q" => "Is a burn from a strong acid worse than a burn from a strong alkali?", "options" => ["Yes", "No, alkalis often penetrate deeper and cause more damage", "They are identical", "Acids are always safe"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Radiation Burn'?", "options" => ["Burn from steam", "Burn from UV rays (sun) or X-rays", "Burn from a stove", "Burn from a chemical"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the first priority when someone's clothes are on fire?", "options" => ["Get a camera", "Stop, Drop, and Roll / Smother the flames", "Run for water", "Call their name"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $fa_course_id, "category_id" => 2,
+        "title" => "Map 126: Fractures & Sprains", "desc" => "Stabilize bones and joints. Mastering splints, slings, and RICE.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Fracture'?", "options" => ["A bruise", "A broken or cracked bone", "A torn muscle", "A cut"], "ans" => 1, "xp" => 150],
+                ["q" => "What is an 'Open Fracture'?", "options" => ["A fracture you can see on X-ray", "A fracture where the bone has pierced the skin", "A fracture in a joint", "A fracture that is not painful"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Sprain'?", "options" => ["A broken bone", "Stretching or tearing of ligaments in a joint", "A type of headache", "A skin rash"], "ans" => 1, "xp" => 150],
+                ["q" => "What acronym is used for treating sprains and strains?", "options" => ["FAST", "RICE", "STOP", "DRS"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "In the acronym RICE, what does the 'R' stand for?", "options" => ["Run", "Rest", "Rub", "Reaction"], "ans" => 1, "xp" => 180],
+                ["q" => "What does the 'I' in RICE stand for?", "options" => ["Iodine", "Ice (applied for 15-20 mins every 2 hours)", "Injection", "Injury"], "ans" => 1, "xp" => 180],
+                ["q" => "What does the 'C' in RICE stand for?", "options" => ["Cooling", "Compression (firm but not tight bandage)", "Cleaning", "Crying"], "ans" => 1, "xp" => 180],
+                ["q" => "What does the 'E' in RICE stand for?", "options" => ["Emergency", "Elevation (raising the injured part)", "Exercise", "Eating"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the primary goal of a 'Splint'?", "options" => ["To heal the bone", "To immobilize the injury and prevent further damage", "To stop bleeding only", "To make the victim taller"], "ans" => 1, "xp" => 210],
+                ["q" => "Where should you check for circulation (pulse/color) when applying a splint?", "options" => ["Above the splint", "Below the splint (distal to the injury)", "On the head", "On the other arm"], "ans" => 1, "xp" => 210],
+                ["q" => "Should you try to 'pop' a dislocated joint back into place?", "options" => ["Yes, immediately", "No, immobilize it in the position found and seek medical help", "Only if it is a finger", "Only if you are strong"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Dislocation'?", "options" => ["A broken bone", "When a bone is forced out of its normal position in a joint", "A muscle cramp", "A type of bruise"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Stob-sling' (Arm Sling) used for?", "options" => ["A broken leg", "Supporting an injured arm, wrist, or hand", "Supporting the neck", "Checking a pulse"], "ans" => 1, "xp" => 250],
+                ["q" => "What is an 'Elevation Sling' used for?", "options" => ["A simple arm break", "Controlling bleeding or swelling by keeping the hand high", "Supporting the back", "A broken toe"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Colles Fracture'?", "options" => ["A broken rib", "A specific type of wrist fracture common from falling on an outstretched hand", "A broken skull", "A broken ankle"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Crepitus'?", "options" => ["A type of bandage", "The grating sound or feeling of bone ends rubbing together", "A sign of recovery", "A high fever"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the 'Anatomical Splint' technique?", "options" => ["Using a piece of wood", "Securing an injured body part to an uninjured one (e.g., taping two fingers)", "Using a metal rod", "Hiring a doctor"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Strain'?", "options" => ["A broken joint", "Stretching or tearing of a muscle or tendon", "A cut on the skin", "A sign of shock"], "ans" => 1, "xp" => 300],
+                ["q" => "Should you apply heat to a new sprain in the first 24 hours?", "options" => ["Yes, it helps blood flow", "No, heat increases swelling; use ice (RICE)", "Only if it is winter", "Only if the victim is cold"], "ans" => 1, "xp" => 300],
+                ["q" => "What is the most dangerous complication of a fracture?", "options" => ["Pain", "Severed artery or nerve damage caused by bone fragments", "A scar", "A long cast"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Greenstick' fracture?", "options" => ["A fracture in a tree", "An incomplete fracture where the bone bends (common in children)", "A fracture that is green", "A fake fracture"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Comminuted' fracture?", "options" => ["A clean break", "A fracture where the bone is broken into several pieces", "A small crack", "A fracture that heals in a day"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the first priority for an OPEN fracture?", "options" => ["Pushing the bone in", "Controlling bleeding and covering the wound with a sterile dressing", "Setting the bone", "Giving water"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'CMS' check in orthopedics?", "options" => ["Checking Money Status", "Circulation, Motor, and Sensory function check", "Call Medical Staff", "Constant Muscle Spasm"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $fa_course_id, "category_id" => 2,
+        "title" => "Map 127: Medical Emergencies", "desc" => "Diabetic shock, seizures, and allergic reactions.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Hypoglycemia'?", "options" => ["High blood pressure", "Low blood sugar", "A type of flu", "A broken bone"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the first aid for a conscious diabetic person acting confused or shaky?", "options" => ["Give them an insulin injection", "Give them a sugary drink or food (e.g., fruit juice, honey)", "Make them run", "Give them a diet soda"], "ans" => 1, "xp" => 150],
+                ["q" => "What should you do for someone having a Seizure (Fit)?", "options" => ["Restrain them", "Protect their head and move objects away; do NOT put anything in their mouth", "Stick a spoon in their mouth", "Hold their tongue"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Anaphylaxis'?", "options" => ["A type of exercise", "A severe, life-threatening allergic reaction", "A small rash", "Sneezing"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is the first-line treatment for anaphylaxis?", "options" => ["A glass of water", "Adrenaline (EpiPen)", "An aspirin", "A cold cloth"], "ans" => 1, "xp" => 180],
+                ["q" => "Where should an EpiPen be injected?", "options" => ["In the arm", "Outer mid-thigh", "In the stomach", "In the neck"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Hyperventilation'?", "options" => ["Not breathing", "Breathing too fast, often due to anxiety or panic", "A heart attack", "A type of fever"], "ans" => 1, "xp" => 180],
+                ["q" => "How should you help someone hyperventilating?", "options" => ["Slap them", "Encourage slow, deep breaths; remain calm", "Make them breathe into a plastic bag (no longer recommended)", "Yell at them"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Asthma'?", "options" => ["A broken rib", "A condition where airways narrow and swell, causing difficulty breathing", "A type of skin rash", "A heart problem"], "ans" => 1, "xp" => 210],
+                ["q" => "What is the '4x4x4' rule for an asthma attack?", "options" => ["4 people, 4 minutes, 4 steps", "4 puffs of a blue reliever, 4 breaths each, wait 4 minutes", "4 glasses of water", "4 miles of running"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Hyperglycemia'?", "options" => ["Low blood sugar", "High blood sugar", "A type of allergy", "Normal sugar"], "ans" => 1, "xp" => 210],
+                ["q" => "What is the 'Post-ictal' state?", "options" => ["Before a seizure", "The recovery period after a seizure where the person is sleepy or confused", "A type of medication", "A sign of a heart attack"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Fainting' (Syncope)?", "options" => ["A long sleep", "Brief loss of consciousness caused by a temporary drop in blood flow to the brain", "A heart attack", "A stroke"], "ans" => 1, "xp" => 250],
+                ["q" => "What should you do if someone feels like they are about to faint?", "options" => ["Make them stand still", "Have them sit down or lie flat and elevate their legs", "Give them a heavy meal", "Spin them around"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Febrile Convulsion'?", "options" => ["A seizure caused by high fever (common in young children)", "A seizure from an allergy", "A seizure from a fall", "A type of dream"], "ans" => 0, "xp" => 250],
+                ["q" => "What is a 'Med-Alert' bracelet used for?", "options" => ["Decoration", "To identify a person's medical conditions (e.g., Diabetes, Allergies) in an emergency", "To track location", "To measure time"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Status Epilepticus'?", "options" => ["A short seizure", "A prolonged seizure or multiple seizures without recovery (a major emergency)", "A medical degree", "The end of a seizure"], "ans" => 1, "xp" => 300],
+                ["q" => "If you are unsure if a diabetic is high or low sugar, what should you do?", "options" => ["Give insulin anyway", "Give sugar; it is safer to treat for low sugar in an emergency", "Do nothing", "Give them salt"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Angina'?", "options" => ["A broken bone", "Chest pain caused by reduced blood flow to the heart muscle", "A type of headache", "A stomach flu"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Toxemia'?", "options" => ["Being healthy", "Blood poisoning by toxins from a local infection", "A type of allergy", "A broken leg"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Aspiration' during a medical emergency?", "options" => ["Breathing fast", "Inhaling foreign material (like vomit) into the lungs", "A sign of hope", "A heart rhythm"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Hypoxia'?", "options" => ["Too much oxygen", "A state where the body or a region of the body is deprived of adequate oxygen", "High blood pressure", "A type of fever"], "ans" => 1, "xp" => 400],
+                ["q" => "Should you offer medication to a stranger unless it is an EpiPen or their own prescribed inhaler?", "options" => ["Yes, to be nice", "No, never (due to risks of wrong medication/allergy)", "Only if they ask", "Only if it is aspirin"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the priority when a seizure ends?", "options" => ["Make them walk", "Check airway and place in the Recovery Position", "Give them a meal", "Ask them math questions"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $fa_course_id, "category_id" => 2,
+        "title" => "Map 128: Bites, Stings & Poisons", "desc" => "Snakes, spiders, and toxins. Identification and neutralizing threats.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the first aid for a Bee Sting?", "options" => ["Pull the stinger with tweezers", "Scrape the stinger off with a flat edge (e.g., credit card)", "Squeeze the area", "Rub it with dirt"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'P.I.T.' in snakebite treatment?", "options" => ["Pressure Immobilization Technique", "Personal Injury Treatment", "Point In Time", "Poison Interaction Tool"], "ans" => 0, "xp" => 150],
+                ["q" => "Should you suck the venom out of a snakebite?", "options" => ["Yes, immediately", "No, it is ineffective and dangerous", "Only if you have a special kit", "Only if you are a doctor"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the first step if someone swallows a poison?", "options" => ["Make them vomit", "Identify the substance and call the Poison Control Center or Emergency Services", "Give them milk", "Wait and see"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What should you do for a Jellyfish sting?", "options" => ["Rub it with a towel", "Wash the area with vinegar or sea water (depending on type)", "Wash with fresh water immediately", "Pee on it (not recommended)"], "ans" => 1, "xp" => 180],
+                ["q" => "How should you treat a Tick bite?", "options" => ["Burn it off", "Remove gently with fine-tipped tweezers by the head, close to the skin", "Cover it in Vaseline", "Twist it off"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Anaphylaxis' from a sting?", "options" => ["A small itch", "A severe, life-threatening allergic reaction", "A type of headache", "A fever"], "ans" => 1, "xp" => 180],
+                ["q" => "Should you apply a tight tourniquet for a snakebite?", "options" => ["Yes", "No, use a broad pressure bandage (PIT) instead", "Only if the snake was large", "Only if it is on the arm"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Neurotoxic' snakebite?", "options" => ["Affects the blood", "Affects the nervous system (e.g., paralysis, breathing failure)", "Causes a rash", "Causes local swelling only"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Cytotoxic' snakebite?", "options" => ["Affects breathing", "Causes severe tissue damage, swelling, and pain", "Affects memory", "Makes you sleepy"], "ans" => 1, "xp" => 210],
+                ["q" => "What should you do if a chemical splashes in someone's eye?", "options" => ["Rub it", "Flush with water for at least 20 minutes", "Cover with a dark cloth only", "Wait for the doctor"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Activated Charcoal' used for?", "options" => ["Cleaning wounds", "Used in hospitals to bind certain swallowed poisons", "Treating stings", "A type of sunscreen"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "Which spider bite in SA may require PIT treatment?", "options" => ["Daddy long legs", "Button Spider or Six-eyed Sand Spider (seek urgent help)", "Garden spider", "Rain spider"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Secondary Poisoning'?", "options" => ["Getting bitten twice", "A rescuer being poisoned by contact with a victim (e.g., gas or chemical on skin)", "A mild poison", "A type of flu"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Carbon Monoxide' poisoning sign?", "options" => ["Green skin", "Headache, dizziness, and confusion in an enclosed space", "Blue eyes", "Extreme energy"], "ans" => 1, "xp" => 250],
+                ["q" => "Should you ever give ipecac syrup to induce vomiting for poisoning?", "options" => ["Yes, always", "No, it is no longer recommended and can be harmful", "Only if they are young", "Only for chemicals"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Corrosive' poison?", "options" => ["A poison that makes you sleep", "A poison that burns the throat and stomach (e.g., bleach)", "A type of gas", "A snake venom"], "ans" => 1, "xp" => 300],
+                ["q" => "If someone has swallowed a corrosive poison, should you make them vomit?", "options" => ["Yes", "No, it will burn the throat a second time on the way up", "Only if it smells bad", "Only if they are adult"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Antivenom'?", "options" => ["A type of snake", "The medicine used to treat snake or spider bites", "A bandage", "A type of poison"], "ans" => 1, "xp" => 300],
+                ["q" => "What is the priority for a Scorpion sting in a child?", "options" => ["Ice and wait", "Urgent hospital transfer (scorpions can be fatal to small children)", "A bandage", "Calling a school"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Rabies'?", "options" => ["A snake venom", "A viral disease usually spread by the bite of an infected animal", "A type of rash", "A heart problem"], "ans" => 1, "xp" => 400],
+                ["q" => "What should you do for a human or animal bite?", "options" => ["Ignore it", "Clean the wound and seek medical advice (risk of infection/Rabies/Tetanus)", "Apply butter", "Wait for 2 weeks"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Tetanus'?", "options" => ["A snake", "A bacterial infection that causes painful muscle spasms (Lockjaw)", "A type of medicine", "A sign of recovery"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the first priority in a gas leak/poisonous gas situation?", "options" => ["Checking the victim", "Ensure rescuer safety and move the victim to fresh air", "Turning off the lights", "Calling a lawyer"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+
+    // CATEGORY 3: ADVANCED CAPSTONE (Maps 129-132)
+    [
+        "id" => ++$highest_id, "course_id" => $fa_course_id, "category_id" => 3,
+        "title" => "Map 129: Environmental Emergencies", "desc" => "Handle heatstroke, hypothermia, and near-drowning.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Heatstroke'?", "options" => ["A mild sunburn", "A life-threatening condition where body temperature exceeds 40°C", "A type of flu", "Being thirsty"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the priority for Heatstroke first aid?", "options" => ["Giving them a hot meal", "Aggressive cooling (ice packs, wet sheets, fan)", "Making them walk", "Giving them aspirin"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Hypothermia'?", "options" => ["Being too hot", "When the body loses heat faster than it can produce it (below 35°C)", "A broken leg", "A type of allergy"], "ans" => 1, "xp" => 150],
+                ["q" => "How should you warm someone with hypothermia?", "options" => ["Rub their limbs vigorously", "Gently, with blankets and warm (not hot) environment", "Put them in a hot bath", "Give them alcohol"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Heat Exhaustion'?", "options" => ["A heart attack", "Heavy sweating and a rapid pulse from overheating", "A type of rash", "Drowning"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Frostbite'?", "options" => ["A cold flu", "Freezing of the skin and underlying tissues", "Being very cold", "A broken toe"], "ans" => 1, "xp" => 180],
+                ["q" => "Should you rub frostbitten skin?", "options" => ["Yes, to warm it up", "No, it can cause severe tissue damage", "Only if it is white", "Only if it is black"], "ans" => 1, "xp" => 180],
+                ["q" => "What is the priority in a 'Near-Drowning' situation?", "options" => ["Emptying the lungs of water", "Checking DRSABCD and starting CPR if needed", "Changing their clothes", "Giving them food"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Dry Drowning' (or Secondary Drowning)?", "options" => ["Drowning in sand", "Delayed respiratory failure after water has been inhaled (must seek hospital)", "A heart attack in water", "Being very thirsty"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Dehydration' sign?", "options" => ["Sweating a lot", "Dark urine, dry mouth, and fatigue", "Strong muscles", "High energy"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Electrolytes' role?", "options" => ["Making light", "Minerals in blood that help the body function (lost during heat/dehydration)", "A type of battery", "A firefighting tool"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Lightning Strike' first aid priority?", "options" => ["Checking the ground", "DRSABCD; victims do not carry a charge and are safe to touch", "Waiting 2 hours", "Taking a photo"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Afterdrop' in hypothermia?", "options" => ["Feeling better", "A continued drop in core temperature after being removed from the cold", "Falling down", "A type of rain"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Hyponatremia'?", "options" => ["Too much salt", "Low sodium in the blood (can happen from drinking too much water without electrolytes)", "A broken bone", "A type of bee sting"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Flash-to-Bang' method?", "options" => ["A camera setting", "Estimating distance of lightning by counting seconds until thunder", "A fire drill", "A type of hose"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Heat Cramps' treatment?", "options" => ["Running", "Rest, cooling, and stretching with electrolyte fluids", "Surgery", "Applying ice for 5 hours"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Mammalian Dive Reflex'?", "options" => ["A type of swimming", "A survival reflex that slows the heart when the face is in cold water", "A diving trick", "A medical condition"], "ans" => 1, "xp" => 300],
+                ["q" => "Can someone survive long-term immersion in very cold water?", "options" => ["No, impossible", "Sometimes, if the reflex is triggered (continue CPR longer)", "Only if they are a whale", "Only in the North Pole"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Sunstroke'?", "options" => ["A sunburn", "Another name for Heatstroke caused by prolonged sun exposure", "A type of headache", "A broken leg"], "ans" => 1, "xp" => 300],
+                ["q" => "What should you do with wet clothes on a hypothermia victim?", "options" => ["Leave them to warm up", "Remove them and replace with dry blankets", "Fan them dry", "Iron them"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Immersion Foot'?", "options" => ["A broken toe", "Tissue damage from feet being cold and wet for long periods", "A type of shoe", "A high jump"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Altitude Sickness'?", "options" => ["Dizziness in an elevator", "Illness caused by low oxygen levels at high elevations", "Being scared of heights", "A broken arm"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the best way to help someone with Altitude Sickness?", "options" => ["Go higher", "Descend to a lower altitude immediately", "Drink coffee", "Sleep on a hill"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the goal of environmental first aid?", "options" => ["Changing the weather", "Maintaining the body's core temperature within a safe range", "Buying new gear", "Hiring a guide"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $fa_course_id, "category_id" => 3,
+        "title" => "Map 130: Heart Attack & Stroke", "desc" => "Recognize the signs of the two biggest killers. FAST and early intervention.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Myocardial Infarction'?", "options" => ["A broken leg", "A Heart Attack", "A Stroke", "A panic attack"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a common sign of a heart attack?", "options" => ["Itching skin", "Persistent chest pain that may spread to the arm or jaw", "A high fever", "Sneezing"], "ans" => 1, "xp" => 150],
+                ["q" => "What does the 'F' in the stroke acronym FAST stand for?", "options" => ["Fever", "Face (is one side drooping?)", "Fast breathing", "Feet"], "ans" => 1, "xp" => 150],
+                ["q" => "What does the 'A' in FAST stand for?", "options" => ["Ache", "Arms (can they lift both?)", "Allergy", "Airway"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What does the 'S' in FAST stand for?", "options" => ["Strong", "Speech (is it slurred or strange?)", "Sweating", "Sight"], "ans" => 1, "xp" => 180],
+                ["q" => "What does the 'T' in FAST stand for?", "options" => ["Temperature", "Time (to call emergency services immediately)", "Touch", "Treat"], "ans" => 1, "xp" => 180],
+                ["q" => "If a conscious victim is having a heart attack, what position is best?", "options" => ["Lying flat", "Half-sitting with knees bent (W-position)", "Standing up", "Walking around"], "ans" => 1, "xp" => 180],
+                ["q" => "Should you give a conscious heart attack victim an Aspirin?", "options" => ["Only if they are hungry", "Yes, if they are not allergic (it helps thin the blood)", "No, never", "Only if it is a child"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Stroke'?", "options" => ["A heart attack", "A 'brain attack' caused by a blood clot or burst vessel in the brain", "A broken skull", "A type of seizure"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'TIA' (Transient Ischemic Attack)?", "options" => ["A major stroke", "A 'mini-stroke' with temporary symptoms (a warning sign of a big stroke)", "A type of headache", "A heart problem"], "ans" => 1, "xp" => 210],
+                ["q" => "Can a stroke victim be treated with medication to dissolve clots?", "options" => ["No", "Yes, but only if they reach the hospital very quickly (within hours)", "Only if they are young", "Only in summer"], "ans" => 1, "xp" => 210],
+                ["q" => "What should you do if a stroke victim is unconscious?", "options" => ["Give them water", "Check DRSABCD and place in the Recovery Position on their affected side", "Leave them alone", "Make them stand up"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Cardiac Arrest'?", "options" => ["A heart attack", "When the heart suddenly stops pumping blood", "Being very tired", "A high pulse"], "ans" => 1, "xp" => 250],
+                ["q" => "What is the difference between a heart attack and cardiac arrest?", "options" => ["None", "Heart attack is a 'plumbing' problem; Cardiac arrest is an 'electrical' problem", "Heart attack is only for men", "Cardiac arrest is a broken bone"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Aspirin's' main function in first aid?", "options" => ["To stop pain", "To prevent further blood clotting during a heart attack", "To cure a cold", "To lower a fever"], "ans" => 1, "xp" => 250],
+                ["q" => "Is chest pain the only sign of a heart attack?", "options" => ["Yes", "No, some (especially women/diabetics) may feel nausea, jaw pain, or back pain", "Only in movies", "Yes, it must be severe"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Denial' in heart attack victims?", "options" => ["A type of river", "When a victim refuses to believe they are having a heart attack (must be managed)", "A sign of recovery", "Being angry"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Nitroglycerin'?", "options" => ["A poison", "A medication used by heart patients to dilate vessels and stop chest pain", "A type of gas", "A firefighting agent"], "ans" => 1, "xp" => 300],
+                ["q" => "What is the 'Chain of Survival'?", "options" => ["A metal chain", "A series of actions that increase survival after cardiac arrest", "A mountain climbing tool", "A list of employees"], "ans" => 1, "xp" => 300],
+                ["q" => "What is the first link in the Chain of Survival?", "options" => ["CPR", "Early Access (calling emergency services)", "AED", "Surgery"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Hemorrhagic' stroke?", "options" => ["A clot", "A stroke caused by a bleeding vessel in the brain", "A broken leg", "A type of headache"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Ischemic' stroke?", "options" => ["Bleeding", "A stroke caused by a blood clot blocking an artery to the brain", "A heart attack", "A seizure"], "ans" => 1, "xp" => 400],
+                ["q" => "Why is it important to note the TIME the stroke symptoms started?", "options" => ["To tell the family", "Because clot-busting drugs can only be given within a narrow time window", "To fill out paperwork", "To win a prize"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the priority for a heart attack victim who becomes unconscious and stops breathing?", "options" => ["Wait for a doctor", "Immediate CPR and use of an AED", "Cover them with a blanket", "Check their pulse for 10 minutes"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $fa_course_id, "category_id" => 3,
+        "title" => "Map 131: Head & Spinal Injuries", "desc" => "Protect the core. Concussions, neck injuries, and stabilization.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the greatest risk of a spinal injury?", "options" => ["Pain", "Permanent paralysis or death", "A small bruise", "A headache"], "ans" => 1, "xp" => 150],
+                ["q" => "What should you do if you suspect a spinal injury?", "options" => ["Make them walk", "Keep the head and neck still (Immobilization)", "Turn their head to check for cuts", "Sit them in a chair"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Concussion'?", "options" => ["A broken skull", "A traumatic brain injury that affects brain function, usually temporary", "A sign of a heart attack", "A type of allergy"], "ans" => 1, "xp" => 150],
+                ["q" => "Which sign indicates a serious head injury?", "options" => ["Being hungry", "Different sized pupils or fluid leaking from ears", "A small scratch", "Sneezing"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Manual Stabilization' of the neck?", "options" => ["Using a machine", "Holding the head in line with the body with your hands until help arrives", "Tying a scarf", "A type of exercise"], "ans" => 1, "xp" => 180],
+                ["q" => "Should you remove a motorcycle helmet after a crash?", "options" => ["Yes, to see the face", "Generally no, unless it is interfering with airway management", "Only if it is scratched", "Always"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Compression' injury to the spine?", "options" => ["A cut", "Injury from a vertical force (e.g., diving into a shallow pool)", "A snake bite", "A burn"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Battle's Sign'?", "options" => ["A medal", "Bruising behind the ear, indicating a potential skull fracture", "A type of bandage", "A military signal"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the 'Log Roll' used for?", "options" => ["Eating a sandwich", "Turning a suspected spinal victim onto their side while keeping the spine straight", "A type of exercise", "Washing the floor"], "ans" => 1, "xp" => 210],
+                ["q" => "How many people are ideally needed for a safe log roll?", "options" => ["1", "3 or 4", "10", "20"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Whiplash'?", "options" => ["A broken leg", "Neck injury due to forceful, rapid back-and-forth movement of the neck", "A type of food", "A sign of shock"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'CSF' leaking from the nose/ears?", "options" => ["Cerebrospinal Fluid (clear fluid that surrounds the brain)", "Cold Salt Fluid", "Common Skin Flux", "Clear Soap Foam"], "ans" => 0, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Retrograde Amnesia'?", "options" => ["Forgetting the future", "Forgetting events that happened before a head injury", "A sign of recovery", "Being very smart"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Paraplegia'?", "options" => ["A type of flu", "Paralysis that affects the lower half of the body", "A broken arm", "A skin rash"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Quadriplegia'?", "options" => ["Paralysis of two limbs", "Paralysis of all four limbs and torso", "A type of math", "A heart problem"], "ans" => 1, "xp" => 250],
+                ["q" => "What should you do if a head-injured victim wants to go back to sleep?", "options" => ["Let them sleep", "Keep them awake and monitor for changes in consciousness", "Give them coffee", "Yell at them"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'TBI'?", "options" => ["Total Body Injury", "Traumatic Brain Injury", "Technical Bone Issue", "Temperature Base Index"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Intracranial Pressure' (ICP)?", "options" => ["High blood pressure", "Pressure inside the skull that can build up after an injury", "The force of a punch", "The weight of a helmet"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Raccoon Eyes'?", "options" => ["Being a raccoon", "Bruising around both eyes, indicating a potential skull fracture", "A type of makeup", "A sign of being tired"], "ans" => 1, "xp" => 300],
+                ["q" => "Is a brief loss of consciousness after a hit to the head serious?", "options" => ["No, if it's brief", "Yes, it always requires medical evaluation", "Only if there is blood", "Only if it is a child"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Neurogenic Shock'?", "options" => ["Shock from blood loss", "Shock caused by damage to the nervous system (e.g. spinal cord injury)", "Shock from a bee sting", "A type of allergy"], "ans" => 1, "xp" => 400],
+                ["q" => "How should you treat a victim who has a penetrating object in their skull?", "options" => ["Pull it out", "Leave it and secure it with padding; do not move the object", "Apply direct pressure", "Wash it with soap"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Primary' spinal protection?", "options" => ["A neck brace", "Maintaining the head in a neutral position (neutral alignment)", "A soft pillow", "A hat"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the priority for an unconscious victim with a suspected spinal injury who is VOMITING?", "options" => ["Keep them flat", "Immediate Log Roll onto their side to keep the airway clear while maintaining spine alignment", "Leave them flat", "Wipe their mouth only"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $fa_course_id, "category_id" => 3,
+        "title" => "Map 132: Final Capstone Exam", "desc" => "The ultimate challenge. Prove your mastery across all First Aid disciplines.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "SCENARIO: You find someone lying in a parking lot. What is your FIRST action?", "options" => ["Check their pulse", "Check the scene for danger (cars, traffic, spills)", "Start CPR", "Call their family"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: A victim is unconscious and NOT breathing. An AED arrives. What is the priority?", "options" => ["Finish 30 compressions first", "Turn on the AED and apply pads immediately", "Clean the victim's face", "Wait for the ambulance"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: A victim has spurting bright red blood from their thigh. What do you do?", "options" => ["Wash the wound", "Apply direct firm pressure immediately", "Give them a drink", "Elevate their head"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: You are in a loud office on a 112 call. What information must you be ready to provide?", "options" => ["The company name only", "Location, nature of injury, number of victims, and scene hazards", "Your age", "A list of employee names"], "ans" => 1, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "SCENARIO: A coworker is pale, sweaty, and says it feels like an elephant is sitting on their chest. What is happening?", "options" => ["A panic attack", "A Heart Attack", "A broken rib", "Indigestion"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: You find a child who has swallowed bleach. What is the first aid?", "options" => ["Make them vomit", "Call Poison Control/Emergency and do NOT induce vomiting", "Give them a heavy meal", "Wait for 2 hours"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: A victim has fallen and their leg is at a strange angle with bone showing. What is this?", "options" => ["A sprain", "An Open Fracture", "A bruise", "A dislocation"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: A person has a drooping face and slurred speech. What do you check next?", "options" => ["Their temperature", "Their ability to lift both arms (FAST check)", "Their blood pressure", "Their hearing"], "ans" => 1, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "SCENARIO: You are helping a choking victim and they pass out in your arms. What is the move?", "options" => ["Keep doing back blows", "Lower them to the ground and begin CPR", "Leave them and find help", "Slap their face"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: A victim has a large burn on their arm with blisters. How long do you cool it?", "options" => ["1 minute", "At least 20 minutes under cool running water", "Until the ice melts", "5 seconds"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: You suspect someone has a spinal injury. How do you check for a response?", "options" => ["Shake their shoulders", "Talk to them and squeeze their hand without moving their head", "Poke their feet", "Roll them over"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: A diabetic friend is acting 'drunk' and confused. What do you offer them?", "options" => ["A glass of water", "A sugary drink or glucose gel", "An insulin shot", "A heavy sandwich"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "SCENARIO: You see a car crash. The driver is awake but can't feel their legs. What do you do?", "options" => ["Pull them out of the car", "Tell them to stay still and stabilize their head/neck manually", "Ask them to try and stand up", "Give them an aspirin"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: A victim is in shock. They are cold and shivering. What do you NOT do?", "options" => ["Cover them with a blanket", "Give them a hot coffee to drink", "Elevate their legs", "Reassure them"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: You are performing CPR and the victim vomits. What do you do?", "options" => ["Stop CPR entirely", "Roll them onto their side (log roll if spinal), clear the mouth, then resume", "Wait for the vomit to dry", "Ignore it"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: An AED says 'Shock Advised. Charging. Stand Clear.' What do you do?", "options" => ["Keep doing compressions", "Stop all contact and ensure nobody is touching the victim", "Turn off the AED", "Yell at the ambulance"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "MASTER FINAL: What is the most critical duty of a First Aider?", "options" => ["Diagnosing diseases", "Managing life-threats and keeping the victim alive until help arrives", "Driving the ambulance", "Cleaning the street"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: In any first aid situation, who is the most important person?", "options" => ["The victim", "The Rescuer (you)", "The bystander", "The police officer"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: What is the purpose of the 'Recovery Position'?", "options" => ["To make them sleep", "To keep the airway open and prevent choking on vomit or the tongue", "To fix a broken leg", "To save space"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: What is the hallmark of a world-class first aider?", "options" => ["Being aggressive", "Calmness, clear communication, and sticking to the DRSABCD priority", "Knowing all medical names", "Having the most expensive kit"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "EXAM: How do Airway, Breathing, and Circulation (ABC) relate?", "options" => ["They don't", "They are the three systems that MUST function for survival", "They are optional", "They are for doctors only"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: Why is 'Early Defibrillation' a key part of the Chain of Survival?", "options" => ["It wakes people up", "It is the only way to restart a heart in Ventricular Fibrillation (VF)", "It saves the battery", "It is easier than CPR"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: What is the true goal of First Aid skills?", "options" => ["Getting a job", "Providing an expert safety net and bridging the gap to professional care", "Winning a prize", "Hiring friends"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: What is the core responsibility of a First Aider to their community?", "options" => ["To perform surgery", "To be ready and able to preserve life in an emergency", "To write reports", "To hire staff"], "ans" => 1, "xp" => 600]
+            ]]
+        ]
+    ]
+];
+
+// Combine everything
+// ==========================================================
+// NEW VENTURE CREATION CURRICULUM (Maps 133-144)
+// ==========================================================
+$nvc_maps = [
+    // CATEGORY 1: IDEATION & VALIDATION (Maps 133-136)
+    [
+        "id" => ++$highest_id, "course_id" => $nvc_course_id, "category_id" => 1,
+        "title" => "Map 133: Opportunity Recognition", "desc" => "Learn to identify gaps in the market and generate viable business ideas.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What defines a 'Business Opportunity'?", "options" => ["A random thought", "A favorable set of circumstances that creates a need for a new product, service, or business", "A guaranteed profit", "A government grant"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the difference between an 'Idea' and an 'Opportunity'?", "options" => ["They are exactly the same", "An idea is just a thought; an opportunity is an idea that has commercial viability", "An idea costs money; an opportunity is free", "An opportunity is just a dream"], "ans" => 1, "xp" => 150],
+                ["q" => "Which of the following is a common source of new business ideas?", "options" => ["Solving a personal pain point", "Ignoring consumer complaints", "Copying a failed business", "Avoiding technology"], "ans" => 0, "xp" => 150],
+                ["q" => "What does 'Pain Point' mean in venture creation?", "options" => ["A physical injury at work", "A specific problem that prospective customers of your business are experiencing", "The cost of manufacturing", "A legal issue"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Brainstorming'?", "options" => ["A headache", "A group technique for generating a large number of ideas for the solution to a problem", "Writing a business plan", "Pitching to investors"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Trend Analysis'?", "options" => ["Predicting the weather", "Examining shifts in consumer behavior, technology, or demographics to spot opportunities", "A type of accounting", "Calculating taxes"], "ans" => 1, "xp" => 180],
+                ["q" => "What does the term 'Disruptive Innovation' refer to?", "options" => ["A loud office", "An innovation that creates a new market and value network, disrupting existing ones", "A product that breaks easily", "A team argument"], "ans" => 1, "xp" => 180],
+                ["q" => "Why do changes in government regulations often create opportunities?", "options" => ["They make business illegal", "They force people to comply with new standards, requiring new products/services", "They lower all taxes", "They stop all competitors"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Niche Market'?", "options" => ["A very large global market", "A small, specialized segment of the market for a particular kind of product or service", "A market with no competitors", "A physical store location"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Window of Opportunity'?", "options" => ["A physical window in a shop", "The time period in which a firm can realistically enter a new market", "A software program", "The time spent daydreaming"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Design Thinking'?", "options" => ["Drawing a logo", "A human-centered approach to innovation that draws from the designer's toolkit", "Choosing office colors", "A type of architecture"], "ans" => 1, "xp" => 210],
+                ["q" => "In Design Thinking, what is the 'Empathize' phase?", "options" => ["Crying with a customer", "Understanding the user's needs, feelings, and frustrations through observation", "Giving refunds", "Designing the final product"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Blue Ocean Strategy'?", "options" => ["Fishing in the ocean", "Simultaneous pursuit of differentiation and low cost to open a new market space", "Selling water", "Fighting competitors directly"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Red Ocean'?", "options" => ["A bloody war", "An existing market with defined boundaries and cutthroat competition", "A new undiscovered market", "A failed business"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Serendipity' in venture creation?", "options" => ["A legal contract", "The occurrence of making a fortunate discovery by accident", "A type of tax", "A business plan format"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Ideation'?", "options" => ["Taking a break", "The creative process of generating, developing, and communicating new ideas", "Closing a company", "Filing taxes"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Customer Discovery'?", "options" => ["Finding where customers live", "Testing your initial hypotheses about a problem and its solution with real people", "Selling products immediately", "Buying a list of names"], "ans" => 1, "xp" => 300],
+                ["q" => "What is an 'Early Adopter'?", "options" => ["A person who wakes up early", "A person who starts using a product or technology as soon as it becomes available", "A late customer", "A competitor"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Primary Research'?", "options" => ["Looking at Google", "Collecting new, original data directly from potential customers", "Reading a book", "Copying a competitor"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Secondary Research'?", "options" => ["Second-class work", "Analyzing data that has already been collected and published by others", "Interviewing 100 people", "A physical prototype"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Value Proposition'?", "options" => ["A price tag", "A statement summarizing why a consumer should buy a product or use a service", "A marriage proposal", "A legal document"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Problem-Solution Fit'?", "options" => ["A puzzle", "When you have evidence that customers care about a problem and your solution solves it", "Fitting a product in a box", "A type of clothing"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the 'Lean Startup' methodology?", "options" => ["Having no money", "A method for developing businesses based on validated learning and rapid iteration", "Working without a team", "Taking 10 years to launch"], "ans" => 1, "xp" => 400],
+                ["q" => "What is a 'Pivot'?", "options" => ["Spinning around", "A structured course correction designed to test a new fundamental hypothesis", "Closing the business", "Firing the staff"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $nvc_course_id, "category_id" => 1,
+        "title" => "Map 134: Market Feasibility", "desc" => "Assess the market size, competition, and potential for success.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Feasibility Analysis'?", "options" => ["A medical test", "The process of determining if a business idea is viable and worth pursuing", "Counting money", "Writing a slogan"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Market Feasibility'?", "options" => ["Checking if a store is open", "An assessment of the overall appeal and size of the market for a product", "A technical design test", "A financial audit"], "ans" => 1, "xp" => 150],
+                ["q" => "What does 'TAM' stand for?", "options" => ["Total Available Market", "Target Acquisition Method", "Total Asset Management", "Technical Area Model"], "ans" => 0, "xp" => 150],
+                ["q" => "What does 'SAM' stand for?", "options" => ["Standard Application Model", "Serviceable Addressable Market", "System Audit Metric", "Sales And Marketing"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What does 'SOM' stand for?", "options" => ["System Operating Manual", "Serviceable Obtainable Market (the share you can realistically capture)", "Standard Output Model", "Sales Order Metric"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Competitor Analysis'?", "options" => ["Fighting others", "Identifying competitors and evaluating their strategies to determine their strengths and weaknesses", "Watching sports", "Hiring a lawyer"], "ans" => 1, "xp" => 180],
+                ["q" => "Who are 'Direct Competitors'?", "options" => ["People who hate you", "Businesses offering identical or similar products to the same target market", "Businesses in different countries", "Your suppliers"], "ans" => 1, "xp" => 180],
+                ["q" => "Who are 'Indirect Competitors'?", "options" => ["People who don't know you", "Businesses offering close substitute products that satisfy the same basic need", "Direct partners", "Your investors"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Porter’s Five Forces' model used for?", "options" => ["A workout routine", "Analyzing the competitive intensity and attractiveness of an industry", "A team of five managers", "A type of accounting"], "ans" => 1, "xp" => 210],
+                ["q" => "In Porter's model, what is 'Threat of New Entrants'?", "options" => ["The danger of people breaking into the office", "How easy or difficult it is for new companies to start competing in the industry", "A virus threat", "Hiring new staff"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Barrier to Entry'?", "options" => ["A locked door", "Obstacles that make it difficult for new firms to enter a given market", "A toll gate", "A type of tariff"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Bargaining Power of Suppliers'?", "options" => ["Suppliers asking for a raise", "How much pressure suppliers can put on a business by raising prices or lowering quality", "A trade union", "Buying supplies cheap"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Financial Feasibility'?", "options" => ["Having a bank account", "An assessment of whether a venture has enough start-up capital and can generate a profit", "Paying taxes", "A loan application"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Technical Feasibility'?", "options" => ["Knowing how to code", "An assessment of the technical resources and capabilities needed to build the product", "Fixing computers", "A web hosting plan"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Organizational Feasibility'?", "options" => ["Cleaning the office", "Determining if the proposed team has the skills and management expertise to execute the idea", "Organizing files", "Creating a calendar"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Target Audience'?", "options" => ["People standing in a line", "The specific group of consumers most likely to want your product or service", "Everyone in the world", "Your employees"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What are 'Demographics'?", "options" => ["A type of map", "Statistical data relating to the population (e.g., age, gender, income)", "A type of software", "Weather patterns"], "ans" => 1, "xp" => 300],
+                ["q" => "What are 'Psychographics'?", "options" => ["Mental illnesses", "Classification of people according to their attitudes, aspirations, and psychological criteria", "A physical exam", "Geographic locations"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Customer Persona'?", "options" => ["A fake ID", "A semi-fictional representation of your ideal customer based on market research", "A type of actor", "A sales pitch"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Market Trend'?", "options" => ["A viral video", "A perceived tendency of financial markets or consumer behavior to move in a particular direction", "A fashion style", "A single sale"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Market Saturation'?", "options" => ["A wet market", "When the volume of a product in a marketplace has been maximized", "A new market", "A market with no competitors"], "ans" => 1, "xp" => 400],
+                ["q" => "What is a 'First-Mover Advantage'?", "options" => ["Running fast", "The competitive advantage gained by the first significant occupant of a market", "Being the first to arrive at work", "A type of chess move"], "ans" => 1, "xp" => 400],
+                ["q" => "What is a 'Late Mover Advantage'?", "options" => ["Being lazy", "The ability to learn from the mistakes of first movers and enter with a better product", "Sleeping in", "A penalty"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Market Segmentation'?", "options" => ["Breaking a product", "Dividing a broad target market into subsets of consumers with common needs", "A type of math", "Closing down a market"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $nvc_course_id, "category_id" => 1,
+        "title" => "Map 135: The Business Model Canvas", "desc" => "Structure your venture using the 9 building blocks of the BMC.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the 'Business Model Canvas' (BMC)?", "options" => ["A painting of an office", "A one-page visual chart with 9 elements describing a firm's value proposition and operations", "A type of tent", "A 100-page business plan"], "ans" => 1, "xp" => 150],
+                ["q" => "Which BMC block defines the different groups of people an enterprise aims to reach?", "options" => ["Cost Structure", "Customer Segments", "Key Resources", "Channels"], "ans" => 1, "xp" => 150],
+                ["q" => "Which BMC block describes the bundle of products/services that create value for a specific segment?", "options" => ["Value Propositions", "Revenue Streams", "Key Activities", "Customer Relationships"], "ans" => 0, "xp" => 150],
+                ["q" => "Which BMC block explains how a company communicates with and reaches its customers?", "options" => ["Key Partners", "Channels", "Cost Structure", "Key Resources"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "Which BMC block describes the types of relationships a company establishes with specific customer segments?", "options" => ["Customer Relationships", "Key Activities", "Channels", "Cost Structure"], "ans" => 0, "xp" => 180],
+                ["q" => "Which BMC block represents the cash a company generates from each Customer Segment?", "options" => ["Key Resources", "Revenue Streams", "Cost Structure", "Key Partners"], "ans" => 1, "xp" => 180],
+                ["q" => "Which BMC block describes the most important assets required to make a business model work?", "options" => ["Key Resources", "Customer Segments", "Channels", "Value Propositions"], "ans" => 0, "xp" => 180],
+                ["q" => "Which BMC block describes the most important things a company must DO to make its business model work?", "options" => ["Key Activities", "Revenue Streams", "Cost Structure", "Customer Relationships"], "ans" => 0, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "Which BMC block describes the network of suppliers and partners that make the business model work?", "options" => ["Customer Segments", "Key Partners", "Channels", "Value Propositions"], "ans" => 1, "xp" => 210],
+                ["q" => "Which BMC block describes all costs incurred to operate a business model?", "options" => ["Revenue Streams", "Cost Structure", "Key Activities", "Key Resources"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Subscription' Revenue Stream?", "options" => ["A one-time payment", "Continuous fees charged for continuous access to a service", "A government grant", "A bank loan"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Freemium' business model?", "options" => ["Everything is free", "Offering basic services for free, while charging a premium for advanced features", "A very expensive product", "A charitable donation"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What are 'Fixed Costs' in the Cost Structure block?", "options" => ["Costs that change daily", "Costs that remain the same regardless of the volume of goods produced (e.g., rent)", "A one-time fee", "A type of tax"], "ans" => 1, "xp" => 250],
+                ["q" => "What are 'Variable Costs'?", "options" => ["Costs that never change", "Costs that vary proportionally with the volume of goods produced", "Office rent", "A manager's salary"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Asset Sale' in revenue streams?", "options" => ["Renting a house", "Selling ownership rights to a physical product", "A monthly subscription", "A licensing fee"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Platform' or 'Multi-sided Market'?", "options" => ["A stage", "A business model that creates value by facilitating interactions between two or more interdependent groups", "A single store", "A type of shoe"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Bait and Hook' (or Razor and Blades) business model?", "options" => ["A fishing company", "Selling a basic product at a low price, but charging high prices for necessary refills/complements", "A type of scam", "A free trial"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Licensing' revenue?", "options" => ["A driver's license", "Giving customers permission to use protected intellectual property in exchange for a fee", "Selling a physical product", "A subscription box"], "ans" => 1, "xp" => 300],
+                ["q" => "What is an 'Economy of Scale'?", "options" => ["A small scale", "A cost advantage that a business enjoys as its output expands", "A type of currency", "A government rule"], "ans" => 1, "xp" => 300],
+                ["q" => "What is an 'Economy of Scope'?", "options" => ["Looking through a telescope", "A cost advantage a business enjoys by expanding the variety of products it produces", "A limited market", "A single product focus"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is the primary advantage of using the Business Model Canvas?", "options" => ["It guarantees success", "It forces entrepreneurs to align all strategic elements on a single page for quick iteration", "It is required by law", "It does the accounting for you"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the 'Value Proposition Canvas'?", "options" => ["A new painting", "A plug-in to the BMC that deeply analyzes Customer Segments and Value Propositions", "A legal document", "A financial ledger"], "ans" => 1, "xp" => 400],
+                ["q" => "In the Value Proposition Canvas, what are 'Customer Pains'?", "options" => ["Physical injuries", "Negative emotions, undesired costs, and risks that a customer experiences", "The price of the product", "A type of marketing"], "ans" => 1, "xp" => 400],
+                ["q" => "What are 'Pain Relievers'?", "options" => ["Aspirin", "A description of how your product or service alleviates specific customer pains", "A discount code", "A customer service rep"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $nvc_course_id, "category_id" => 1,
+        "title" => "Map 136: The Business Plan", "desc" => "Translate the canvas into a formal, comprehensive strategic document.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Business Plan'?", "options" => ["A brief conversation", "A formal written document describing the nature of the business, its strategy, and financial forecasts", "A legal contract", "A marketing flyer"], "ans" => 1, "xp" => 150],
+                ["q" => "Who are the typical primary audiences for a formal Business Plan?", "options" => ["Competitors", "Investors, Banks, and Internal Management", "Random customers", "The IT department"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the 'Executive Summary'?", "options" => ["The last page of the document", "A concise summary of the entire business plan, usually written last but placed first", "A list of executives", "A financial audit"], "ans" => 1, "xp" => 150],
+                ["q" => "Which section details the exact structure, ownership, and management team of the venture?", "options" => ["Company Overview / Management Plan", "Financial Projections", "Marketing Strategy", "Appendix"], "ans" => 0, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is included in the 'Market Analysis' section?", "options" => ["A grocery list", "Details about target market size, demographics, and competitive landscape", "The CEO's resume", "The physical office layout"], "ans" => 1, "xp" => 180],
+                ["q" => "What is the 'Operations Plan'?", "options" => ["A medical procedure", "A section describing how the business will produce its goods/services daily", "A list of investors", "A marketing schedule"], "ans" => 1, "xp" => 180],
+                ["q" => "What is the 'Marketing and Sales Strategy'?", "options" => ["How you will make the product", "How you plan to attract and retain customers", "The accounting rules", "The legal structure"], "ans" => 1, "xp" => 180],
+                ["q" => "What does the 'Financial Projections' section usually include?", "options" => ["Past receipts", "Forecasted income statements, balance sheets, and cash flow statements for 3-5 years", "A list of marketing ideas", "The founder's personal bank statement"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Pro Forma' financial statement?", "options" => ["A professional letter", "A projected financial statement based on assumptions of future performance", "A tax return", "An audited statement"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Break-even Analysis'?", "options" => ["A study of bones", "Calculation showing when revenue will exactly cover costs, producing zero profit but zero loss", "A type of marketing", "An employee review"], "ans" => 1, "xp" => 210],
+                ["q" => "What is the 'Funding Request' section?", "options" => ["A GoFundMe page", "A section detailing how much money is needed, how it will be used, and future funding plans", "A bank loan receipt", "A charity letter"], "ans" => 1, "xp" => 210],
+                ["q" => "What belongs in the 'Appendix' of a business plan?", "options" => ["The main summary", "Supporting documents like resumes, detailed data, and legal agreements", "The title page", "The table of contents"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'SWOT Analysis' often included in a business plan?", "options" => ["A financial audit", "An evaluation of Strengths, Weaknesses, Opportunities, and Threats", "A security team", "A legal defense"], "ans" => 1, "xp" => 250],
+                ["q" => "Why is it important to clearly state the 'Problem' in the plan?", "options" => ["To sound smart", "Because investors want to know exactly what pain point the venture is solving before hearing the solution", "To complain about the government", "To write a longer document"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Milestone' planning?", "options" => ["Building a stone wall", "Setting specific, significant goals with dates to track progress (e.g., Launch Date)", "A financial forecast", "A marketing flyer"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Lean Plan' (or One-Page Pitch)?", "options" => ["A plan with no fat", "A highly condensed business plan focusing on key metrics, often used for quick communication", "A plan for a gym", "A plan that is incomplete"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Burn Rate'?", "options" => ["The temperature of a fire", "The rate at which a company uses its cash reserves before becoming profitable", "The speed of sales", "The cost of production"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Runway'?", "options" => ["An airport path", "The amount of time a company has until it exhausts its cash reserves", "The length of a meeting", "The size of a product"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Competitive Matrix'?", "options" => ["A sci-fi movie", "A visual grid comparing your venture's features/prices against direct competitors", "A math test", "A financial ledger"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Go-to-Market' (GTM) Strategy?", "options" => ["A grocery list", "An action plan specifying how a company will reach target customers and achieve competitive advantage", "A type of tax", "A legal contract"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is the primary risk of relying too heavily on a rigid Business Plan?", "options" => ["It takes too much ink", "It may prevent the venture from pivoting when market feedback contradicts initial assumptions", "It is illegal", "It guarantees success"], "ans" => 1, "xp" => 400],
+                ["q" => "What is a 'Contingency Plan'?", "options" => ["A plan for a party", "A backup plan outlined to address potential major risks or failures", "A marketing plan", "The primary business model"], "ans" => 1, "xp" => 400],
+                ["q" => "What does 'Traction' mean to an investor reading your plan?", "options" => ["Tire grip", "Proof that the business is gaining momentum (e.g., growing sales, user signups)", "A type of loan", "The age of the founder"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the difference between a Business Plan and a Pitch Deck?", "options" => ["They are the same", "A business plan is a detailed text document; a pitch deck is a highly visual presentation summarizing it", "A pitch deck is an audio file", "A business plan is only for tech"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    // CATEGORY 2: EXECUTION & LAUNCH (Maps 137-140)
+    [
+        "id" => ++$highest_id, "course_id" => $nvc_course_id, "category_id" => 2,
+        "title" => "Map 137: Legal & Regulatory Framework", "desc" => "Company registration, contracts, IP, and compliance.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Sole Proprietorship'?", "options" => ["A business owned by a corporation", "A business owned and run by one individual with no legal distinction between owner and business", "A non-profit", "A government agency"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the main risk of a Sole Proprietorship?", "options" => ["Unlimited personal liability for business debts", "You have to share profits", "It's illegal", "You must have a board of directors"], "ans" => 0, "xp" => 150],
+                ["q" => "What is a 'Partnership'?", "options" => ["A single owner", "A formal arrangement by two or more parties to manage and operate a business", "A large corporation", "A charity"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Limited Liability'?", "options" => ["Having no responsibility", "A legal structure protecting personal assets of owners from business debts", "A type of insurance", "A bank loan limitation"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "In South Africa, what does 'PTY (LTD)' stand for?", "options" => ["Public Trading Yield", "Proprietary Limited (a private company)", "Private Trust Yield", "Primary Tax Year"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'CIPC'?", "options" => ["A tax agency", "Companies and Intellectual Property Commission (where businesses are registered in SA)", "A bank", "A marketing board"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Memorandum of Incorporation' (MOI)?", "options" => ["A marketing flyer", "The founding document of a company that sets out rules for its management", "A tax return", "An employee contract"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Shareholder'?", "options" => ["A customer", "An individual or institution that legally owns a share of stock in a corporation", "A manager", "A supplier"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Intellectual Property' (IP)?", "options" => ["A physical building", "Creations of the mind, such as inventions, literary works, designs, and symbols", "A smart person", "A type of computer"], "ans" => 1, "xp" => 210],
+                ["q" => "What does a 'Trademark' protect?", "options" => ["An invention mechanism", "Brand names, logos, and slogans distinguishing goods/services", "A book's text", "A trade route"], "ans" => 1, "xp" => 210],
+                ["q" => "What does a 'Patent' protect?", "options" => ["A logo", "A new invention, giving the owner the right to exclude others from making/selling it", "A song", "A business name"], "ans" => 1, "xp" => 210],
+                ["q" => "What does 'Copyright' protect?", "options" => ["A machine", "Original works of authorship (literature, music, art)", "A business idea", "A logo"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is an 'NDA'?", "options" => ["New Digital App", "Non-Disclosure Agreement (a contract to keep information confidential)", "National Debt Act", "No Data Allowed"], "ans" => 1, "xp" => 250],
+                ["q" => "What is an 'Employment Contract'?", "options" => ["A promise", "A legally binding agreement detailing the terms of employment between employer and employee", "A tax document", "A resume"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Non-Compete Clause'?", "options" => ["A rule against running", "A clause preventing an employee from entering into competition with the employer after leaving", "A tax deduction", "A marketing strategy"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Founders Agreement'?", "options" => ["A handshake", "A legal contract outlining the roles, equity, and responsibilities of the founding team", "A marriage certificate", "A bank loan"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Vesting' in terms of founder equity?", "options" => ["Wearing a vest", "The process of earning the right to shares over time, to ensure founders stay with the company", "Selling all shares instantly", "Giving shares to the bank"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Compliance'?", "options" => ["Being nice", "Conforming to a rule, such as a specification, policy, standard or law", "A type of tax", "A marketing plan"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'POPIA' in South Africa?", "options" => ["A food item", "Protection of Personal Information Act (data privacy law)", "Public Office Procedure", "Private Owned Property"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'B-BBEE'?", "options" => ["A type of insect", "Broad-Based Black Economic Empowerment (a framework for economic inclusion)", "Business to Business Engagement", "Basic Business Ethics"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Term Sheet'?", "options" => ["A vocabulary list", "A non-binding agreement setting forth the basic terms under which an investment will be made", "A final contract", "A tax form"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Fiduciary Duty'?", "options" => ["A type of tax", "The legal and ethical obligation of a director/founder to act in the best interests of the company", "A work schedule", "A marketing task"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Piercing the Corporate Veil'?", "options" => ["A magic trick", "When a court holds owners personally liable for corporate debts due to fraud or mixing personal/business funds", "Opening a new office", "A marketing strategy"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Tax Clearance'?", "options" => ["Paying no tax", "A certificate confirming that a taxpayer's tax affairs are in order with the revenue service", "A type of audit", "A bank loan"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $nvc_course_id, "category_id" => 2,
+        "title" => "Map 138: Startup Financing", "desc" => "Navigate seed capital, venture capital, and bootstrapping.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Bootstrapping'?", "options" => ["Buying shoes", "Funding a startup through personal savings and early revenues without outside investment", "Getting a massive bank loan", "Selling the company"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Seed Funding'?", "options" => ["Money for gardening", "The very first investment money used to start a business", "A government tax", "Profit from a mature business"], "ans" => 1, "xp" => 150],
+                ["q" => "Who are 'Angel Investors'?", "options" => ["Religious figures", "Wealthy individuals who provide capital for startups, usually in exchange for equity", "Bank managers", "Government officials"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Venture Capital' (VC)?", "options" => ["A bank loan", "Financing from firms that invest in startups with high growth potential", "Personal savings", "A credit card"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Equity Financing'?", "options" => ["Borrowing money", "Raising capital by selling shares (ownership) in the company", "A type of loan", "Paying taxes"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Debt Financing'?", "options" => ["Selling shares", "Borrowing money that must be repaid with interest", "Winning a prize", "A government grant"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Crowdfunding'?", "options" => ["A flash mob", "Raising small amounts of money from a large number of people, usually online", "A bank loan", "A tax rebate"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Grant'?", "options" => ["A loan with high interest", "Non-repayable funds disbursed by one party (often government) to a recipient", "A type of tax", "A share of the company"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Pre-money Valuation'?", "options" => ["Money in the bank", "The value of a company BEFORE an investment is made", "A type of tax", "Total revenue"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Post-money Valuation'?", "options" => ["Money after tax", "The value of a company AFTER an investment is added (Pre-money + Investment)", "The CEO's salary", "A bank statement"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Dilution'?", "options" => ["Adding water", "A decrease in existing shareholders' ownership percentage when new shares are issued", "Selling the company", "Hiring staff"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Convertible Note'?", "options" => ["A car loan", "Short-term debt that converts into equity, usually in conjunction with a future financing round", "A type of cash", "A secret document"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'SAFE' agreement?", "options" => ["A secure box", "Simple Agreement for Future Equity (an alternative to convertible notes)", "A health and safety form", "A bank deposit"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Series A' funding?", "options" => ["The very first dollar", "The first significant round of venture capital financing after seed funding", "A bank loan", "The final exit"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Pitch Deck'?", "options" => ["A set of playing cards", "A brief presentation to provide investors with an overview of your business", "A financial ledger", "A legal contract"], "ans" => 1, "xp" => 250],
+                ["q" => "What is the 'Valley of Death'?", "options" => ["A scary movie", "The period where a startup is operating but has not yet generated revenue or secured major funding", "A failed startup", "A type of market"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Due Diligence' in investing?", "options" => ["Working hard", "A comprehensive appraisal of a business undertaken by a prospective investor", "Paying taxes", "Hiring a manager"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Cap Table' (Capitalization Table)?", "options" => ["A table for hats", "A spreadsheet detailing who owns what percentage of the company", "A list of office furniture", "A financial audit"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Burn Rate'?", "options" => ["Heating an office", "The rate at which a company depletes its cash reserves", "The speed of sales", "The cost of electricity"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Runway'?", "options" => ["An airport path", "The amount of time the company can survive at its current burn rate before running out of cash", "A fashion show", "The length of a contract"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is an 'IPO' (Initial Public Offering)?", "options" => ["Internal Project Order", "The process of offering shares of a private corporation to the public in a new stock issuance", "A type of bank loan", "A secret investment"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Down Round'?", "options" => ["A sad song", "A funding round where the valuation of the company is lower than the previous round", "A type of tax", "Closing the company"], "ans" => 1, "xp" => 400],
+                ["q" => "What is a 'Liquidity Event' (Exit)?", "options" => ["A flood", "An event (like an acquisition or IPO) that allows founders/investors to cash out their equity", "A fast sale", "Paying off a loan"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Venture Debt'?", "options" => ["A standard bank loan", "A type of debt financing provided to venture-backed companies that may lack positive cash flow", "A credit card", "Borrowing from friends"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $nvc_course_id, "category_id" => 2,
+        "title" => "Map 139: MVP & Prototyping", "desc" => "Build the first iteration of your product quickly and efficiently.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is an 'MVP' (Minimum Viable Product)?", "options" => ["A perfect product", "A version of a product with just enough features to satisfy early customers and provide feedback", "A failed product", "A 3D model"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the primary goal of an MVP?", "options" => ["To make millions instantly", "To test a fundamental business hypothesis with minimal resources", "To show off to competitors", "To win a design award"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Prototype'?", "options" => ["A finished product", "An early sample, model, or release built to test a concept or process", "A type of font", "A legal document"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Wireframing' in software?", "options" => ["Building a physical frame", "Creating a basic visual guide or skeleton of a website or app", "Writing code", "Hiring a developer"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Iterative Development'?", "options" => ["Doing it once", "A process of designing, testing, and refining a product repeatedly", "A legal process", "A type of accounting"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Concierge MVP'?", "options" => ["A hotel service", "Manually providing the service to a small group of users before building the automated tech", "A highly polished app", "A free product"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Wizard of Oz MVP'?", "options" => ["A magic trick", "Making users believe the product is fully automated, but humans are doing the work behind the scenes", "A movie", "A type of hardware"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Landing Page MVP'?", "options" => ["An airport", "A simple webpage describing a future product to collect email signups and gauge interest", "A physical store", "A legal contract"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'A/B Testing'?", "options" => ["A school test", "Testing two different versions of a feature to see which performs better", "A blood test", "A type of battery"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'User Experience' (UX)?", "options" => ["Playing a game", "The overall experience and satisfaction a user has when interacting with a product", "A type of coding", "A physical prototype"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'User Interface' (UI)?", "options" => ["The engine", "The visual elements (buttons, screens) a user interacts with", "The legal terms", "The marketing text"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Usability Testing'?", "options" => ["Testing the durability", "Observing real users attempting to complete tasks with your prototype", "A code review", "A safety inspection"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Agile Development'?", "options" => ["Being very fast", "A project management methodology prioritizing cross-functional collaboration and flexible iteration", "A strict plan", "A type of hardware"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Sprint' in Agile?", "options" => ["A running race", "A short, time-boxed period to complete a set amount of work", "A coffee break", "A long meeting"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Feature Creep'?", "options" => ["A scary feature", "The excessive ongoing expansion of new features in a product", "A successful launch", "A type of bug"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Technical Debt'?", "options" => ["A bank loan", "The implied cost of future rework caused by choosing an easy, fast solution now instead of a better one", "Buying too many computers", "A software subscription"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Beta Release'?", "options" => ["A final product", "An early version of a product released to a select group of users for testing", "A type of fish", "A failed launch"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Mockup'?", "options" => ["A joke", "A static visual representation of a product showing how it will look", "A fully working app", "A legal draft"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Validation' in the MVP process?", "options" => ["Getting a parking ticket stamped", "Gathering data that proves your hypotheses about customer behavior are correct", "A legal stamp", "A type of code"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Pivot' based on MVP feedback?", "options" => ["Giving up", "Changing a core aspect of the business model because the MVP proved the original idea wrong", "Firing the team", "Spinning a chair"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Product-Market Fit' (PMF)?", "options" => ["A tight box", "The stage where a product successfully satisfies a strong market demand", "A clothing size", "A type of marketing"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the 'Build-Measure-Learn' feedback loop?", "options" => ["A construction term", "The core component of Lean Startup: build an MVP, measure response, learn from data", "A school lesson", "A type of software"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Scalability' of a prototype?", "options" => ["How much it weighs", "Evaluating if the early version can be expanded to handle a massive user base", "How tall it is", "A type of graphic design"], "ans" => 1, "xp" => 400],
+                ["q" => "What is a 'Piecemeal MVP'?", "options" => ["A puzzle", "Using existing, off-the-shelf tools connected together to simulate a new product", "A broken product", "A type of meal"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $nvc_course_id, "category_id" => 2,
+        "title" => "Map 140: Go-to-Market Strategy", "desc" => "Acquire your first customers and launch your brand.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Go-to-Market' (GTM) Strategy?", "options" => ["A grocery list", "An action plan specifying how a company will reach target customers and achieve competitive advantage", "A type of tax", "A legal contract"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Target Audience'?", "options" => ["Everyone", "The specific group of consumers most likely to want your product", "A type of arrow", "Your competitors"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Positioning'?", "options" => ["Standing still", "How you want your brand to be perceived in the minds of the target market relative to competitors", "A yoga pose", "A GPS location"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Value Proposition'?", "options" => ["A price tag", "A statement explaining why a customer should buy your product", "A marriage proposal", "A list of expenses"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Customer Acquisition Cost' (CAC)?", "options" => ["The salary of a salesman", "The total cost of convincing a potential customer to buy", "The price of the product", "Office rent"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Lifetime Value' (LTV)?", "options" => ["The weight of a client", "The total revenue a business expects from a single customer over their relationship", "The duration of a sale", "The age of the founder"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Inbound Marketing'?", "options" => ["A type of train", "Drawing customers to your website through content, SEO, and social media", "Cold calling", "Buying a billboard"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Outbound Marketing'?", "options" => ["Traveling abroad", "Proactively reaching out to consumers (e.g., cold calling, TV ads)", "Writing a blog", "A social media post"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Sales Funnel'?", "options" => ["A tool for pouring oil", "The visual representation of the customer journey from awareness to purchase", "A list of employees", "A type of factory"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Lead Generation'?", "options" => ["Creating metal", "The process of identifying and cultivating potential customers", "Hiring staff", "Selling products"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Conversion Rate'?", "options" => ["Changing money", "The percentage of users who take a desired action (e.g., buying)", "A type of translation", "A salary increase"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'SEO'?", "options" => ["Searching for Every Option", "Search Engine Optimization (improving website visibility on Google)", "Secure Entry Office", "System Entry Order"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Landing Page'?", "options" => ["An airport runway", "A standalone web page created specifically for a marketing or advertising campaign", "The home page", "A deleted page"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'B2B'?", "options" => ["Business to Business", "Back to Base", "Buy to Build", "Better to Best"], "ans" => 0, "xp" => 250],
+                ["q" => "What is 'B2C'?", "options" => ["Business to Consumer", "Back to Center", "Better to Create", "Budget to Capital"], "ans" => 0, "xp" => 250],
+                ["q" => "What is 'Direct Sales'?", "options" => ["Selling through a store", "Selling products directly to consumers away from a fixed retail location", "A type of marketing", "Hiring a manager"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Content Marketing'?", "options" => ["Selling data", "Creating and sharing valuable free content to attract prospects", "Buying advertisements", "Printing flyers"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Affiliate Marketing'?", "options" => ["Selling to family", "Rewarding third-party partners for each visitor/customer brought by their marketing efforts", "A type of loan", "A bank statement"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Public Relations' (PR)?", "options" => ["A private club", "Managing the spread of information between an individual/organization and the public", "A type of tax", "Hiring staff"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Viral Marketing'?", "options" => ["A computer virus", "A method where consumers are encouraged to share information about a product via the internet", "A hospital ad", "A slow marketing plan"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Pricing Strategy'?", "options" => ["Guessing a number", "The method a business uses to set the price of a product/service (e.g., penetration pricing)", "A type of tax", "A bank loan"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Freemium' pricing?", "options" => ["Everything is free", "Offering a basic product for free but charging for premium features", "A very expensive product", "A charitable donation"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Churn Rate'?", "options" => ["Making butter", "The annual percentage rate at which customers stop subscribing to a service", "The speed of sales", "The number of new customers"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Product-Market Fit'?", "options" => ["When a product fits in a box", "When a product successfully satisfies a strong market demand", "When a store has enough shelf space", "When a product is cheap"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+
+    // CATEGORY 3: SCALING & CAPSTONE (Maps 141-144)
+    [
+        "id" => ++$highest_id, "course_id" => $nvc_course_id, "category_id" => 3,
+        "title" => "Map 141: Early Operations & Team", "desc" => "Hire your first employees and set up your core processes.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Operations Management'?", "options" => ["Fixing machinery", "Designing and controlling the process of production and business operations", "Managing the cleaning staff", "Hiring employees"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Co-founder'?", "options" => ["An employee", "A person who helps start the business and shares ownership/equity", "A bank manager", "A customer"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Company Culture'?", "options" => ["The art on the walls", "The shared values, behaviors, and vision of the people in the company", "The company's bank account", "The dress code only"], "ans" => 1, "xp" => 150],
+                ["q" => "What is an 'Organizational Chart'?", "options" => ["A map of the city", "A visual representation of a company's structure and hierarchy", "A list of customer names", "A profit report"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Job Description'?", "options" => ["The name of a company", "A document outlining the tasks, duties, and responsibilities of a role", "A list of former employees", "A performance review"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Onboarding'?", "options" => ["Getting on a boat", "The process of integrating a new employee into the company", "Firing a person", "Giving a promotion"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Outsourcing'?", "options" => ["Working outside the office", "Hiring an external party to perform services or create goods", "Selling office equipment", "Hiring more managers"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Freelancer' or 'Independent Contractor'?", "options" => ["A full-time employee", "A self-employed individual hired for specific projects without full employee benefits", "A volunteer", "A manager"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is an 'SOP' (Standard Operating Procedure)?", "options" => ["A type of software", "Established step-by-step instructions for routine activities", "The company's legal name", "The layout of the office"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Supply Chain'?", "options" => ["A chain made of metal", "The network of individuals and companies involved in creating and delivering a product", "A list of office keys", "A type of software"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Inventory Management'?", "options" => ["Counting pens", "The process of ordering, storing, and using a company's inventory", "Buying a new truck", "Selling shares"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Quality Control'?", "options" => ["Being nice to staff", "A system of maintaining standards in manufactured products or services", "A type of sales", "Hiring an accountant"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Equity Compensation'?", "options" => ["Paying a fair salary", "Offering employees shares or stock options as part of their pay", "A type of insurance", "Paying taxes"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Vesting' for employees?", "options" => ["Wearing a uniform", "Earning the right to stock options over a period of time", "Selling shares quickly", "A retirement plan"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Performance Review'?", "options" => ["Watching a movie", "A formal assessment of an employee's work over a period of time", "A salary increase", "A team meeting"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Workplace Diversity'?", "options" => ["Having many offices", "Hiring people of different backgrounds, genders, and ethnicities", "Changing your job often", "Having many different products"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Bootstrapping' operations?", "options" => ["Buying expensive gear", "Running the business extremely lean, minimizing expenses wherever possible", "Getting a massive loan", "Selling shares"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Agile' methodology in operations?", "options" => ["Being very fast", "An iterative approach that focuses on flexibility and continuous improvement", "A programming language", "A strict hierarchy"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Bottleneck'?", "options" => ["A part of a bottle", "A point in a process where the workflow is slowed down or stopped", "A very fast PC", "A type of cooling"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'KPI'?", "options" => ["Keep People Informed", "Key Performance Indicator", "Known Product Item", "Key Personal Interaction"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Servant Leadership'?", "options" => ["Being a servant", "A leadership philosophy where the main goal is to serve and empower the team", "A strict leader", "A leader who does no work"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Conflict Resolution'?", "options" => ["Starting a fight", "The process of finding a peaceful solution to a disagreement", "Ignoring the problem", "Telling the boss"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Founder's Syndrome'?", "options" => ["A medical disease", "When a founder maintains disproportionate power and resists delegating as the company grows", "A successful launch", "A type of legal contract"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the 'Hacker, Hustler, Hipster' team model?", "options" => ["A rock band", "A startup team covering Tech (Hacker), Business (Hustler), and Design (Hipster)", "A cybercrime group", "A fashion brand"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $nvc_course_id, "category_id" => 3,
+        "title" => "Map 142: Advanced Growth & Scaling", "desc" => "Transition from a startup to a scale-up.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the difference between 'Growth' and 'Scaling'?", "options" => ["They are the same", "Growth adds revenue and costs equally; Scaling adds revenue much faster than costs", "Scaling means losing money", "Growth is for big companies only"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Scale-up'?", "options" => ["A weighing machine", "A company that has found product-market fit and is now rapidly expanding", "A failed startup", "A type of mountain climb"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Growth Hacking'?", "options" => ["Hacking into computers", "Using low-cost, creative strategies to rapidly acquire customers", "Hiring more people", "Buying expensive ads"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Viral Loop'?", "options" => ["A computer virus", "A mechanism where users invite others, creating exponential, self-sustaining growth", "A circular logic", "A type of marketing"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Customer Retention'?", "options" => ["Firing a customer", "The ability of a company to keep its customers over time", "Searching for new customers", "Ignoring old customers"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Churn Rate'?", "options" => ["Making butter", "The percentage of customers who stop using your service over a given period", "The speed of sales", "The number of new customers"], "ans" => 1, "xp" => 180],
+                ["q" => "Why is Retention often considered more important than Acquisition?", "options" => ["It's not", "Acquiring a new customer is usually much more expensive than keeping an existing one", "It is legally required", "It looks better on a logo"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Net Promoter Score' (NPS)?", "options" => ["A type of tax", "A metric used to measure customer loyalty and likelihood to recommend", "A bank statement", "A marketing award"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Franchising'?", "options" => ["A type of law", "Granting a license to another party to trade under your brand name and system", "Selling your company", "Starting a new business"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Licensing'?", "options" => ["A driver's license", "Giving another firm permission to produce and sell your product for a royalty fee", "A physical product", "A subscription box"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Vertical Integration'?", "options" => ["Standing up straight", "When a firm grows by gaining control of its suppliers or distributors", "Hiring more staff", "Merging two companies"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Horizontal Integration'?", "options" => ["Lying down", "When a firm grows by acquiring or merging with competitors", "Quitting a job", "A salary bonus"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Market Penetration'?", "options" => ["Entering a store", "Increasing sales of current products in current markets", "A type of tax", "Buying a competitor"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Market Development'?", "options" => ["Building a shop", "Selling current products in new markets (e.g., international expansion)", "Slow sales", "Hiring an intern"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Product Development'?", "options" => ["Buying a factory", "Creating new products to sell to current markets", "A loan", "Selling shares"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Diversification'?", "options" => ["Hiring different people", "Moving into entirely new industries with new products", "Winning a prize", "Spending profit"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Strategic Partnership'?", "options" => ["A friendship", "A mutually beneficial relationship between two companies to reach a common goal", "A legal battle", "A bank loan"], "ans" => 1, "xp" => 300],
+                ["q" => "What is an 'API' (Application Programming Interface) in scaling tech?", "options" => ["A monitor", "A set of rules allowing other companies to integrate with your software, driving growth", "A fast computer", "A type of browser"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Blitzscaling'?", "options" => ["A type of weather", "Prioritizing speed over efficiency in an environment of uncertainty to dominate a market", "Slow and steady growth", "Closing the business"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Economies of Scale'?", "options" => ["A weighing scale", "The cost advantage that arises with increased output of a product", "The size of an office", "A type of tax"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Acquisition'?", "options" => ["Starting a business", "One company buying most or all of another company's shares", "Selling a truck", "Deleting a file"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Merger'?", "options" => ["Hiring a manager", "Two companies combining to form a single new entity", "Closing a shop", "A car accident"], "ans" => 1, "xp" => 400],
+                ["q" => "What is an 'IPO'?", "options" => ["Internal Project Order", "Initial Public Offering (a private company offering shares to the public)", "International Price Office", "Instant Profit Only"], "ans" => 1, "xp" => 400],
+                ["q" => "What is a 'Unicorn' in the startup world?", "options" => ["A mythological horse", "A privately held startup company valued at over $1 billion", "A failed startup", "A type of investor"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $nvc_course_id, "category_id" => 3,
+        "title" => "Map 143: Risk, Ethics & Pitfalls", "desc" => "Avoid the traps that kill startups. Governance and resilience.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Risk Management'?", "options" => ["Taking as much risk as possible", "Identifying, assessing, and controlling threats to an organization's capital and earnings", "Buying insurance only", "Ignoring problems"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Financial Risk'?", "options" => ["Taking a walk", "The possibility of losing money or running out of cash", "Working hard", "Buying new software"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Operational Risk'?", "options" => ["Buying a factory", "The risk of loss resulting from inadequate or failed internal processes, people, or systems", "A bank loan", "Selling shares"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Market Risk'?", "options" => ["Selling products", "The risk of losses arising from movements in market prices or shifting consumer trends", "Hiring a new manager", "Office rent"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Contingency Plan'?", "options" => ["A plan for a party", "A backup plan outlined to address potential major risks or failures", "A marketing plan", "The primary business model"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Compliance'?", "options" => ["Being nice", "Conforming to a rule, such as a specification, policy, standard or law", "A type of tax", "A marketing plan"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Corporate Governance'?", "options" => ["Government work", "The system of rules, practices, and processes by which a company is directed", "Managing a team", "Buying new software"], "ans" => 1, "xp" => 180],
+                ["q" => "What is the 'Board of Directors'?", "options" => ["The people who answer phones", "A group of individuals elected to represent shareholders and oversee the company", "A list of customers", "A marketing team"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Business Ethics'?", "options" => ["Doing math at work", "The application of moral principles to business behavior and decisions", "The company's rules on dress code", "A type of accounting"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Conflict of Interest'?", "options" => ["Disliking your job", "A situation where a person's private interests could influence their professional duties", "Two people fighting", "A broken contract"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Intellectual Property Theft'?", "options" => ["Stealing a computer", "Using someone else's copyrighted work, patents, or trademarks without permission", "Robbing a bank", "A type of marketing"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Transparency'?", "options" => ["A clear window", "Operating in a way that is easy for others to see what actions are performed", "A type of software", "Hiding the truth"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Premature Scaling'?", "options" => ["Weighing things early", "Spending heavily on growth before achieving product-market fit (a leading cause of startup death)", "A skin condition", "A type of tax"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Founder Dispute'?", "options" => ["A legal term", "Conflicts between co-founders over equity, roles, or vision (a major risk)", "A successful launch", "A type of contract"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Burnout'?", "options" => ["A fire", "Physical or mental collapse caused by overwork or stress, common in entrepreneurs", "Running out of coffee", "Quitting your job"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Key Person Risk'?", "options" => ["A dangerous person", "The risk a company faces if a crucial executive or founder unexpectedly leaves or dies", "A type of insurance", "Hiring a new manager"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Corporate Social Responsibility' (CSR)?", "options" => ["Working on the weekend", "A model where companies operate in ways that enhance society and the environment", "Paying taxes", "A marketing strategy"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Sustainability'?", "options" => ["Working forever", "Meeting current needs without compromising the ability of future generations to meet theirs", "Saving money", "A type of marketing"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Triple Bottom Line'?", "options" => ["Profit, Profit, Profit", "Evaluating performance based on People, Planet, and Profit", "Sales, Marketing, IT", "Money, Power, Fame"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Data Privacy'?", "options" => ["A secret password", "The protection of personal customer information from unauthorized access or use", "A type of firewall", "A cloud storage service"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Fiduciary Duty'?", "options" => ["A type of tax", "A legal obligation of one party to act in the best interest of another (e.g., founders to shareholders)", "A duty to work hard", "A salary bonus"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Piercing the Corporate Veil'?", "options" => ["A magic trick", "When a court holds owners personally liable for corporate debts due to fraud or mingling funds", "Opening a new office", "A marketing strategy"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Whistleblowing'?", "options" => ["Playing sports", "Reporting organizational misconduct to the public or higher authority", "A manager", "A security guard"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the biggest ethical failing a startup can make?", "options" => ["Being late", "Lying to investors or customers about product capabilities or finances (e.g., Theranos)", "Using the wrong font", "Not having a logo"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $nvc_course_id, "category_id" => 3,
+        "title" => "Map 144: Final NVC Capstone", "desc" => "The ultimate challenge. From idea to IPO, prove your venture creation mastery.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "SCENARIO: You have an idea for an app. What is the BEST first step?", "options" => ["Hire a developer for $50k", "Conduct Customer Discovery and build a Landing Page MVP to validate demand", "Rent an office", "File a patent"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: A competitor launches a similar product for half the price. What analysis do you do?", "options" => ["SWOT and Competitive Analysis to find your unique differentiation", "Give up immediately", "Call the police", "Lower your price blindly"], "ans" => 0, "xp" => 200],
+                ["q" => "SCENARIO: You need to protect your brand name. What do you apply for?", "options" => ["A Patent", "A Trademark", "A Copyright", "An NDA"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: You want to test if users will buy a product before it's fully built. What is this?", "options" => ["A Scam", "A Smoke Test / MVP", "A Patent", "A Financial Audit"], "ans" => 1, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "SCENARIO: Your burn rate is $20k/month and you have $100k in the bank. What is your runway?", "options" => ["2 months", "1 year", "5 months", "10 days"], "ans" => 2, "xp" => 240],
+                ["q" => "SCENARIO: You want to ensure you aren't personally liable if the business fails. What structure do you use?", "options" => ["Sole Proprietor", "PTY (LTD) / Private Company", "Partnership", "Informal group"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: You need to raise $1 Million for expansion. Which group do you pitch to?", "options" => ["Your local bank", "Venture Capitalists (Series A)", "Your employees", "Random people on the street"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: An investor offers you $100k for 10% of your company. What is the Post-Money Valuation?", "options" => ["$100k", "$1 Million", "$10 Million", "$500k"], "ans" => 1, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "SCENARIO: Your MVP proves that customers don't want your solution, but they want a related feature. What do you do?", "options" => ["Quit", "Pivot your business model to focus on the desired feature", "Yell at the customers", "Keep building the original idea"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: You are hiring a co-founder. What legal document is critical?", "options" => ["A resume", "A Founders Agreement with Vesting schedules", "A marriage certificate", "A marketing plan"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: You are spending $50 to acquire a customer (CAC) who brings in $500 in Lifetime Value (LTV). Is this good?", "options" => ["No, you lost money", "Yes, the LTV to CAC ratio is very strong", "It depends on the weather", "No, CAC is too high"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: You want to grow exponentially using your current users. What do you build?", "options" => ["A billboard", "A Viral Loop / Referral System", "A larger factory", "A new website"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "SCENARIO: Your startup is growing, but quality is dropping. What do you implement?", "options" => ["Nothing", "Standard Operating Procedures (SOPs) and Quality Control", "Fire everyone", "Raise prices"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: You discover your supplier uses unethical labor. What is the ethical action?", "options" => ["Hide it", "Cut ties and find a compliant, ethical supplier (CSR)", "Ask for a discount", "Tell your competitors"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: You are preparing a pitch deck. What should the first slide clearly state?", "options" => ["The budget", "The Problem and the Value Proposition", "The CEO's photo", "A list of all tools"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: A larger company offers to buy your startup for $50 Million. What is this called?", "options" => ["An IPO", "An Exit / Acquisition", "A Down Round", "A Series B"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "MASTER FINAL: What is the primary focus of an effective Venture Creator?", "options" => ["Making everyone happy", "Validating a problem, creating a scalable solution, and executing a sustainable business model", "Buying the best computers", "Having the largest office"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: In high-level scaling, what determines the success of the company?", "options" => ["The number of employees", "Strategic alignment, strong company culture, and operational efficiency", "Having a lot of money", "Hiring a famous CEO"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: Why is validation more important than the idea itself?", "options" => ["It's not", "Because an idea is worthless if no one is willing to pay for it", "Because ideas are free", "Because validation is fun"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: What is 'Grit' in entrepreneurship?", "options" => ["Sand", "Passion and perseverance for long-term goals despite massive obstacles", "Being angry", "Working 1 hour a day"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "EXAM: How do Marketing, Finance, and Ops interact in a startup?", "options" => ["They are separate", "They are interdependent; Marketing acquires users, Ops delivers value, and Finance manages the runway", "They compete for resources", "They only interact during parties"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: What is the most critical factor for a startup's survival in the 'Valley of Death'?", "options" => ["A lot of cash", "Managing burn rate while rapidly searching for Product-Market Fit", "A famous founder", "The best logo"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: What is the true goal of a startup journey?", "options" => ["Getting a job", "Building a scalable, repeatable, and profitable business model that creates value", "Winning a prize", "Hiring friends"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: What is the hallmark of a world-class founder?", "options" => ["Being aggressive", "Vision, resilience, high EQ, and the ability to attract and empower a high-performing team", "Making all decisions alone", "A high salary"], "ans" => 1, "xp" => 600]
+            ]]
+        ]
+    ]
+];
+
+// ==========================================================
+// OCCUPATIONAL HEALTH AND SAFETY CURRICULUM (Maps 145-156)
+// ==========================================================
+$ohs_maps = [
+    // CATEGORY 1: OHS LEGISLATION & FUNDAMENTALS (Maps 145-148)
+    [
+        "id" => ++$highest_id, "course_id" => $ohs_course_id, "category_id" => 1,
+        "title" => "Map 145: Intro to OHS & Legislation", "desc" => "Understand the statutory duties of employers, employees, and health and safety representatives.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the primary purpose of Occupational Health and Safety (OHS) legislation?", "options" => ["To issue fines to companies", "To protect the health, safety, and welfare of people at work", "To slow down workplace productivity", "To increase medical insurance sales"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the primary duty of an employer regarding workplace safety?", "options" => ["To provide personal armor to everyone", "To provide and maintain a safe working environment without risk to health", "To fire accident-prone workers", "To pay medical bills after injuries occur"], "ans" => 1, "xp" => 150],
+                ["q" => "In South Africa, which principal legislation governs health and safety in general workplaces?", "options" => ["Basic Conditions of Employment Act", "Occupational Health and Safety Act (OHSA)", "Labor Relations Act", "Compensation for Occupational Injuries Act"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a key statutory duty of an employee under OHS laws?", "options" => ["To perform safety audits daily", "To take reasonable care of their own health and safety and that of others", "To purchase their own protective gear", "To hire safety inspectors"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "Under what condition must a Health and Safety Representative be designated in a workplace?", "options" => ["In all workplaces with 1 worker", "Where an employer employs more than 20 employees", "Only in chemical factories", "Where workers request a salary increase"], "ans" => 1, "xp" => 180],
+                ["q" => "What is the role of a Health and Safety Committee?", "options" => ["To approve worker leave", "To review, initiate, and maintain safety measures across the organization", "To handle payroll disputes", "To organize social company events"], "ans" => 1, "xp" => 180],
+                ["q" => "What right does an employee have if they reasonably believe a task poses an imminent danger?", "options" => ["To go home for the day with double pay", "The right to refuse unsafe work without fear of retaliation", "To sue the company instantly", "To demand a promotion"], "ans" => 1, "xp" => 180],
+                ["q" => "Who appoints Health and Safety Representatives legally?", "options" => ["The local municipality", "The employer, following consultation and election by employees", "The insurance company", "The Department of Taxation"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What does 'Section 16(1)' of the OHS Act represent in management liability?", "options" => ["The chief financial officer's bonus", "The CEO's overall legal responsibility to ensure compliance with the Act", "The security supervisor's duty", "The employee union representative"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a Section 16(2) appointee?", "options" => ["A temporary worker", "A manager delegated authority by the Chief Executive Officer to assist with OHS compliance", "An external consultant", "A health and safety auditor"], "ans" => 1, "xp" => 210],
+                ["q" => "What is COIDA?", "options" => ["Company Operational Inspection Department Act", "Compensation for Occupational Injuries and Diseases Act", "Central Office Insurance & Development Agency", "Corporate Occupational Injury Defence Agreement"], "ans" => 1, "xp" => 210],
+                ["q" => "What does COIDA compensate workers for?", "options" => ["Being late to work", "Occupational injuries, diseases contracted at work, or death caused by work activities", "Voluntary resignation", "Poor company performance"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Reasonably Practicable' measure in safety law?", "options" => ["Doing whatever is cheapest", "Balancing the level of risk against the time, effort, and cost required to control it", "Eliminating every possible risk regardless of cost", "Doing only what workers ask for"], "ans" => 1, "xp" => 250],
+                ["q" => "What power does a Department of Employment and Labor Inspector possess?", "options" => ["To close down a company permanently", "To enter premises without prior notice, inspect, and issue prohibition notices", "To rewrite employment contracts", "To confiscate personal employee belongings"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Prohibition Notice' issued by a labor inspector?", "options" => ["A warning about late tax returns", "An order stopping an operation or work activity immediately due to serious risk", "A notice prohibiting smoking in the lunchroom", "A fine for bad uniform appearance"], "ans" => 1, "xp" => 250],
+                ["q" => "What is an 'Improvement Notice'?", "options" => ["A notice asking for better sales", "A directive requiring an employer to fix a non-compliant safety hazard within a specified timeframe", "A recommendation for employee bonuses", "A promotion letter"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "How often must Health and Safety Committees legally meet at a minimum?", "options" => ["Every week", "At least once every 3 months", "Once every 2 years", "Only when a severe accident occurs"], "ans" => 1, "xp" => 300],
+                ["q" => "Under statutory duty, who pays for Personal Protective Equipment (PPE) required at work?", "options" => ["The employee", "The employer (at no cost to the employee)", "The government", "The health insurance fund"], "ans" => 1, "xp" => 300],
+                ["q" => "What is the penalty for willful non-compliance or gross negligence causing death under OHS law?", "options" => ["A verbal warning", "Fines, imprisonment, or personal prosecution of responsible managers", "A small deduction from monthly pay", "Mandatory overtime"], "ans" => 1, "xp" => 300],
+                ["q" => "Which document must be visibly displayed in a prominent workplace location by law?", "options" => ["The company financial report", "A copy of the OHS Act and safety policies", "The menu for the cafeteria", "A list of employee birthdays"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is an 'Occupational Disease'?", "options" => ["A seasonal flu caught at home", "A chronic illness contracted as a result of exposure to hazards during work activities", "An injury from playing weekend sports", "Stress caused by traffic"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the legal status of an OHS Mandatary Agreement (Section 37.2)?", "options" => ["A verbal promise between workers", "A written contract transferring safety compliance duties to independent contractors on site", "An agreement with the bank", "A worker trade union agreement"], "ans" => 1, "xp" => 400],
+                ["q" => "Who has final legal responsibility for safety when contractors work on site?", "options" => ["The contractor only", "The client/employer, unless a valid Section 37(2) agreement is properly executed and monitored", "The health inspector", "The security guard at the gate"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the core philosophical pillar of modern OHS law?", "options" => ["Accidents are inevitable", "Prevention is paramount: every worker should return home safely every day", "Profit overrides safety in emergencies", "Rules apply only to factory workers"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $ohs_course_id, "category_id" => 1,
+        "title" => "Map 146: Risk Assessment & Hazards", "desc" => "Master HIRA, risk matrices, and the universal Hierarchy of Controls.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Hazard'?", "options" => ["The chance that someone will get hurt", "Anything with the potential to cause harm or damage", "An actual injury that has occurred", "A safety rule"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Risk'?", "options" => ["A chemical liquid", "The combination of the likelihood of a hazard occurring and the severity of its consequences", "A guarantee of an accident", "A broken machine"], "ans" => 1, "xp" => 150],
+                ["q" => "What does 'HIRA' stand for in safety management?", "options" => ["Health Inspection & Rescue Agency", "Hazard Identification and Risk Assessment", "High Intensity Risk Audit", "Hospital Injury Reporting Area"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the primary goal of conducting a Risk Assessment?", "options" => ["To fill out mandatory paperwork", "To identify hazards, evaluate risks, and implement effective control measures", "To blame workers for mistakes", "To lower insurance premiums only"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is the top (most effective) level in the Hierarchy of Controls?", "options" => ["PPE", "Elimination", "Engineering Controls", "Administrative Controls"], "ans" => 1, "xp" => 180],
+                ["q" => "What is the bottom (least effective) level in the Hierarchy of Controls?", "options" => ["Elimination", "Substitution", "Personal Protective Equipment (PPE)", "Engineering Controls"], "ans" => 2, "xp" => 180],
+                ["q" => "Replacing a solvent-based toxic paint with a water-based non-toxic paint is an example of what?", "options" => ["Elimination", "Substitution", "Administrative Control", "Engineering Control"], "ans" => 1, "xp" => 180],
+                ["q" => "Installing physical machine guards or ventilation extraction hoods represents which control level?", "options" => ["Engineering Controls", "PPE", "Substitution", "Administrative Controls"], "ans" => 0, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "Rotating workers to reduce their total exposure time to loud noise is an example of what control?", "options" => ["Engineering Control", "Substitution", "Administrative Control", "Elimination"], "ans" => 2, "xp" => 210],
+                ["q" => "What are the two axes on a standard 5x5 Risk Assessment Matrix?", "options" => ["Cost and Speed", "Likelihood (Probability) and Severity (Consequence)", "Age and Experience", "Height and Weight"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Residual Risk'?", "options" => ["The risk remaining after all control measures have been implemented", "The initial risk before any assessment", "Risk caused by bad weather", "Risk that cannot be measured"], "ans" => 0, "xp" => 210],
+                ["q" => "What is a 'Baseline Risk Assessment'?", "options" => ["A quick daily check before a shift", "A comprehensive initial profile of all hazards across an entire site or operation", "An assessment performed after an explosion", "An evaluation of financial health"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is an 'Issue-Based Risk Assessment'?", "options" => ["An assessment conducted when new machinery, processes, or hazards are introduced", "A general annual review", "An assessment of employee salary issues", "A political safety debate"], "ans" => 0, "xp" => 250],
+                ["q" => "What is a 'Continuous (or Task-Based) Risk Assessment'?", "options" => ["A 50-page written report", "On-the-spot safety checks performed by workers immediately before executing a specific job (e.g., SLA/Take-5)", "An external government audit", "A medical checkup"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Safe Work Procedure' (SWP) or Method Statement?", "options" => ["A legal contract for hiring", "A formal step-by-step document explaining how to perform a task safely without risk", "A marketing guide", "A financial ledger"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Tolerable Risk' (or ALARP)?", "options" => ["Risk that is completely zero", "Risk that has been reduced to As Low As Reasonably Practicable", "Risk that workers ignore", "High risk accepted to save money"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "Why must risk assessments be reviewed periodically?", "options" => ["Because paper expires", "Processes, equipment, environment, and personnel change over time", "To keep safety officers busy", "Only if requested by a judge"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Physical Hazard'?", "options" => ["Bacteria and viruses", "Environmental factors such as noise, radiation, temperature extremes, and vibration", "Toxic chemicals", "Workplace bullying"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Biological Hazard' (Biohazard)?", "options" => ["Slippery floors", "Organisms or organic substances (viruses, bacteria, fungi, blood) that pose health risks", "Heavy machinery", "High voltage cables"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Psychosocial Hazard'?", "options" => ["Toxic fumes", "Workplace stressors like excessive workload, bullying, harassment, and burnout", "Broken ladders", "Defective power tools"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "Which team should be actively involved when conducting a HIRA for a specific operational task?", "options" => ["Only top management", "The workers who actually perform the task, along with supervisors and safety specialists", "External sales representatives", "Financial accountants"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Job Safety Analysis' (JSA)?", "options" => ["Reviewing employee salary grades", "Breaking down a job into individual steps to identify hazards and controls for each step", "Checking worker attendance", "Writing job advertisements"], "ans" => 1, "xp" => 400],
+                ["q" => "Why is relying solely on PPE considered a weak risk management strategy?", "options" => ["PPE is too expensive", "PPE does not eliminate the hazard; if it fails or is worn incorrectly, exposure occurs immediately", "PPE looks unprofessional", "PPE is hard to store"], "ans" => 1, "xp" => 400],
+                ["q" => "In risk scoring, if Likelihood is High (4) and Severity is Catastrophic (5), what action is required?", "options" => ["Proceed with caution", "Stop work immediately until controls lower the risk score to an acceptable level", "Wear double gloves and continue", "Issue a warning memo"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $ohs_course_id, "category_id" => 1,
+        "title" => "Map 147: Inspections & Investigations", "desc" => "Conduct workplace inspections, perform root cause analysis, and manage incident logs.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the primary difference between a Safety Inspection and an Incident Investigation?", "options" => ["Inspections find faults; investigations praise workers", "Inspections proactively find hazards; investigations reactively identify root causes after an event", "Inspections are illegal; investigations are mandatory", "There is no difference"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Near Miss'?", "options" => ["A minor injury requiring a plaster", "An unplanned event that did not result in injury or damage, but had the potential to do so", "An accident involving a vehicle", "A fire that was put out quickly"], "ans" => 1, "xp" => 150],
+                ["q" => "Why is reporting 'Near Misses' critical in safety management?", "options" => ["To penalize careless workers", "Near misses serve as early warning indicators to prevent serious future accidents", "To fill up safety databases", "To justify safety equipment budgets"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the 'Heinrich Triangle' (Safety Pyramid) theory?", "options" => ["For every major injury, there are many minor injuries and hundreds of near misses/unsafe acts", "Safety costs increase in a triangular shape", "The three sides of fire suppression", "Management structure for safety"], "ans" => 0, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is the first priority when an incident causing serious injury occurs on site?", "options" => ["Call the insurance company", "Ensure scene safety, provide immediate first aid, and summon emergency medical care", "Clean up the area to keep working", "Interview witnesses immediately"], "ans" => 1, "xp" => 180],
+                ["q" => "Why must an incident scene be secured/preserved immediately after a serious event?", "options" => ["To prevent work from ever resuming", "To prevent tampering or loss of physical evidence vital for accurate investigation", "To hide the damage from the public", "To clean up chemical spills"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Root Cause Analysis' (RCA)?", "options" => ["Blaming the individual involved", "A structured problem-solving method aimed at identifying the fundamental underlying reason for an event", "Checking plant root systems", "Finding the cheapest fix"], "ans" => 1, "xp" => 180],
+                ["q" => "What is the '5 Whys' technique in root cause analysis?", "options" => ["Asking five different workers why they were late", "Repeatedly asking 'Why' to drill down through symptoms to the core cause of a problem", "A list of five safety rules", "A quick 5-minute safety speech"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Section 24 Incident' under South African OHS law?", "options" => ["A minor dispute between workers", "A severe workplace incident (death, loss of limb, unconsciousness) that must be reported to the Department of Labor", "A fire drill", "A broken tool report"], "ans" => 1, "xp" => 210],
+                ["q" => "Within what timeframe must a fatal workplace incident generally be reported to the authorities?", "options" => ["Within 30 days", "Immediately by the quickest means possible (e.g., telephone/email)", "At the end of the financial year", "Never"], "ans" => 1, "xp" => 210],
+                ["q" => "What is an 'Unsafe Act'?", "options" => ["A broken machine guard", "A behavioral performance by a worker that deviates from accepted safe procedures (e.g., not wearing PPE)", "Dark workplace lighting", "A toxic spill"], "ans" => 1, "xp" => 210],
+                ["q" => "What is an 'Unsafe Condition'?", "options" => ["A worker rushing a job", "A physical condition in the workplace that poses a hazard (e.g., exposed wiring, oil on floor)", "A worker sleeping", "Ignoring a safety briefing"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "When interviewing witnesses during an investigation, what atmosphere should be maintained?", "options" => ["An aggressive police-style interrogation", "A non-judgmental, fact-finding environment focused on learning rather than placing blame", "A casual conversation about weekend plans", "A group debate where witnesses argue"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Workplace Safety Checklist' used for during inspections?", "options" => ["To rate worker appearance", "To ensure systematic, consistent inspection of equipment, environment, and compliance standards", "To record daily production quantities", "To track clock-in times"], "ans" => 1, "xp" => 250],
+                ["q" => "What is an 'Action Plan' following an incident investigation?", "options" => ["A list of workers to be reprimanded", "A document specifying corrective measures, responsible personnel, and completion deadlines", "A company press release", "A claim form for insurance"], "ans" => 1, "xp" => 250],
+                ["q" => "What is the Fishbone (Ishikawa) Diagram used for?", "options" => ["Fishing safety guides", "Categorizing potential causes of an incident into categories like People, Methods, Machines, and Environment", "Organizing cafeteria menus", "Structural building design"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "Who should lead a formal workplace incident investigation team?", "options" => ["The injured worker", "A trained investigator, safety officer, or manager alongside safety reps", "The company lawyer only", "An external reporter"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Direct Cause' in incident terminology?", "options" => ["Lack of management training", "The immediate event or action that produced the injury or damage (e.g., knife cut the hand)", "The weather condition", "Poor purchasing policy"], "ans" => 1, "xp" => 300],
+                ["q" => "What is an 'Indirect (or Underlying) Cause'?", "options" => ["The sharp edge of a blade", "Unsafe conditions or management system failures that allowed the unsafe event to happen", "A sudden bolt of lightning", "An employee's age"], "ans" => 1, "xp" => 300],
+                ["q" => "How long should incident investigation records and registers be retained by an organization?", "options" => ["1 week", "For statutory periods (often 3 to 40 years depending on health exposures)", "Until the worker recovers", "6 months"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Planned Job Observation' (PJO)?", "options" => ["Watching workers secretly on CCTV", "Formally observing a worker performing a task to verify compliance with Safe Work Procedures", "A job interview", "Testing machine speed"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the primary metric known as 'LTIFR'?", "options" => ["Long Term Injury Finance Rate", "Lost Time Injury Frequency Rate (number of lost-time injuries per million hours worked)", "Labor Total Inspection Field Report", "Legal Tax & Insurance Fee Ratio"], "ans" => 1, "xp" => 400],
+                ["q" => "What indicates a successful safety inspection program?", "options" => ["Zero hazards ever found", "Proactive identification and swift remediation of hazards before accidents occur", "Issuing hundreds of employee fines monthly", "Filing reports without reading them"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the ultimate purpose of incident investigation in world-class OHS management?", "options" => ["To assign legal blame and punish culprits", "To prevent recurrence through systemic organizational learning and hazard control", "To satisfy insurance company paperwork", "To justify reducing safety budgets"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $ohs_course_id, "category_id" => 1,
+        "title" => "Map 148: PPE & Industrial Hygiene", "desc" => "Select, fit, and maintain protective equipment while assessing chemical and physical workplace hazards.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What does PPE stand for?", "options" => ["Personal Protective Equipment", "Public Safety Equipment", "Private Performance Entry", "Professional Plant Engineering"], "ans" => 0, "xp" => 150],
+                ["q" => "When should Personal Protective Equipment be implemented?", "options" => ["As the first line of defense", "As a last resort when higher-level engineering and administrative controls are insufficient", "Only when visitors arrive", "Instead of safety rules"], "ans" => 1, "xp" => 150],
+                ["q" => "Which piece of PPE protects against falling debris and overhead impact?", "options" => ["Safety Goggles", "Hard Hat / Safety Helmet", "Ear Plugs", "High-Visibility Vest"], "ans" => 1, "xp" => 150],
+                ["q" => "At what noise level threshold (8-hour TWA) is hearing protection typically mandatory?", "options" => ["50 dBA", "85 dBA", "120 dBA", "20 dBA"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is the difference between an N95 Dust Mask and a Half-Face Respirator with cartridges?", "options" => ["N95 filters particulates; Cartridge respirators absorb specific chemical vapors/gases", "N95 is for underwater use", "Cartridge respirators only filter dust", "There is no functional difference"], "ans" => 0, "xp" => 180],
+                ["q" => "What is a 'Fit Test' for a tight-fitting respirator?", "options" => ["Testing if the mask is comfortable", "A scientific check ensuring an effective seal between the mask facepiece and the wearer's skin", "Testing if the worker can run in the mask", "Measuring the weight of the mask"], "ans" => 1, "xp" => 180],
+                ["q" => "Why should facial hair (beards) be avoided when wearing tight-fitting respirators?", "options" => ["It looks unprofessional", "Facial hair breaks the seal between mask and skin, allowing toxic contaminants to leak in", "Beards catch fire easily", "It causes facial itching"], "ans" => 1, "xp" => 180],
+                ["q" => "Which type of eye protection protects against liquid chemical splashes?", "options" => ["Standard prescription glasses", "Indirect-vent Safety Goggles", "Tinted sunglasses", "Face shield only without eyewear"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Occupational Hygiene'?", "options" => ["Washing hands before lunch", "The science of anticipating, recognizing, evaluating, and controlling workplace environmental hazards", "Cleaning office floors daily", "Providing clean uniforms"], "ans" => 1, "xp" => 210],
+                ["q" => "What is an 'Occupational Exposure Limit' (OEL)?", "options" => ["The maximum hours a person can work daily", "The maximum allowable concentration of an airborne substance to which a worker may be exposed", "The limit on employee overtime pay", "The number of workers allowed in a room"], "ans" => 1, "xp" => 210],
+                ["q" => "How should leather safety boots with steel toe-caps be inspected?", "options" => ["Check for polished shine", "Check for cracks, exposed steel caps, worn soles, and structural degradation", "Weigh them on a scale", "Test them in deep water"], "ans" => 1, "xp" => 210],
+                ["q" => "What safety gear is essential when working near moving traffic or moving plant machinery?", "options" => ["High-Visibility (Hi-Vis) reflective clothing", "Ear defenders", "Dust masks", "Leather apron"], "ans" => 0, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What type of glove material offers high resistance to chemical solvents like acetone?", "options" => ["Standard cotton gloves", "Nitrile, Neoprene, or Butyl rubber gloves (based on SDS guidance)", "Thin disposable latex gloves", "Leather welder gloves"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Medical Surveillance' in occupational health?", "options" => ["CCTV monitoring of doctor offices", "Planned periodic health checks (audiograms, lung function tests) to detect early work-related illness", "Checking employee medical insurance bills", "Emergency medical treatment on site"], "ans" => 1, "xp" => 250],
+                ["q" => "What is an Audiogram used for during occupational health checks?", "options" => ["Measuring eye vision", "Testing hearing threshold levels to detect noise-induced hearing loss (NIHL)", "Checking lung capacity", "Measuring heart rate"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a Spirometry test used for?", "options" => ["Evaluating spinal alignment", "Measuring lung function and air capacity of workers exposed to dusts or chemicals", "Testing blood sugar levels", "Checking skin sensitivity"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "Who is responsible for maintaining and properly storing assigned PPE?", "options" => ["The safety manager only", "The employee issued with the PPE, following employer instructions and training", "The cleaner", "The safety committee"], "ans" => 1, "xp" => 300],
+                ["q" => "When must defective or damaged PPE be replaced?", "options" => ["At the end of the year", "Immediately upon discovery of damage or degradation", "Only after an accident occurs", "When the worker buys new gear"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Thermal Stress' monitoring?", "options" => ["Measuring boiler steam", "Assessing environmental conditions (Heat Index / WBGT) to prevent heat stroke or hypothermia", "Checking office air conditioning settings", "Measuring fire temperature"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Dosimetry' in industrial hygiene?", "options" => ["Dosing medication to sick workers", "Measuring personal cumulative exposure to physical agents like noise or ionizing radiation over time", "Counting safety signs", "Calculating financial costs"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is the primary cause of Noise-Induced Hearing Loss (NIHL)?", "options" => ["Single short sounds only", "Irreversible damage to hair cells in the inner ear from prolonged exposure to high decibel levels", "Infections in the outer ear", "Working in cold environments"], "ans" => 1, "xp" => 400],
+                ["q" => "What is an 'Approved Air-Purifying Respirator' (PAPR)?", "options" => ["A paper dust mask", "A motorized blower mask that forces ambient air through filtering elements to the user", "A scuba diving tank", "A fire extinguisher accessory"], "ans" => 1, "xp" => 400],
+                ["q" => "Why must PPE never be altered or modified by the user (e.g., cutting earplug tips)?", "options" => ["It voids the manufacturer warranty", "It compromises certified protective capability and exposes the user to severe hazard", "It changes the gear color", "It makes the gear too heavy"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the key factor in ensuring PPE effectiveness in the workplace?", "options" => ["Buying the most expensive brand", "Proper hazard-matched selection, correct sizing, worker training, and enforced compliance", "Using high-visibility colors for all items", "Storing gear in locked management offices"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+
+    // CATEGORY 2: HAZARD CONTROL & OPERATIONAL SAFETY (Maps 149-152)
+    [
+        "id" => ++$highest_id, "course_id" => $ohs_course_id, "category_id" => 2,
+        "title" => "Map 149: Fire & Electrical Safety", "desc" => "Control electrical hazards, implement Lockout/Tagout (LOTO), and prevent structural fires.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What three components form the basic Fire Triangle?", "options" => ["Fuel, Heat, Oxygen", "Water, Air, Spark", "Gas, Pressure, Chemical", "Smoke, Flame, Ash"], "ans" => 0, "xp" => 150],
+                ["q" => "Which fire class involves energized electrical equipment?", "options" => ["Class A", "Class B", "Class C", "Class D"], "ans" => 2, "xp" => 150],
+                ["q" => "What is the main danger of using a water fire extinguisher on electrical fires?", "options" => ["Water freezes instantly", "Water conducts electricity, creating a severe risk of electrocution", "It causes toxic smoke", "It ruins the carpet"], "ans" => 1, "xp" => 150],
+                ["q" => "What does LOTO stand for in industrial energy control?", "options" => ["List Of Tactical Operations", "Lockout / Tagout", "Level Of Total Output", "Local Office Safety Order"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is the primary purpose of a Lockout/Tagout (LOTO) procedure?", "options" => ["To lock office doors at night", "To isolate hazardous energy sources before maintenance to prevent accidental machine startup", "To track tool locations", "To prevent employee theft"], "ans" => 1, "xp" => 180],
+                ["q" => "Who is authorized to remove a LOTO safety lock placed on an energy isolation device?", "options" => ["Any worker who needs the machine", "Only the authorized worker who originally placed the lock", "The plant security officer", "The machine operator's coworker"], "ans" => 1, "xp" => 180],
+                ["q" => "What is an Earth Leakage Circuit Breaker (ELCB / RCD) designed to do?", "options" => ["Prevent water leaks", "Disconnect electricity rapidly when a current leak to earth is detected, preventing fatal shocks", "Boost power supply voltage", "Measure electricity usage"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Static Electricity' hazard in flammable liquid areas?", "options" => ["A broken battery", "A spark generated by friction that can ignite flammable chemical vapors", "High voltage power lines", "A power outage"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Earthing and Bonding' when transferring flammable liquids?", "options" => ["Digging a hole in the dirt", "Electrically connecting containers to the ground and each other to prevent static spark ignition", "Washing drums with water", "Sealing containers with tape"], "ans" => 1, "xp" => 210],
+                ["q" => "What extinguisher type is recommended for live electrical panel fires?", "options" => ["Water", "Carbon Dioxide (CO2) or Dry Chemical Powder (DCP)", "Foam", "Wet Chemical"], "ans" => 1, "xp" => 210],
+                ["q" => "What is the risk of overloading electrical multi-plug adaptors?", "options" => ["Lower internet speed", "Overheating wiring, insulation melting, and electrical fire ignition", "Increased electricity bills", "Blown light bulbs"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Arc Flash'?", "options" => ["A flash camera light", "A high-explosive electrical discharge resulting from a low-impedance connection to ground or phase", "A welding spark", "A lightning bolt"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What action must be taken with a power tool showing a frayed cord or cracked housing?", "options" => ["Wrap it with duct tape and continue", "Tag it 'Out of Service' immediately and remove it for professional repair", "Use it only in dry weather", "Pass it to another worker"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Zero Energy State' in LOTO verification?", "options" => ["Turning off the main wall switch", "Ensuring all electrical, hydraulic, pneumatic, and kinetic residual energy is completely dissipated", "Unplugging a computer", "Running a machine until it stops"], "ans" => 1, "xp" => 250],
+                ["q" => "How far must combustible materials generally be kept away from open electrical panels?", "options" => ["10 cm", "At least 1 meter (clear unobstructed access)", "5 meters", "Distance does not matter"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Hot Work Permit' required for?", "options" => ["Working in hot weather", "Activities generating open flames or sparks (welding, cutting, grinding) in hazardous areas", "Cooking in the cafeteria", "Boiler maintenance"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the function of a Fire Wall barrier in an industrial plant?", "options" => ["A computer security filter", "A fire-resistant structure designed to subdivide a building and restrict fire spread", "A decorative brick wall", "A wall built around transformers"], "ans" => 1, "xp" => 300],
+                ["q" => "What is an 'Intrinsically Safe' electrical device?", "options" => ["A cheap device", "Equipment designed to operate with energy levels too low to ignite explosive gas/dust atmospheres", "A device made of plastic", "A high-power industrial generator"], "ans" => 1, "xp" => 300],
+                ["q" => "What is the purpose of a 'Fire Watch' person after hot work completion?", "options" => ["To watch for thieves", "To monitor the hot work area for smoldering embers or latent fires for a specified period (e.g., 30-60 mins)", "To clean up metal scraps", "To write a shift log"], "ans" => 1, "xp" => 300],
+                ["q" => "What electrical safety class requires double insulation or a safety earth connection?", "options" => ["Class 0", "Class I and Class II tools", "Class 5", "Class X"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "In a high-voltage substation, what protective gear is mandatory before racking a circuit breaker?", "options" => ["Standard cloth overalls", "Arc Flash suit with specialized face shield, rated gloves, and ballistic protection", "Rain coat and boots", "Leather apron"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Step Potential' near a fallen high-voltage power line?", "options" => ["Walking fast", "The voltage difference between a person's feet when stepping near energized ground", "Stepping on a cable", "Climbing a ladder near wires"], "ans" => 1, "xp" => 400],
+                ["q" => "How should a person safely exit an area with ground energized by a fallen power line?", "options" => ["Take long running strides", "Shuffle feet together without lifting them from the ground or hop with feet bound together", "Crawl on hands and knees", "Lie down and roll"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the primary cause of electrical fatalities in workplace maintenance?", "options" => ["High power costs", "Failure to properly isolate power sources and verify Zero Energy State before touching conductors", "Using brand-new power tools", "Working during daylight hours"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $ohs_course_id, "category_id" => 2,
+        "title" => "Map 150: Hazardous Chemical Safety", "desc" => "Handle dangerous substances, interpret GHS/SDS sheets, and manage toxic spills.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What does 'GHS' stand for in chemical management?", "options" => ["General Health Standard", "Globally Harmonized System of Classification and Labelling of Chemicals", "Global Hazardous Substance", "Government Hazard System"], "ans" => 1, "xp" => 150],
+                ["q" => "What document must accompany every hazardous chemical stored or used in a workplace?", "options" => ["A commercial invoice", "Safety Data Sheet (SDS)", "A tax receipt", "An shipping manifest"], "ans" => 1, "xp" => 150],
+                ["q" => "How many standardized sections are contained in a compliant GHS Safety Data Sheet?", "options" => ["5", "16", "10", "25"], "ans" => 1, "xp" => 150],
+                ["q" => "What does a GHS pictogram showing a flame inside a red diamond signify?", "options" => ["Corrosive material", "Flammable liquid, gas, or solid", "Toxic material", "Explosive material"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What does a GHS pictogram showing a corroding metal bar and damaged hand indicate?", "options" => ["Toxic substance", "Corrosive substance (causes skin burns and eye damage)", "Oxidizing gas", "Compressed gas"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Signal Word' on a chemical label under GHS?", "options" => ["'Stop' or 'Go'", "'Danger' (severe hazards) or 'Warning' (less severe hazards)", "'High' or 'Low'", "'Notice' or 'Note'"], "ans" => 1, "xp" => 180],
+                ["q" => "What is the primary risk of decanting (transferring) a chemical into a secondary container?", "options" => ["Spilling a few drops", "Loss of hazard communication if the secondary container is not properly labeled", "Changing chemical color", "Increasing liquid weight"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Secondary Containment' for chemical storage drums?", "options" => ["A locked room key", "A bunded tray or basin capable of holding leaks or spills from primary containers", "A wooden pallet", "A plastic cover over the top"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What capacity must a chemical bunded containment area typically hold by law?", "options" => ["10% of total volume", "At least 110% of the largest single container or 25% of total combined volume", "500 liters maximum", "Equal to one water bucket"], "ans" => 1, "xp" => 210],
+                ["q" => "What is an 'Oxidizer' chemical hazard?", "options" => ["A chemical that produces water", "A chemical that readily yields oxygen, greatly increasing fire intensity and speed", "A gas that smothers fires", "A substance that freezes quickly"], "ans" => 1, "xp" => 210],
+                ["q" => "Which route of entry involves toxic chemicals entering the body through the skin?", "options" => ["Ingestion", "Inhalation", "Dermal Absorption", "Injection"], "ans" => 2, "xp" => 210],
+                ["q" => "What is the most common route of chemical exposure in industrial environments?", "options" => ["Swallowing (Ingestion)", "Inhalation (Breathing vapors/dusts)", "Eye contact", "Needle stick"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is the immediate action if a corrosive acid splashes into a worker's eyes?", "options" => ["Apply eye drops", "Flush eyes continuously at an eyewash station with clean water for at least 15-20 minutes", "Cover eyes with a dry towel", "Rub eyes vigorously"], "ans" => 1, "xp" => 250],
+                ["q" => "Why must acids and bases (alkalis) be stored separately?", "options" => ["They look identical", "Their reaction produces intense exothermic heat, toxic fumes, and potential explosion", "It wastes shelf space", "Acids melt plastic bottles"], "ans" => 1, "xp" => 250],
+                ["q" => "What does 'STEL' stand for on a Safety Data Sheet?", "options" => ["Standard Toxic Exposure Limit", "Short-Term Exposure Limit (15-minute exposure limit)", "System Total Energy Level", "Substance Technical Entry Log"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'TWA' in chemical exposure control?", "options" => ["Total Water Amount", "Time-Weighted Average (exposure concentration averaged over an 8-hour shift)", "Toxic Waste Area", "Technical Workplace Assessment"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What material should be used to absorb a spilled flammable solvent?", "options" => ["Sawdust", "Non-combustible inert absorbent pads or vermiculite", "Paper towels", "Cotton rags"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Carcinogen'?", "options" => ["A substance causing heart disease", "A chemical agent capable of causing cancer in living tissue", "A corrosive cleaner", "A flammable gas"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Teratogen'?", "options" => ["A substance causing soil damage", "A chemical agent causing malformations or birth defects in an embryo/fetus", "A gas that explodes in sun", "An acid"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Local Exhaust Ventilation' (LEV)?", "options" => ["An open office window", "An engineering control system designed to capture airborne contaminants at the source of emission", "A desk fan", "An air conditioner"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Synergistic Effect' in chemical toxicology?", "options" => ["Chemicals canceling each other out", "When the combined toxic effect of two chemicals is significantly greater than the sum of their individual effects", "A chemical evaporating quickly", "A change in liquid color"], "ans" => 1, "xp" => 400],
+                ["q" => "What is a 'HazChem Code' on transport tankers?", "options" => ["A phone number for drivers", "An emergency action code advising firefighters on initial response actions (extinguishing media, gear)", "The vehicle registration", "The driver's license ID"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the primary danger of working with compressed gas cylinders like nitrogen or argon in confined spaces?", "options" => ["Gas tastes bad", "Displacement of oxygen causing rapid asphyxiation without warning", "High humidity", "Cold metal surfaces"], "ans" => 1, "xp" => 400],
+                ["q" => "How must empty chemical containers that held hazardous substances be legally managed?", "options" => ["Thrown into general municipal waste", "Treated as hazardous waste until decontaminated or disposed of via certified waste contractors", "Reused for drinking water storage", "Burned in open fire pits"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $ohs_course_id, "category_id" => 2,
+        "title" => "Map 151: Ergonomics & Physical Hazards", "desc" => "Prevent musculoskeletal disorders, control noise, and manage environmental stressors.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Ergonomics'?", "options" => ["The study of economics", "Designing the job, equipment, and workplace to fit the worker safely and comfortably", "Exercise during work hours", "Building office furniture"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a Musculoskeletal Disorder (MSD)?", "options" => ["A viral infection", "Injuries or disorders affecting muscles, nerves, tendons, joints, or spinal discs", "A heart condition", "A digestive issue"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the correct posture when lifting a heavy object manually?", "options" => ["Bend your back and keep legs straight", "Bend your knees, keep back straight, and hold load close to your body", "Twist your body while lifting", "Lift with one hand rapidly"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Repetitive Strain Injury' (RSI)?", "options" => ["A sudden bone fracture", "Damage to muscles/tendons caused by repeated motions over prolonged periods", "An allergic skin rash", "Eye tiredness"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "Where should an office computer monitor be positioned relative to the user's line of sight?", "options" => ["Far to the left", "Top of the screen at or slightly below eye level directly in front", "High up near the ceiling", "Flat on the desk surface"], "ans" => 1, "xp" => 180],
+                ["q" => "What angle should elbows and knees ideally maintain when working at a computer desk?", "options" => ["45 degrees", "Approximately 90 degrees", "180 degrees fully extended", "Angles do not matter"], "ans" => 1, "xp" => 180],
+                ["q" => "What physical hazard is caused by hand-held vibrating tools like jackhammers over long periods?", "options" => ["Noise loss", "Hand-Arm Vibration Syndrome (HAVS / Vibration White Finger)", "Skin allergy", "Shortness of breath"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Whole-Body Vibration' (WBV) hazard?", "options" => ["Vibration from a mobile phone", "Vibration transmitted through seats or floors of heavy machinery (e.g., trucks, forklifts) causing back damage", "Music noise", "A massage chair"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What unit is used to measure workplace sound intensity?", "options" => ["Watts", "Decibels (dBA)", "Volts", "Lumens"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Glare' in workplace lighting standards?", "options" => ["A friendly smile", "Excessive brightness or contrast that causes visual discomfort or eye fatigue", "Dim lighting", "Colored bulbs"], "ans" => 1, "xp" => 210],
+                ["q" => "How does inadequate workplace illumination affect worker safety?", "options" => ["It speeds up typing", "It leads to eye strain, mistakes, slips, trips, and missed hazards", "It lowers room temperature", "It improves concentration"], "ans" => 1, "xp" => 210],
+                ["q" => "What is Heat Exhaustion?", "options" => ["Feeling cold", "A heat-related illness marked by heavy sweating, rapid pulse, dizziness, and fatigue", "A skin sunburn", "A fever"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What critical medical condition develops if Heat Exhaustion is left untreated?", "options" => ["Heat Stroke (a life-threatening emergency with body temperature above 40°C)", "Hypothermia", "Dehydration rash", "Muscle cramp"], "ans" => 0, "xp" => 250],
+                ["q" => "What is 'Hypothermia'?", "options" => ["Overheating in summer", "A dangerous drop in core body temperature below 35°C from cold exposure", "High blood pressure", "A skin burn"], "ans" => 1, "xp" => 250],
+                ["q" => "What is the recommended maximum weight one person should lift manually under general guidelines?", "options" => ["50 kg", "20 to 25 kg (depending on individual capability and frequency)", "100 kg", "10 kg maximum"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Mechanical Lifting Assistance'?", "options" => ["Asking 5 people to help", "Using cranes, hoists, forklifts, or trolley jacks to eliminate manual lifting hazards", "Lifting faster", "Wearing a lifting belt"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What does an Ergonomics Risk Assessment evaluate in a factory setting?", "options" => ["Worker uniform color", "Force requirements, posture, repetition, contact stress, and environmental factors", "Employee attendance logs", "Company profit margins"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Static Posture' hazard?", "options" => ["Moving constantly", "Holding the same physical position for extended periods, reducing blood flow to muscles", "Exercising on machine", "Walking on carpet"], "ans" => 1, "xp" => 300],
+                ["q" => "How can computer workers prevent Digital Eye Strain?", "options" => ["Look closely at screen", "Follow the 20-20-20 rule (every 20 mins, look 20 feet away for 20 seconds)", "Turn off all room lights", "Increase screen contrast to maximum"], "ans" => 1, "xp" => 300],
+                ["q" => "What role do adjustable chairs play in workplace ergonomics?", "options" => ["They look modern", "They allow customization to support lumbar spine, thigh height, and arm position for individual body sizes", "They allow racing in the office", "They replace standing"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is the Ergonomics Regulations requirement regarding worker training?", "options" => ["Training is voluntary", "Employers must educate workers on ergonomic risks, safe lifting techniques, and early reporting of symptoms", "Only managers need training", "Training takes place after an injury only"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Contact Stress' in manual tasks?", "options" => ["Emotional stress between workers", "Continuous physical pressure exerted on body tissue from resting against sharp/hard edges (e.g., table corners)", "Vibration from tools", "High noise levels"], "ans" => 1, "xp" => 400],
+                ["q" => "Why are back belts/lumbar supports generally NOT considered a primary control for manual handling?", "options" => ["They are illegal", "Scientific evidence shows they do not prevent back injuries and can create a false sense of security", "They are too expensive", "They catch fire easily"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Job Rotation' as an administrative control for physical hazards?", "options" => ["Promoting workers monthly", "Moving workers between tasks requiring different muscle groups to prevent fatigue and overuse injuries", "Firing low performers", "Changing shift start times daily"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $ohs_course_id, "category_id" => 2,
+        "title" => "Map 152: Machine Safety & Heights", "desc" => "Safeguard plant machinery, manage working at heights, and control pressure equipment.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the primary function of a Machine Guard?", "options" => ["To keep the machine clean", "To prevent physical worker contact with hazardous moving parts (gears, belts, blades)", "To lower electricity consumption", "To reduce noise levels"], "ans" => 1, "xp" => 150],
+                ["q" => "What is an Emergency Stop (E-Stop) device?", "options" => ["A switch to start the machine", "A fail-safe control mechanism designed to shut down machinery rapidly in an emergency", "A warning light", "A speed controller"], "ans" => 1, "xp" => 150],
+                ["q" => "At what height threshold is work generally classified as 'Working at Heights' requiring fall protection?", "options" => ["0.5 meters", "2.0 meters (or where a fall could cause injury)", "10 meters", "5.0 meters"], "ans" => 1, "xp" => 150],
+                ["q" => "Which protective system stops a fall in progress before the worker hits the ground?", "options" => ["Fall Restraint System", "Fall Arrest System (Full-Body Harness + Energy Absorbing Lanyard)", "Guardrail", "Safety sign"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is the difference between Fall Restraint and Fall Arrest?", "options" => ["Restraint prevents reaching the hazard edge; Arrest safe-stops an active fall", "Restraint is for cranes; Arrest is for ladders", "Restraint uses ropes; Arrest uses nets", "There is no difference"], "ans" => 0, "xp" => 180],
+                ["q" => "Where must a fall-arrest lanyard anchor hook be attached?", "options" => ["To any nearby pipe or conduit", "To a certified anchor point capable of supporting rated fall impact forces", "To a wooden ladder rung", "To another worker's harness"], "ans" => 1, "xp" => 180],
+                ["q" => "What is an Interlocked Machine Guard?", "options" => ["A guard locked with a key", "A guard connected to machine controls so power shuts off automatically when the guard is opened", "A fixed metal plate", "A plastic screen"], "ans" => 1, "xp" => 180],
+                ["q" => "What is the 'Point of Operation' on a machine?", "options" => ["The power switch location", "The specific area where cutting, shaping, pressing, or drilling is performed on material", "The floor space around the machine", "The operator seat"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What angle should a non-self-supporting straight extension ladder maintain against a wall?", "options" => ["45 degrees", "The 4:1 ratio (75 degrees angle)", "90 degrees vertical", "30 degrees"], "ans" => 1, "xp" => 210],
+                ["q" => "How far must a ladder extend above the landing platform or roof edge?", "options" => ["10 cm", "At least 1 meter (3 rungs)", "Level with the edge", "3 meters"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Scaffold Tag' (e.g., Green vs. Red)?", "options" => ["A price tag", "Green indicates safe for use after inspection; Red indicates unsafe / do not use", "Green means mobile; Red means fixed", "A painter's label"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Pressure Vessel' hazard?", "options" => ["A water bottle", "Equipment holding gas/liquid under pressure (boilers, air receivers) that can explode if compromised", "A car engine oil tank", "A fire extinguisher bracket"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What device prevents over-pressurization in a steam boiler or compressed air tank?", "options" => ["Pressure Relief Valve (PRV)", "Thermometer", "Drain plug", "Speed governor"], "ans" => 0, "xp" => 250],
+                ["q" => "What is 'Suspension Trauma' (Orthostatic Intolerance)?", "options" => ["Fear of heights", "A medical emergency caused by blood pooling in legs when suspended motionless in a harness after a fall", "A head injury from a fall", "Muscle pain from lifting"], "ans" => 1, "xp" => 250],
+                ["q" => "What rule must be followed when climbing a ladder?", "options" => ["Carry tools in both hands", "Maintain Three Points of Contact at all times (two hands/one foot or two feet/one hand)", "Slide down quickly", "Look down at your feet"], "ans" => 1, "xp" => 250],
+                ["q" => "What protection must be installed on open elevated walkway edges above 2 meters?", "options" => ["Warning tape only", "Toe-boards, mid-rails, and top guardrails", "Reflective paint", "Safety nets only"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Nip Point' hazard on machinery?", "options" => ["A sharp point", "The area where rotating cylinders or belts meet, capable of drawing body parts or clothing into the machine", "A cold surface", "An electrical wire"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Light Curtain' machine safeguard?", "options" => ["A window shade", "An optoelectronic device that creates a light beam barrier; crossing it stops machine motion instantly", "A ceiling bulb", "A decorative screen"], "ans" => 1, "xp" => 300],
+                ["q" => "How often must working-at-height fall arrest gear (harnesses, lanyards) be formally inspected by a competent person?", "options" => ["Every 5 years", "At least every 6 months (and user pre-use check daily)", "Only after a fall occurs", "Every week"], "ans" => 1, "xp" => 300],
+                ["q" => "What is required before entering a Mobile Elevated Work Platform (MEWP / Cherry Picker)?", "options" => ["A valid driver's license only", "Specific operator training, pre-use inspection, and wearing a fall-arrest harness tethered to the anchor point", "Wearing rain gear", "A fire extinguisher"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is the 'Fall Clearance Distance' calculation?", "options" => ["The height of the building", "Lanyard length + Energy absorber deployment distance + Worker height + Safety margin (1m)", "The ladder length", "The distance to the hospital"], "ans" => 1, "xp" => 400],
+                ["q" => "What must be placed around the base of a scaffold to prevent structural sinking into soft ground?", "options" => ["Plastic sheets", "Base plates and sole boards (timber planks)", "Bricks", "Gravel"], "ans" => 1, "xp" => 400],
+                ["q" => "Why must loose clothing, long hair, and jewelry be restrained when operating rotating lathes or drills?", "options" => ["To look tidy", "They can snag in rotating shafts and drag the operator into catastrophic entanglement injuries", "To keep tools clean", "To save time"], "ans" => 1, "xp" => 400],
+                ["q" => "What is a 'Permit to Work' (PTW) for high-risk operations?", "options" => ["A visa for foreign workers", "A formal authorization document detailing hazards, safety precautions, and approvals required before starting critical tasks", "A driver permit", "A salary bonus form"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+
+    // CATEGORY 3: STRATEGIC OHS MANAGEMENT & CAPSTONE (Maps 153-156)
+    [
+        "id" => ++$highest_id, "course_id" => $ohs_course_id, "category_id" => 3,
+        "title" => "Map 153: Emergency Preparedness", "desc" => "Design evacuation procedures, train response marshals, and manage disaster scenarios.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is an Emergency Response Plan (ERP)?", "options" => ["A daily work schedule", "A documented set of instructions directing actions during unexpected crisis events to protect lives and property", "A financial budget plan", "A marketing strategy"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the primary role of an Emergency Evacuation Marshal (Floor Warden)?", "options" => ["To fight structural fires alone", "To direct occupants safely out of a building along designated routes during an emergency", "To lock all doors", "To save company computers"], "ans" => 1, "xp" => 150],
+                ["q" => "What color and symbol identify emergency exit route signage internationally?", "options" => ["Red with a stop sign", "Green with a running person / arrow pictogram", "Yellow with a flame", "Blue with a letter 'E'"], "ans" => 1, "xp" => 150],
+                ["q" => "What is an 'Assembly Point'?", "options" => ["Where factory parts are built", "A designated safe outdoor area where evacuees gather for headcounts following an evacuation", "The reception area", "The cafeteria"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "How frequently should emergency evacuation drills be practiced at a minimum?", "options" => ["Every week", "At least once or twice a year (depending on risk profile)", "Every 5 years", "Never"], "ans" => 1, "xp" => 180],
+                ["q" => "Why must emergency escape doors NEVER be locked with a key during working hours?", "options" => ["It blocks fresh air", "It traps occupants inside during a fire or emergency evacuation, leading to fatalities", "Keys get lost easily", "Inspectors take keys"], "ans" => 1, "xp" => 180],
+                ["q" => "What is panic hardware (Panic Bar / Crash Bar) on an emergency door?", "options" => ["An alarm bell", "A pressure bar that unlocks the door automatically when pushed from the inside", "A heavy padlock", "A security camera handle"], "ans" => 1, "xp" => 180],
+                ["q" => "What is the 'Roll Call' (headcount) process at an assembly point?", "options" => ["Checking worker clock-in times", "Verifying that all building occupants have safely evacuated and identifying missing persons for rescuers", "Calling out salaries", "Assigning afternoon work"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What lighting system activates automatically during a main electrical power failure in emergency routes?", "options" => ["Flashlights only", "Emergency Battery-Backed Safety Lighting", "Solar panels on the roof", "Candles"], "ans" => 1, "xp" => 210],
+                ["q" => "What is the primary responsibility of a First Aider during a major site emergency?", "options" => ["To lead the evacuation", "To provide immediate triage and emergency life support at the safe assembly treatment zone", "To drive the fire truck", "To talk to the media"], "ans" => 1, "xp" => 210],
+                ["q" => "Why should elevators/lifts NEVER be used during a building fire evacuation?", "options" => ["Elevators are too slow", "Shafts act as chimneys for smoke, power may fail, and elevator cars can open onto fire floors", "Elevators use too much power", "Elevators are for VIPs"], "ans" => 1, "xp" => 210],
+                ["q" => "What is an Incident Command Post (ICP) in crisis management?", "options" => ["The police station", "The designated physical location where the Incident Commander oversees emergency operations", "A social media page", "A security gate"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Triage' during a mass casualty incident?", "options" => ["Fixing damaged equipment", "Categorizing casualties based on injury severity to prioritize treatment (Immediate, Delayed, Minor, Deceased)", "Transporting people in buses", "Writing police reports"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Business Continuity Plan' (BCP) compared to an Emergency Plan?", "options" => ["BCP focuses on restoring business operations after a disaster; ERP focuses on immediate life safety", "BCP is for fires only", "ERP is for banks only", "There is no difference"], "ans" => 0, "xp" => 250],
+                ["q" => "What is a 'Tabletop Exercise' in emergency training?", "options" => ["A ping-pong tournament", "A scenario-based discussion where response leaders walk through an emergency step-by-step around a table", "Cleaning conference tables", "Building model offices"], "ans" => 1, "xp" => 250],
+                ["q" => "What device should be installed at emergency exit doors that release automatically during fire alarms?", "options" => ["Magnetic Door Holders / Release Devices", "Heavy iron chains", "Combination locks", "Wooden doorstops"], "ans" => 0, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the 'Debrief' phase following an emergency drill or actual evacuation?", "options" => ["Filing an insurance claim", "Reviewing response performance, identifying gaps, and updating the plan for improvement", "Returning to work immediately", "Dismissing the safety team"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Spill Response Kit' equipped with in a factory chemical area?", "options" => ["First aid plasters", "Absorbent booms, neutralizers, disposal bags, non-sparking shovels, and dedicated chemical PPE", "Fire hoses", "Water buckets"], "ans" => 1, "xp" => 300],
+                ["q" => "What considerations must be made for Persons with Disabilities (PWD) in evacuation plans?", "options" => ["Leave them until last", "Assign dedicated Buddies, establish Personal Emergency Evacuation Plans (PEEPs), and use Evac-Chairs", "Rely on municipal fire teams only", "Keep them on the ground floor always"], "ans" => 1, "xp" => 300],
+                ["q" => "What information must be displayed on an Emergency Evacuation Diagram posted in corridors?", "options" => ["Company org chart", "'You Are Here' marker, primary/secondary exit paths, assembly point location, and fire equipment locations", "Cafeteria hours", "Safety officer phone list only"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "In an Incident Command System (ICS), who speaks directly to news reporters during a crisis?", "options" => ["Any worker nearby", "The designated Public Information Officer (PIO)", "The injured party's manager", "The security guard"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Mutual Aid Agreement' between neighboring industrial facilities?", "options" => ["Sharing financial loans", "A formal pre-arranged agreement to share emergency response resources (fire trucks, foam, foam teams) during a crisis", "Sharing employee staff", "Joint marketing"], "ans" => 1, "xp" => 400],
+                ["q" => "What critical environmental control is needed when fighting major chemical fires?", "options" => ["Using fans", "Containing contaminated firewater runoff to prevent severe river or groundwater pollution", "Opening doors", "Evacuating cities"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the ultimate goal of emergency preparedness in occupational health and safety?", "options" => ["Passing statutory audits", "Minimizing loss of life, human injury, environmental damage, and asset destruction during unexpected disasters", "Testing alarm systems", "Reducing insurance premiums"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $ohs_course_id, "category_id" => 3,
+        "title" => "Map 154: Occupational Health & Wellness", "desc" => "Manage chronic health risks, biological exposures, mental health, and medical surveillance.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the difference between Occupational Safety and Occupational Health?", "options" => ["Safety prevents acute physical trauma; Health prevents chronic work-related illnesses and exposure diseases", "Safety is for factories; Health is for offices", "Safety is legal; Health is optional", "There is no difference"], "ans" => 0, "xp" => 150],
+                ["q" => "What is an Occupational Health Nurse / Practitioner?", "options" => ["A general hospital nurse", "A medical specialist focused on worker healthcare, medical surveillance, and workplace health hazards", "A safety officer", "An insurance assessor"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Biological Monitoring' test?", "options" => ["Checking garden plants", "Analyzing worker blood or urine to detect the presence of absorbed toxic chemicals or metabolites", "Measuring water temperature", "Checking soil contamination"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Silicosis'?", "options" => ["A skin rash", "An incurable, progressive lung disease caused by breathing in crystalline silica dust (e.g., mining, masonry)", "A heart condition", "An eye infection"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What physical hazard causes Occupational Asbestosis?", "options" => ["Inhaling toxic paint fumes", "Inhaling microscopic asbestos fibers, leading to severe lung scarring and mesothelioma cancer", "Working in cold rooms", "High noise levels"], "ans" => 1, "xp" => 180],
+                ["q" => "What is an 'Exit Medical Examination'?", "options" => ["A check before hiring", "A health evaluation performed when an employee leaves a company to document their health status upon departure", "An annual checkup", "A first aid assessment"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Fitness for Duty' certification?", "options" => ["Passing a sports gym test", "A medical assessment confirming a worker is physically and mentally capable of performing specific high-risk tasks safely", "Having a high salary", "Checking worker age"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Bloodborne Pathogen' hazard in the workplace?", "options" => ["Chemical acid", "Infectious microorganisms in human blood that cause disease (e.g., HIV, Hepatitis B)", "Toxic chemical fumes", "Dust particles"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What protocol should be followed immediately after a needle-stick or sharp object exposure?", "options" => ["Squeeze and wash the wound with soap/water and initiate Post-Exposure Prophylaxis (PEP) medical care", "Put a plaster on and continue working", "Wait 3 days to see if symptoms develop", "Bandage tightly without washing"], "ans" => 0, "xp" => 210],
+                ["q" => "What is 'Workplace Burnout'?", "options" => ["An electrical fire", "A state of physical, emotional, and mental exhaustion caused by excessive and prolonged workplace stress", "Quitting a job", "Taking a vacation"], "ans" => 1, "xp" => 210],
+                ["q" => "What is an Employee Assistance Program (EAP)?", "options" => ["A program offering free financial loans", "A confidential workplace service providing professional counseling and support for personal/mental health issues", "A technical training course", "An insurance policy"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Legionnaires' Disease' workplace hazard?", "options" => ["A skin fungus from dirt", "A severe form of pneumonia caused by Legionella bacteria breeding in poorly maintained cooling towers / AC systems", "A food poisoning strain", "An allergy to carpet"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Sick Building Syndrome' (SBS)?", "options" => ["A building falling down", "Situations where building occupants suffer acute health/comfort effects linked to time spent in a building with poor indoor air quality", "A building with broken windows", "An old office structure"], "ans" => 1, "xp" => 250],
+                ["q" => "What measure controls dust exposure during concrete cutting or demolition?", "options" => ["Using dry sweeping brooms", "Wet suppression (water spray) or vacuum extraction systems at the cutting tool", "Working at night", "Increasing cutting speed"], "ans" => 1, "xp" => 250],
+                ["q" => "Why must Medical Surveillance records be kept confidential from general management?", "options" => ["To hide company costs", "Medical ethics and privacy laws protect personal employee health diagnosis info; managers receive 'fit/unfit' status only", "Doctors dislike sharing files", "Records are written in Latin"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Presenteeism'?", "options" => ["Giving gifts to staff", "Attending work while physically sick or unwell, resulting in reduced productivity and spreading infection", "Arriving early to work", "Working from home"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the primary objective of a Workplace Wellness Program?", "options" => ["To train Olympic athletes", "To promote healthy lifestyles, reduce chronic illness risks, and improve overall physical/mental health of workforce", "To replace medical insurance", "To host parties"], "ans" => 1, "xp" => 300],
+                ["q" => "What ergonomic factor contributes heavily to Occupational Back Pain?", "options" => ["Drinking coffee", "Poor heavy lifting posture, static sitting, vibration, and lack of lumbar support", "Wearing glasses", "Working in quiet rooms"], "ans" => 1, "xp" => 300],
+                ["q" => "What health check is mandatory for drivers operating heavy mobile equipment (cranes, trucks)?", "options" => ["Spelling test", "Regular vision, color perception, hearing, cardiovascular, and reaction tests", "Blood pressure only once", "Weight check"], "ans" => 1, "xp" => 300],
+                ["q" => "What chemical exposure hazard causes Occupational Dermatitis?", "options" => ["Pure drinking water", "Repeated skin contact with irritating solvents, detergents, resins, or cement dust", "Cold fresh air", "Synthetic fabrics"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Latency Period' in occupational diseases like mesothelioma?", "options" => ["The time it takes to get to work", "The multi-year time gap (often 10-40 years) between initial hazardous exposure and actual disease symptom onset", "The duration of a shift", "The time to complete a medical check"], "ans" => 1, "xp" => 400],
+                ["q" => "How should an employer respond if Medical Surveillance reveals a cluster of workers developing early Noise-Induced Hearing Loss?", "options" => ["Fire the affected workers", "Investigate workplace noise controls immediately, re-audit engineering silencers, and mandate ear defender compliance", "Issue ear plugs and take no further action", "Ignore the reports"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the economic benefit of investing in Occupational Health and Wellness?", "options" => ["Zero financial return", "Reduced absenteeism, lower healthcare costs, higher retention, and improved productivity", "Higher tax payments", "Elimination of all insurance needs"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the central premise of Total Worker Health?", "options" => ["Paying employees double", "Integrating protection from work-related safety hazards with promotion of injury and illness prevention to advance worker well-being", "Mandating daily sports", "Replacing safety teams with doctors"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $ohs_course_id, "category_id" => 3,
+        "title" => "Map 155: Safety Culture & Governance", "desc" => "Build safety leadership, implement ISO 45001 systems, and drive behavioral safety transformation.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Safety Culture' in an organization?", "options" => ["Wearing safety badges", "The shared values, attitudes, and behavioral norms regarding safety ('how we do things when no one is watching')", "A list of safety rules", "The color of safety signs"], "ans" => 1, "xp" => 150],
+                ["q" => "What international standard sets the framework for Occupational Health and Safety Management Systems?", "options" => ["ISO 9001", "ISO 45001", "ISO 14001", "ISO 27001"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Behavior-Based Safety' (BBS)?", "options" => ["Punishing bad behavior", "A program focused on observing, coaching, and reinforcing safe worker behaviors in real-time", "A psychology degree", "Automatic computer monitoring"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Toolbox Talk' (or Safety Stand-down)?", "options" => ["A formal 3-day conference", "A short 5-10 minute practical safety discussion held before starting a work shift", "Inventory check of wrenches", "A toolbox repair session"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Leading Indicator' in safety performance metrics?", "options" => ["Number of fatal accidents last year", "Proactive safety measures (e.g., safety audits completed, hazard reports, training hours) predicting future safety", "Total medical compensation paid", "Number of days lost to injury"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Lagging Indicator'?", "options" => ["Hazard observations reported", "Reactive metrics measuring past historical outcome losses (e.g., Lost Time Injury Frequency Rate)", "Toolbox talks held", "Safety audit scores"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Just Culture' in safety management?", "options" => ["Firing anyone who makes a mistake", "An atmosphere that distinguishes between honest human errors and reckless intentional violation, encouraging reporting", "Having no rules at all", "Blaming management for everything"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Visible Felt Leadership' in OHS?", "options" => ["Management wearing bright suits", "Leaders actively visiting work floors, engaging workers, demonstrating personal commitment, and prioritizing safety", "Sending safety emails weekly", "Putting posters in the boardroom"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "In the ISO 45001 Plan-Do-Check-Act (PDCA) cycle, what happens in the 'Check' stage?", "options" => ["Setting safety policy goals", "Monitoring, measuring safety performance, and auditing compliance against objectives", "Building physical guards", "Writing corrective actions"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Safety Audit' compared to a Safety Inspection?", "options" => ["An audit systematically evaluates the overall management system and compliance; an inspection checks physical controls", "An audit is done by police; an inspection by workers", "There is no difference", "An inspection measures financial accounts"], "ans" => 0, "xp" => 210],
+                ["q" => "What is 'Management Review' under ISO 45001?", "options" => ["A worker performance appraisal", "Top management formally evaluating the suitability, adequacy, and effectiveness of the OHS system annually", "A budget meeting", "Reviewing uniform designs"], "ans" => 1, "xp" => 210],
+                ["q" => "What is the primary danger of a 'Blame Culture' in safety?", "options" => ["It increases safety costs", "Workers hide injuries, near misses, and hazards out of fear of punishment, destroying safety awareness", "Workers take too many breaks", "It offends managers"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Zero Harm' vision?", "options" => ["An impossible fantasy to ignore", "A strategic commitment that all workplace injuries and illnesses are preventable", "Doing zero work", "Firing injured workers to keep zero stats"], "ans" => 1, "xp" => 250],
+                ["q" => "What role does Employee Consultation play in successful OHS governance?", "options" => ["Consultation is a minor formality", "Involving workers directly in hazard identification ensures practical, accepted, and effective safety solutions", "Workers should only obey top-down orders", "Consultation delays projects indefinitely"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Safety Management System' (SMS) integration?", "options" => ["Installing safety software on PCs", "Combining OHS processes with overall business operations, quality, and environmental management", "Hiring external safety guards", "Creating 100 safety manuals"], "ans" => 1, "xp" => 250],
+                ["q" => "What is an 'Internal Safety Audit'?", "options" => ["A government tax check", "An audit conducted by trained internal personnel to evaluate compliance before external certification", "An investigation of worker attendance", "Checking company bank accounts"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "In Bradley's Curve of Safety Culture Maturity, what characterizes the 'Dependence' stage?", "options" => ["Workers look after each other", "Safety is driven by management rules, supervision, and fear of discipline", "Workers follow instinct", "Safety is natural team habit"], "ans" => 1, "xp" => 300],
+                ["q" => "What characterizes the highest 'Interdependent' stage on Bradley's Curve?", "options" => ["Rules are ignored", "Teams feel collective ownership, care for each other's safety, and drive continuous improvement", "Management is not needed", "Safety officers do all the work"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Continual Improvement' in OHS management systems?", "options" => ["Changing safety rules daily", "Recurring process of enhancing the OHS management system to achieve overall safety performance gains", "Buying new tools monthly", "Re-organizing management teams"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Safety KPI'?", "options" => ["Known Public Inspection", "Key Performance Indicator used to measure and track health and safety success targets", "Key Process Item", "Keep People Informed"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "Why are financial incentive bonuses tied purely to low Lost Time Injury stats dangerous?", "options" => ["They cost too much money", "They encourage suppression and non-reporting of injuries by workers/supervisors to preserve bonuses", "Workers spend money unwisely", "They violate tax law"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Psychological Safety' in team dynamics?", "options" => ["Having physical security guards", "A climate where workers feel safe to speak up, report mistakes, and raise hazards without fear of humiliation", "Doing no stressful work", "Working in quiet rooms"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the ultimate measure of effective Safety Governance?", "options" => ["A flawless 500-page policy document", "Sustained operational excellence where every worker returns home healthy and uninjured every day", "Zero regulatory fines received", "Passing external audits with high scores"], "ans" => 1, "xp" => 400],
+                ["q" => "How does strong safety performance impact overall business sustainability?", "options" => ["It decreases profitability", "It protects brand reputation, lowers insurance costs, reduces downtime, and boosts workforce morale", "It has no effect on business", "It increases product prices"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $ohs_course_id, "category_id" => 3,
+        "title" => "Map 156: Final OHS Capstone Exam", "desc" => "The ultimate challenge. Apply legal, operational, and strategic OHS principles across real-world scenarios.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "SCENARIO: You discover a worker operating an angle grinder without face protection or machine guard. What is the immediate action?", "options" => ["Write a memo to the CEO", "Stop the work immediately, address the unsafe act/condition, and issue proper PPE/guarding before resuming", "Wait for the shift to end", "Take a photo for social media"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: A serious forklift collision causes a structural column collapse and worker injury. What is the first emergency priority?", "options" => ["Calculate financial damage", "Ensure scene safety, isolate hazards, and administer immediate emergency medical care", "Interview the forklift driver", "Call the insurance agent"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: A chemical drum is leaking an unknown vapor into an enclosed store room. How should you approach?", "options" => ["Run inside quickly to plug the leak", "Evacuate the area, consult the SDS, don appropriate SCBA/chemical gear, and secure the perimeter", "Smell the vapor to identify it", "Throw a blanket over the drum"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: A contractor is hired to repair factory roof tiles at 8 meters height. What document must be verified before work starts?", "options" => ["Contractor tax return", "Fall Protection Plan, Risk Assessment, Medical Fitness certificates, and certified harness inspection logs", "Worker resumes", "Driver licenses"], "ans" => 1, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "SCENARIO: An employee reports severe finger numbness after using vibrating pneumatic hammers for 2 years. What is the likely issue?", "options" => ["Temporary muscle fatigue", "Hand-Arm Vibration Syndrome (HAVS) requiring medical evaluation and task ergonomic control", "Skin allergy", "Poor blood circulation from cold weather"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: A maintenance technician must enter a high-voltage electrical enclosure. What procedure MUST be executed?", "options" => ["Turn off the light switch", "Execute full Lockout/Tagout (LOTO) protocol, isolate energy, and test for Zero Energy State", "Wear rubber gloves only", "Post a guard outside"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: A labor inspector issues a Section 30 Prohibition Notice on a site's overhead crane. What does this legally mean?", "options" => ["The crane must be painted red", "All operation of the crane must cease instantly until the identified safety defect is remediated and cleared", "The company gets a small fine", "The driver is fired"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: A worker slips on an uncleaned oil spill, falling and fracturing their wrist. In the 5-Whys investigation, what is the root cause?", "options" => ["The worker was careless", "Lack of oil spill cleanup SOPs and failure of preventive maintenance line inspections", "Slippery shoes", "Poor lighting"], "ans" => 1, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "SCENARIO: You are designing safety controls for a toxic dust mixing process. Which order follows the Hierarchy of Controls?", "options" => ["Issue dust masks first, then build a guard", "Automate chemical feeding (Eliminate/Engineered LEV extraction), implement rotation, with respirators as last resort", "Buy cheap gloves", "Post a warning sign"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: An emergency fire alarm sounds in a 5-story office building. What should the Floor Evacuation Marshal do?", "options" => ["Gather personal belongings first", "Guide occupants calmly via emergency stairs to the assembly point, verify room sweeps, and take headcount", "Use the central elevator to go down", "Lock the main entrance door"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: A factory worker collapses inside a deep grain silo. What is the FIRST rule for potential rescuers?", "options" => ["Jump inside immediately to pull them out", "Do NOT enter without atmospheric testing, continuous ventilation, SCBA gear, and a trained confined space rescue team", "Throw a rope inside", "Call the company CEO"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: High noise levels in a stamping plant measure 95 dBA continuously. What is the employer's legal obligation?", "options" => ["Offer earplugs if workers ask", "Demarcate Noise Zone, implement engineering noise reduction, mandate certified hearing protection, and run audiometric testing", "Pay workers a noise bonus", "Shorten the work week"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "SCENARIO: A company wants to transition from a reactive 'blame' culture to an advanced proactive safety culture. What is key?", "options" => ["Increase employee fines for errors", "Implement Just Culture, Visible Felt Leadership, BBS observation, and worker safety empowerment", "Replace all workers", "Hire more security guards"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: A fatal electrocution occurs on site. Under OHS legislation, what immediate statutory reporting steps are mandatory?", "options" => ["Report at month-end", "Notify Department of Labor immediately, preserve the incident scene untouched, and initiate formal internal investigation", "Clean up the area and call an ambulance", "Inform news media first"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: An organization is preparing for ISO 45001 certification. Which element proves top management commitment?", "options" => ["Signing a safety policy document and leaving it in a drawer", "Active participation in management reviews, resource allocation, and integrating OHS into business strategy", "Hiring an external safety consultant once", "Buying new PPE"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: A newly introduced solvent is marked with a GHS skull and crossbones. Where do you find required PPE specs?", "options" => ["In the local newspaper", "In Section 8 (Exposure Controls / Personal Protection) of the solvent's official Safety Data Sheet (SDS)", "Ask a coworker", "Guess based on odor"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "MASTER FINAL: What is the fundamental ethical and legal pillar of Occupational Health and Safety?", "options" => ["Compliance is only necessary during audits", "Every human being has a right to work in an environment that protects their health, safety, and physical dignity", "Production speed overrides safety during high demand", "Safety is solely the individual worker's responsibility"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: Why is the Hierarchy of Controls considered the cornerstone of industrial hazard engineering?", "options" => ["It lowers safety equipment purchasing costs", "It prioritizes permanent physical risk removal at the source over reliance on fallible human behavior and PPE", "It is easier to memorize", "It applies only to chemical plants"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: What distinguishes a world-class Safety Management System from a basic compliant system?", "options" => ["Having more warning signs", "Proactive hazard identification, integrated risk management, strong psychological safety, and continual improvement culture", "Achieving zero audits", "Outsourcing all high-risk work"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: In overall corporate risk management, how does OHS directly influence organizational resilience?", "options" => ["By increasing administrative paperwork", "By safeguarding human capital, preventing catastrophic operational disruptions, protecting brand trust, and ensuring legal compliance", "By reducing employee salaries", "By limiting company growth"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "EXAM: How do Legislation, Risk Assessment, and Operational Control interact in an OHS system?", "options" => ["They operate independently", "Legislation defines duties; Risk Assessment identifies specific site hazards; Operational Controls execute physical protection", "Risk Assessment replaces legislation", "Operational controls are optional if legislation is complex"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: Why is 'Root Cause Analysis' vital following a near-miss or critical incident?", "options" => ["To penalize workers quickly", "To uncover systemic management and engineering failures so permanent solutions prevent catastrophic recurrence", "To satisfy insurance paperwork", "To close the investigation file"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: What is the hallmark of an effective Health and Safety Practitioner?", "options" => ["Being a strict enforcer who stops all work", "An empowering leader, competent hazard evaluator, clear communicator, and strategic risk advisor", "Having a degree in law", "Working strictly from an office desk"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: What is the primary purpose of Occupational Health and Safety education?", "options" => ["To obtain a certificate", "To instill knowledge, vigilance, and practical capability so every worker returns home safe and healthy every single day", "To satisfy management demands", "To pass written exams"], "ans" => 1, "xp" => 600]
+            ]]
+        ]
+    ]
+];
+
+// ==========================================================
+// OFFICE ADMINISTRATION CURRICULUM (Maps 157-168)
+// ==========================================================
+$oa_maps = [
+    // CATEGORY 1: FRONT OFFICE & SECRETARIAL SKILLS (Maps 157-160)
+    [
+        "id" => ++$highest_id, "course_id" => $oa_course_id, "category_id" => 1,
+        "title" => "Map 157: Reception & Telephone Protocol", "desc" => "Master professional phone etiquette, switchboard management, and front desk operations.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the standard professional way to answer an office telephone call?", "options" => ["'Hello, who's this?'", "'Yeah, hold on.'", "Greeting, Company Name, Your Name, and 'How may I help you?'", "Just say the phone number"], "ans" => 2, "xp" => 150],
+                ["q" => "What should you do BEFORE putting a caller on hold?", "options" => ["Ask for permission and wait for their response", "Press hold immediately", "Mute your microphone and talk to coworkers", "Hang up and call back"], "ans" => 0, "xp" => 150],
+                ["q" => "What is the purpose of a 'Switchboard' or PBX system?", "options" => ["To play background music", "To route incoming calls to the correct internal extensions", "To record secret conversations", "To generate monthly utility bills"], "ans" => 1, "xp" => 150],
+                ["q" => "When taking a telephone message, which of the following is essential?", "options" => ["Caller's shoe size", "Caller name, company, contact number, date/time, and message summary", "Personal opinion of the caller", "The weather outside"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Warm Transfer' (Attended Transfer)?", "options" => ["Transferring a call in summer", "Speaking to the colleague first to explain who is calling before connecting", "Disconnecting the line accidentally", "Putting the phone on speakerphone"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Cold Transfer' (Blind Transfer)?", "options" => ["Transferring in winter", "Transferring the caller directly to an extension without introducing them first", "Refusing to take a call", "Sending the caller to voicemail"], "ans" => 1, "xp" => 180],
+                ["q" => "How quickly should an office telephone ideally be answered?", "options" => ["Within 3 rings", "On the 10th ring", "Let it go to voicemail always", "After 1 minute"], "ans" => 0, "xp" => 180],
+                ["q" => "What is the first step when handling an irate caller on the phone?", "options" => ["Interrupt and tell them to calm down", "Remain calm, listen actively without interrupting, and express empathy", "Hang up immediately", "Transfer them to the CEO"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Visitor Log' used for at reception?", "options" => ["Tracking staff salaries", "Recording the name, entry/exit time, and host of all external guests for security", "Collecting marketing emails", "Grading visitor appearance"], "ans" => 1, "xp" => 210],
+                ["q" => "What is the primary function of a Receptionist?", "options" => ["To manage corporate finance", "To serve as the primary face/voice of the organization and manage front desk flow", "To handle IT server maintenance", "To conduct legal audits"], "ans" => 1, "xp" => 210],
+                ["q" => "How should you handle an unannounced drop-in visitor asking to see an executive?", "options" => ["Send them straight to the executive's office", "Politely ask them to wait while you check the executive's availability", "Tell them to leave the building immediately", "Give them confidential documents"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Phonetic Alphabet' used for during call taking?", "options" => ["Singing to customers", "Spelling out difficult names/words clearly (e.g., Alpha, Bravo) to prevent errors", "Foreign language translation", "Secret company coding"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What should you do if an executive is in a confidential meeting and receives an urgent call?", "options" => ["Burst into the room and hand them the phone", "Take a message or follow agreed emergency interruption protocols discretely", "Tell the caller the executive is sleeping", "Ignore the call"], "ans" => 1, "xp" => 250],
+                ["q" => "What does 'Active Listening' involve during telephone reception?", "options" => ["Talking over the caller", "Giving verbal nods (e.g., 'I see'), repeating key details, and clarifying points", "Playing music in the background", "Checking personal social media"], "ans" => 1, "xp" => 250],
+                ["q" => "How should confidential visitor information on a physical reception desk register be protected?", "options" => ["Leave it open for everyone to read", "Use peel-off badge sheets or digital sign-in tabs to conceal prior names", "Throw it in the general waste bin daily", "Post it on the bulletin board"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Call Screening' procedure?", "options" => ["Watching calls on TV", "Politely asking the caller's identity and purpose to determine how to direct the call", "Blocking all external numbers", "Recording all phone calls"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What non-verbal element affects your tone of voice on the telephone?", "options" => ["Your shoe color", "Smiling while speaking (it changes vocal warmth and resonance)", "The brand of your desk", "Room lighting"], "ans" => 1, "xp" => 300],
+                ["q" => "What is the proper procedure if a caller refuses to state their name or purpose?", "options" => ["Argue with them", "Politely explain company policy requires caller info before connecting to staff", "Connect them to the CEO immediately", "Disconnect the line aggressively"], "ans" => 1, "xp" => 300],
+                ["q" => "What key feature should a modern digital visitor management system include?", "options" => ["Facial beauty ratings", "Automated host notifications, badge printing, and emergency evacuation logs", "Game apps", "Credit card sales processing"], "ans" => 1, "xp" => 300],
+                ["q" => "What should a receptionist do if an unattended package is delivered to the front desk?", "options" => ["Open it immediately with a knife", "Follow security protocols, verify sender/recipient, and report suspicious items", "Throw it outside", "Take it home"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Duty of Care' at the reception desk during an emergency evacuation?", "options" => ["Saving office stationery", "Ensuring all logged visitors are accounted for and guided to the assembly point", "Locking visitors inside", "Running out first without checking guests"], "ans" => 1, "xp" => 400],
+                ["q" => "How should front desk staff handle media inquiries regarding a workplace crisis?", "options" => ["Give personal opinions freely", "Direct journalists politely to the designated Public Information Officer/Spokesperson", "Refuse to talk and slam the door", "Make up fictional details"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the primary objective of front-office security access controls?", "options" => ["To intimidate clients", "To restrict unauthorized entry into operational areas and protect personnel and data", "To slow down work", "To track employee bathroom breaks"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the golden rule of front desk professional presence?", "options" => ["Eating meals at the front counter constantly", "Maintaining an uncluttered, welcoming space with attentive, courteous posture", "Using personal phones on speaker", "Ignoring arriving guests until finished typing"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $oa_course_id, "category_id" => 1,
+        "title" => "Map 158: Business Writing & Email Etiquette", "desc" => "Draft professional memos, business letters, and executive email communications.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the main purpose of a Business Memorandum (Memo)?", "options" => ["External advertising", "Internal communication within an organization regarding policies or updates", "Sending invoices to clients", "Ordering office lunch"], "ans" => 1, "xp" => 150],
+                ["q" => "What does 'CC' stand for in an email header?", "options" => ["Carbon Copy", "Central Code", "Company Contact", "Client Communication"], "ans" => 0, "xp" => 150],
+                ["q" => "What is the function of 'BCC' (Blind Carbon Copy)?", "options" => ["Sends an invisible email", "Hides recipient email addresses from other people on the thread", "Bold text formatting", "Backs up the email to cloud storage"], "ans" => 1, "xp" => 150],
+                ["q" => "Why is typing an entire business email in ALL CAPS unaccepted?", "options" => ["It uses too much internet bandwidth", "It is interpreted as SHOUTING and appears aggressive", "Printers cannot print capital letters", "It automatically triggers spam filters"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What makes an effective email 'Subject Line'?", "options" => ["Leaving it blank", "A brief, clear summary of the email's specific topic (e.g., 'Meeting Agenda - Oct 12')", "Writing 'URGENT' in all caps without details", "Writing a full paragraph"], "ans" => 1, "xp" => 180],
+                ["q" => "When should you use 'Reply All'?", "options" => ["Always, on every single email", "Only when your response is truly necessary for everyone on the recipient list", "To say 'Thanks' to 50 people", "When you want to complain about a coworker"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a professional 'Salutation' in a formal business letter?", "options" => ["'Hey guys,'", "'Dear Mr. Smith,' or 'Dear Ms. Davis,'", "'Yo,'", "'To whom it may concern (or nobody),'"], "ans" => 1, "xp" => 180],
+                ["q" => "What does proofreading a document focus on?", "options" => ["Counting page numbers", "Checking for spelling, grammar, punctuation, and formatting errors", "Changing the font to comic sans", "Adding clipart"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is an 'Email Signature' expected to contain?", "options" => ["Favorite movie quotes", "Full Name, Job Title, Company, Contact Phone, and Official Website/Logo", "Home address and personal social media links", "A list of personal hobbies"], "ans" => 1, "xp" => 210],
+                ["q" => "What is the recommended maximum response time for professional emails during work hours?", "options" => ["Within 24 hours (or immediate acknowledgment)", "Within 2 weeks", "Only when reminded", "1 month"], "ans" => 0, "xp" => 210],
+                ["q" => "What is 'Jargon' in business writing?", "options" => ["Proper dictionary grammar", "Specialized industry terms that may confuse readers outside the field", "Foreign languages", "A type of font"], "ans" => 1, "xp" => 210],
+                ["q" => "What is the purpose of an 'Out of Office' (OOO) auto-responder?", "options" => ["To tell people you are on vacation", "To notify senders of your absence, return date, and emergency contact details", "To delete incoming spam automatically", "To turn off your computer remotely"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "How should large file attachments (e.g., over 25MB) be shared professionally?", "options" => ["Attach them directly anyway", "Upload to secure company cloud storage and share a secure download link", "Compress into 10 separate emails", "Print and post them"], "ans" => 1, "xp" => 250],
+                ["q" => "What is the 'Active Voice' in business correspondence?", "options" => ["Speaking loudly while typing", "Sentences where the subject performs the action (e.g., 'The team completed the report')", "Writing in bold font", "Using exclamation marks"], "ans" => 1, "xp" => 250],
+                ["q" => "Which complimentary close is suitable for a formal business letter?", "options" => ["'Cheers,'", "'Sincerely,' or 'Kind regards,'", "'Later,'", "'XOXO,'"], "ans" => 1, "xp" => 250],
+                ["q" => "What is the primary risk of forwarding internal corporate emails externally?", "options" => ["It uses hard drive space", "Potential breach of confidentiality, data privacy laws, or trade secrets", "It changes the font color", "It duplicates the file"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the structure of a standard 4-part business letter?", "options" => ["Title, Joke, Body, Picture", "Heading/Letterhead, Opening Salutation, Body Paragraphs, and Closing/Signature", "Summary, Price, Invoice, Receipt", "Memo, Notice, Agenda, Minutes"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Tone' in executive business writing?", "options" => ["Vocal pitch", "The overall attitude (professional, respectful, clear, objective) conveyed by word choice", "Page background color", "Paper thickness"], "ans" => 1, "xp" => 300],
+                ["q" => "How should an administrative assistant handle sensitive legal notices sent via mail?", "options" => ["Throw them away", "Log reception, notify management immediately, and route to legal counsel confidentially", "Post them on noticeboard", "Read them aloud"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Executive Summarization' in correspondence?", "options" => ["Deleting half the words randomly", "Distilling a complex 30-page report into a concise 1-page overview of key points and actions", "Translating text into Spanish", "Changing font size"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is the primary legal principle regarding corporate email records?", "options" => ["Emails disappear after 24 hours", "Emails sent on company systems are official legal records subject to discovery and audits", "Emails belong to personal staff", "Emails cannot be used in court"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Phishing' awareness in office email handling?", "options" => ["Fishing trips", "Recognizing deceptive emails seeking passwords, sensitive files, or wire transfers", "Deleting old archive folders", "Organizing inbox folders"], "ans" => 1, "xp" => 400],
+                ["q" => "How do you maintain brevity without sounding rude in business emails?", "options" => ["Use emojis everywhere", "Be clear and direct while maintaining polite greetings, professional formatting, and clear action items", "Omit greetings and sign-offs", "Use slang words"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the rule of thumb for emotional or heated workplace discussions?", "options" => ["Send a long angry email thread", "Never address emotional disputes via email; schedule a face-to-face or voice conversation", "CC the entire department", "Post on social media"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $oa_course_id, "category_id" => 1,
+        "title" => "Map 159: Filing & Document Management", "desc" => "Structure paper and electronic records, retention schedules, and indexing systems.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the primary goal of an efficient Records Management System?", "options" => ["To stack paper boxes as high as possible", "To ensure fast, systematic retrieval and protection of business documents", "To hide files from auditors", "To shred all paper daily"], "ans" => 1, "xp" => 150],
+                ["q" => "Which filing system arranges files by letters A through Z?", "options" => ["Chronological", "Alphabetic Filing", "Numeric", "Geographic"], "ans" => 1, "xp" => 150],
+                ["q" => "Which filing system arranges records strictly by date?", "options" => ["Subject Filing", "Numeric Filing", "Chronological Filing", "Geographic Filing"], "ans" => 2, "xp" => 150],
+                ["q" => "What is an 'Active Record'?", "options" => ["A file currently being used frequently for daily operations", "A document over 50 years old", "A deleted digital file", "A song record"], "ans" => 0, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is an 'Inactive Record'?", "options" => ["A record used every hour", "A document rarely accessed but retained for legal, financial, or historical compliance", "A corrupted file", "A printed blank page"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Records Retention Schedule'?", "options" => ["A timetable for employee shifts", "A policy defining how long specific document types must be kept before destruction or archival", "A calendar for lunch breaks", "A list of office supplies"], "ans" => 1, "xp" => 180],
+                ["q" => "What is the purpose of 'Cross-Referencing' in filing?", "options" => ["Drawing crosses on paper", "Directing users to an alternative location where a document might logically be filed", "Deleting duplicate records", "Merging two folders"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Centralized Filing'?", "options" => ["Keeping files on individual employee desks", "Storing all organizational records in a single controlled location or server", "Filing documents in the town center", "Storing files at home"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Decentralized Filing'?", "options" => ["Losing all company files", "Locating files in individual departments near the users who create them", "Filing documents online only", "Destroying old files"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Indexing' in document management?", "options" => ["Numbering pages manually", "Determining the name, subject, or number under which a document is filed", "Binding paper with staples", "Coloring file tabs"], "ans" => 1, "xp" => 210],
+                ["q" => "What is an 'Electronic Document Management System' (EDMS)?", "options" => ["A typewriter", "Software used to store, track, manage, and digitize paper and electronic files", "A physical file folder", "A printer driver"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'OCR' (Optical Character Recognition) technology used for?", "options" => ["Testing eye vision", "Converting scanned paper images into searchable, editable digital text", "Printing color photos", "Cleaning monitors"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Tickler File' (or Suspense File)?", "options" => ["A file containing jokes", "A chronological memory-aid system used to track pending tasks or upcoming deadlines", "A broken folder", "A folder for personal letters"], "ans" => 1, "xp" => 250],
+                ["q" => "How should sensitive or confidential paper documents be permanently destroyed?", "options" => ["Thrown in the general recycling bin", "Cross-cut shredding or certified secure destruction service", "Torn in half by hand", "Buried outside"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Version Control' in digital filing?", "options" => ["Naming files 'Doc1', 'Doc2', 'Final'", "Systematic tracking of document revisions to ensure users access the most current version", "Deleting older files automatically", "Changing file formats"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Vital Record'?", "options" => ["Medical records only", "Records essential to restart operations after a disaster (e.g., titles, incorporation, tax certificates)", "Daily email drafts", "Cafeteria receipts"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Cloud Archiving'?", "options" => ["Storing paper outside", "Migrating inactive digital data to offsite cloud storage for secure long-term preservation", "Printing digital files", "Saving on USB drives"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Metadata' in electronic filing?", "options" => ["Computer hardware", "Data about data (e.g., author, date created, file size, permissions)", "A virus", "File encryption"], "ans" => 1, "xp" => 300],
+                ["q" => "What is an 'Audit Trail' in document software?", "options" => ["A path through the office", "A log recording every user who accessed, edited, exported, or deleted a specific document", "A list of office managers", "A backup drive"], "ans" => 1, "xp" => 300],
+                ["q" => "Why are standardized naming conventions important in file structures?", "options" => ["They look artistic", "They prevent duplicate files and enable rapid search across shared network drives", "They save computer memory", "They encrypt the files"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Data Protection' compliance regarding archived personal records?", "options" => ["Keeping data forever", "Ensuring records are stored securely and destroyed when legal retention periods expire", "Selling old customer data", "Posting archives online"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the 3-2-1 backup rule for digital document management?", "options" => ["3 files, 2 folders, 1 drive", "3 copies of data on 2 different media types with 1 offsite/cloud copy", "3 hours to back up 2 gigabytes in 1 minute", "3 passwords for 2 users on 1 PC"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Phytosanitary' or climate control in physical archiving rooms?", "options" => ["Air conditioning for comfort", "Controlling humidity and temperature to prevent mold, paper decay, and pest destruction", "Using scented sprays", "Keeping windows open"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Access Authorization' in records management?", "options" => ["Keys to the front gate", "Setting user permissions so only cleared personnel can open sensitive file tiers", "Allowing everyone full access", "Locking all files permanently"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $oa_course_id, "category_id" => 1,
+        "title" => "Map 160: Office Equipment & Facilities", "desc" => "Manage office machinery, maintenance logs, ergonomics, and facility operations.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What should you do first if a commercial office photocopier displays a paper jam error?", "options" => ["Yank the paper forcefully", "Follow screen instructions, open door panels gently, and pull paper in the direction of feed", "Unplug the machine and leave it", "Kick the paper tray"], "ans" => 1, "xp" => 150],
+                ["q" => "What is an 'Equipment Maintenance Log'?", "options" => ["A receipt for buying paper", "A record of service dates, repairs, toner replacements, and technician details for machinery", "A list of staff names", "A work timetable"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the primary function of a Laminator?", "options" => ["Shredding paper", "Sealing paper documents between protective plastic film using heat", "Scanning photos", "Binding loose pages"], "ans" => 1, "xp" => 150],
+                ["q" => "What is an Ergonomic assessment of an office workstation aimed at preventing?", "options" => ["Computer viruses", "Repetitive Strain Injuries (RSI) and musculoskeletal discomfort", "High electricity bills", "Late clock-ins"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "How should empty printer toner cartridges be disposed of properly?", "options" => ["Thrown in regular trash bins", "Returned to manufacturers or recycling services via specialized recycling programs", "Burned in an open fire", "Washed in the sink"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'SLA' (Service Level Agreement) with an office machine vendor?", "options" => ["A sales advertisement", "A contract specifying guaranteed repair response times and maintenance standards", "A machine operating manual", "A utility bill"], "ans" => 1, "xp" => 180],
+                ["q" => "What is the ideal position for a computer monitor to ensure good ergonomics?", "options" => ["Top of screen at or slightly below eye level, roughly arm's length away", "Far to the right side of the desk", "Flat on the desk surface looking down", "High near the ceiling"], "ans" => 0, "xp" => 180],
+                ["q" => "What safety hazard is created by running extension cords across office walkways?", "options" => ["Fire hazard only", "Trip and fall hazard and potential electrical wire damage", "Slow internet speed", "High electricity cost"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Preventive Maintenance'?", "options" => ["Fixing equipment after it completely breaks down", "Scheduled routine servicing to keep machines running efficiently and avoid breakdowns", "Buying new machines every year", "Ignoring minor machine noises"], "ans" => 1, "xp" => 210],
+                ["q" => "What machine is used to permanently bind reports using plastic comb spines?", "options" => ["Comb Binding Machine", "Guillotine Cutter", "Paper Shredder", "Thermal Laminator"], "ans" => 0, "xp" => 210],
+                ["q" => "How should heavy paper guillotine cutters be secured when not in active use?", "options" => ["Left with blade raised", "Blade locked in the down position with the safety latch engaged", "Blade removed completely", "Placed on the floor"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Facility Fault Log'?", "options" => ["A register recording facility issues (e.g., plumbing leaks, blown bulbs) for maintenance repair", "A list of late employees", "A financial ledger", "A phone directory"], "ans" => 0, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is the function of a UPS (Uninterruptible Power Supply) connected to desktop PCs?", "options" => ["Speeds up processing", "Provides immediate battery backup power during outages to allow safe saving and shutdown", "Cools the computer", "Filters internet traffic"], "ans" => 1, "xp" => 250],
+                ["q" => "What is an 'Asset Tag' placed on office laptops or equipment?", "options" => ["A price sticker", "A unique barcode/number sticker used for inventory tracking and security audits", "A decorative sticker", "A repair instruction"], "ans" => 1, "xp" => 250],
+                ["q" => "What is the benefit of setting office multifunction printers to 'Print on Demand' (Pin Release)?", "options" => ["Saves paper by preventing uncollected prints and protects confidential documents", "Makes printing faster", "Uses less color ink", "Prints without electricity"], "ans" => 0, "xp" => 250],
+                ["q" => "How often should office emergency lighting and fire exit doors be physically tested?", "options" => ["Every 5 years", "Monthly or quarterly according to local safety regulations", "Only during an actual fire", "Never"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'PAT Testing' (Portable Appliance Testing) in office facilities?", "options" => ["Testing pet animals", "Routine electrical safety inspection of portable appliances and cables", "Checking printer ink levels", "Testing internet speed"], "ans" => 1, "xp" => 300],
+                ["q" => "What environmental factor should be controlled in server/equipment rooms?", "options" => ["High humidity and heat", "Temperature (air conditioning) and dust filtration to prevent hardware overheating", "Bright sunlight", "Open windows"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'HVAC' in facility management?", "options" => ["High Voltage AC", "Heating, Ventilation, and Air Conditioning system", "Heavy Vehicle Access Control", "Hot Water Automatic Cleaner"], "ans" => 1, "xp" => 300],
+                ["q" => "What procedure must be followed before moving heavy office machinery or furniture?", "options" => ["Lift with back bent", "Assess weight, use team lifting or mechanical trolleys, and clear pathways", "Drag it across carpet rapidly", "Ask reception guests to lift it"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Space Management' in office facility planning?", "options" => ["Exploring outer space", "Optimizing office floor plans, desk allocation, and meeting room usage for maximum efficiency", "Buying large desks", "Cleaning windows"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the primary role of a Facility Administrator during building renovations?", "options" => ["Doing construction work", "Coordinating contractor access, safety compliance, noise scheduling, and business continuity", "Buying tools", "Firing office staff"], "ans" => 1, "xp" => 400],
+                ["q" => "How does an office administrator manage energy conservation effectively?", "options" => ["Turning off lights completely during work", "Implementing auto-sleep timers, LED conversion, smart thermostats, and night shut-downs", "Unplugging main servers daily", "Opening all doors in winter"], "ans" => 1, "xp" => 400],
+                ["q" => "What is a 'Decommissioning Plan' for old office hardware?", "options" => ["Smashing equipment with a hammer", "Secure data wiping (sanitization), asset tag removal, and certified e-waste disposal", "Selling hardware at a flea market with hard drives intact", "Leaving equipment in hallways"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+
+    // CATEGORY 2: EXECUTIVE SUPPORT & FINANCIAL ADMIN (Maps 161-164)
+    [
+        "id" => ++$highest_id, "course_id" => $oa_course_id, "category_id" => 2,
+        "title" => "Map 161: Meeting Planning & Minute Taking", "desc" => "Prepare agendas, coordinate logistics, record accurate meeting minutes, and track action items.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a Meeting 'Agenda'?", "options" => ["A list of meeting attendees", "A document outlining the topics, order, and time allocations for a meeting", "The written record of decisions made", "A room booking receipt"], "ans" => 1, "xp" => 150],
+                ["q" => "When should a meeting agenda ideally be distributed to attendees?", "options" => ["10 minutes after the meeting starts", "At least 24 to 48 hours before the meeting", "1 week after the meeting", "Never"], "ans" => 1, "xp" => 150],
+                ["q" => "What are 'Meeting Minutes'?", "options" => ["The duration of the meeting in minutes", "The official written record of discussion points, decisions, and action items from a meeting", "A clock in the boardroom", "Personal notes kept secret by staff"], "ans" => 1, "xp" => 150],
+                ["q" => "What does 'Quorum' mean in formal meeting procedures?", "options" => ["A type of microphone", "The minimum number of members required to be present to legally transact business", "The person who takes notes", "The meeting room location"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is an 'Action Item' in meeting minutes?", "options" => ["A physical item brought to show", "A specific task assigned to an individual with a clear completion deadline", "A vote taken during the meeting", "A break for refreshments"], "ans" => 1, "xp" => 180],
+                ["q" => "What is the primary role of the Minute-Taker?", "options" => ["To lead the discussion and argue points", "To objectively record key discussions, motions, decisions, and action items", "To serve tea and coffee only", "To vote on all proposals"], "ans" => 1, "xp" => 180],
+                ["q" => "Should meeting minutes record every word spoken verbatim (verbatim transcript)?", "options" => ["Yes, every single word", "No, minutes should summarize key arguments, decisions, and task assignments concisely", "Only if it is a joke", "Only the chairperson's words"], "ans" => 1, "xp" => 180],
+                ["q" => "What is the 'Chairperson's' role in a meeting?", "options" => ["To take minutes", "To direct the meeting, maintain order, follow the agenda, and facilitate voting", "To record attendance at the door", "To set up audio-visual gear"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What does 'Matters Arising' refer to on an agenda?", "options" => ["New business ideas", "Reviewing progress on action items from the previous meeting's minutes", "Emergency evacuation plans", "Complaints about catering"], "ans" => 1, "xp" => 210],
+                ["q" => "What is an 'Annual General Meeting' (AGM)?", "options" => ["A weekly staff check-in", "A mandatory yearly gathering of shareholders to review finances and elect directors", "An informal social gathering", "A department manager meeting"], "ans" => 1, "xp" => 210],
+                ["q" => "What audio-visual check should be performed BEFORE a hybrid/virtual meeting?", "options" => ["Check microphone, camera, speaker levels, and screen-sharing functionality", "Test room lighting only", "Count physical chairs only", "Order food"], "ans" => 0, "xp" => 210],
+                ["q" => "What is a 'Motion' in formal meeting procedure?", "options" => ["Physical movement or exercise", "A formal proposal put forward by a member for discussion and voting", "A request to leave the room", "An error in the agenda"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What does 'Seconded' mean regarding a motion in a meeting?", "options" => ["The motion was rejected", "Another member formally supports putting the motion to a vote", "The motion was delayed by 2 minutes", "The proposal was written twice"], "ans" => 1, "xp" => 250],
+                ["q" => "How quickly should draft meeting minutes be finalized and distributed after a meeting?", "options" => ["Within 24 to 48 hours while memories are fresh", "After 6 months", "At the next annual meeting", "Never"], "ans" => 0, "xp" => 250],
+                ["q" => "What is the 'Board Pack' in executive administration?", "options" => ["A box of whiteboard markers", "A compiled folder of reports, financial statements, and agendas sent to board members prior to a meeting", "A survival kit", "A deck of cards"], "ans" => 1, "xp" => 250],
+                ["q" => "How are meeting minutes formally approved?", "options" => ["They are never approved", "They are reviewed, voted on, and signed by the Chairperson at the subsequent meeting", "The minute-taker posts them online", "They are approved by the cleaner"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What does 'Adjournment' mean in meeting terminology?", "options" => ["Starting the meeting", "Formally ending or suspending the meeting session", "Changing the meeting room", "Adding a new item to the agenda"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Robert’s Rules of Order'?", "options" => ["A fictional novel", "A widely recognized manual of parliamentary procedure for governing meetings", "A company dress code", "An IT software manual"], "ans" => 1, "xp" => 300],
+                ["q" => "How should confidential discussions (In Camera sessions) be recorded in board minutes?", "options" => ["Recorded verbatim with personal names", "Summarized carefully noting that an executive session occurred and recording formal resolutions", "Omitted completely without trace", "Posted on company noticeboard"], "ans" => 1, "xp" => 300],
+                ["q" => "What is an 'Action Tracking Matrix'?", "options" => ["A spreadsheet tracking who is responsible for each meeting decision, deadline, and completion status", "A video game", "A map of meeting rooms", "An expense ledger"], "ans" => 0, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is the administrator's duty regarding dietary requirements for catered meetings?", "options" => ["Order the same meal for everyone", "Survey attendees in advance and arrange certified alternatives (halal, kosher, vegan, gluten-free)", "Tell guests to bring their own food", "Ignore dietary notes"], "ans" => 1, "xp" => 400],
+                ["q" => "What legal standing do signed Board Minutes possess?", "options" => ["They are informal notes", "They are official legal evidence of corporate decisions in court or regulatory audits", "They expire after 1 month", "They have no legal standing"], "ans" => 1, "xp" => 400],
+                ["q" => "How should an administrator handle a meeting where consensus cannot be reached?", "options" => ["Force a decision yourself", "Record the conflicting viewpoints accurately and document the formal vote or deferral resolution", "Cancel the meeting minutes", "Leave the room"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Chatham House Rule' when applied to a meeting?", "options" => ["Participants can use information received, but cannot reveal the identity or affiliation of the speaker", "No speaking allowed", "All discussions must be published on news media", "Meetings must take place in England"], "ans" => 0, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $oa_course_id, "category_id" => 2,
+        "title" => "Map 162: Travel & Itinerary Management", "desc" => "Coordinate domestic and international travel, book accommodation, and manage executive schedules.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Travel Itinerary'?", "options" => ["A travel bill", "A detailed document outlining flight times, hotel bookings, transport arrangements, and meeting schedules", "A passport copy", "A suitcase packing list"], "ans" => 1, "xp" => 150],
+                ["q" => "What document is mandatory for international travel verification?", "options" => ["Driver's license only", "Valid Passport (often requiring 6 months validity beyond travel dates)", "Company ID card", "Library card"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Per Diem' allowance?", "options" => ["A penalty fee", "A fixed daily allowance given to an employee to cover meals and incidental expenses while traveling", "A flight booking code", "A hotel tip"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'PNR' (Passenger Name Record) in travel booking?", "options" => ["A secret code", "A unique 6-character alphanumeric code identifying a flight reservation", "A passport number", "A hotel room number"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What should an administrator verify regarding executive travel VISAS?", "options" => ["Verify if the destination country requires an entry visa and process application requirements early", "Assume no visa is needed ever", "Ask the airline at the boarding gate", "Visas are only for tourists"], "ans" => 0, "xp" => 180],
+                ["q" => "What is 'Travel Insurance' designed to cover?", "options" => ["Buying new clothes for fun", "Medical emergencies abroad, flight cancellations, lost baggage, and travel interruptions", "Upgrading to first class", "Hotel room service food"], "ans" => 1, "xp" => 180],
+                ["q" => "What is the benefit of using a Corporate Travel Management Company (TMC)?", "options" => ["Higher flight prices", "24/7 emergency support, corporate rate discounts, and centralized expense tracking", "Slower booking process", "No flight cancellations allowed"], "ans" => 1, "xp" => 180],
+                ["q" => "When scheduling meetings across international time zones, what tool is crucial?", "options" => ["A standard wall clock", "Time zone converter tools to ensure local meeting times are realistic for all parties", "Guessing the difference", "Using GMT always without converting"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Travel Authorization Form' (TAF)?", "options" => ["A hotel review form", "An internal document seeking management approval and budget allocation before booking travel", "A flight ticket", "A passport renewal form"], "ans" => 1, "xp" => 210],
+                ["q" => "What travel detail should be clearly listed on an itinerary for ground transport?", "options" => ["The driver's name, contact number, pickup location, and confirmation code", "The color of the car only", "The car's fuel capacity", "The taxi company address only"], "ans" => 0, "xp" => 210],
+                ["q" => "What is 'Frequent Flyer' program integration?", "options" => ["A game app", "Linking executive loyalty numbers to bookings to earn corporate points and upgrade perks", "Buying cheaper fuel", "A pilot training course"], "ans" => 1, "xp" => 210],
+                ["q" => "What health requirement may be required for entry into certain international countries?", "options" => ["Eye test", "International Certificate of Vaccination (e.g., Yellow Fever, COVID-19)", "Dental clearance", "Blood group certificate"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "How should an administrative assistant prepare an executive's travel folder?", "options" => ["Send verbal text messages only", "Provide a digital and physical folder containing tickets, hotel vouchers, meeting briefs, and contacts", "Give them cash only", "Tell them to search their email"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Travel Expense Reconciliation'?", "options" => ["Counting foreign coins", "Submitting receipts after a trip to reconcile per diems, credit card charges, and claim refunds", "Booking the next trip", "Canceling flight tickets"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Jet Lag' and how should itineraries account for it?", "options" => ["A broken plane", "Disruption of body clock after long flights; itineraries should allow recovery time before major negotiations", "A type of turbulence", "An airport fee"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Corporate Credit Card' policy for travel?", "options" => ["Allowing personal shopping on company cards", "Strict guidelines defining allowable business expenses, receipt requirements, and credit limits", "Giving cards to family", "Using card points for cash"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Duty of Care' in corporate travel management?", "options" => ["Packing executive luggage", "An employer's moral and legal obligation to track and ensure the safety/security of traveling staff", "Buying expensive hotel rooms", "Paying double per diem"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Crisis Management' protocol during executive overseas travel?", "options" => ["Calling the hotel reception", "Pre-established emergency contacts, embassy details, and evacuation procedures during political/natural disasters", "Waiting for travel to end", "Sending an email"], "ans" => 1, "xp" => 300],
+                ["q" => "What is the difference between refundable and non-refundable flight tickets?", "options" => ["Refundable allows cancellation/changes for cash return; Non-refundable incurs penalties or lost credit", "Refundable tickets are cheaper", "Non-refundable tickets include meals", "There is no difference"], "ans" => 0, "xp" => 300],
+                ["q" => "How should flight layover times be planned for connecting international flights?", "options" => ["15 minutes minimum", "Allow at least 2 to 3 hours for customs clearance, terminal transfers, and potential delays", "10 hours always", "Layovers are not allowed"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Cabotage' law in international air travel?", "options" => ["Transporting luggage", "Regulations restricting foreign airlines from operating domestic routes within another country", "A tax on airport food", "Hotel booking rules"], "ans" => 1, "xp" => 400],
+                ["q" => "How should an administrative assistant handle an unexpected flight cancellation while an executive is at the airport?", "options" => ["Panic and wait", "Contact the TMC or airline agent immediately to rebook alternative routes or arrange accommodation", "Tell the executive to take a train", "Cancel the entire business trip"], "ans" => 1, "xp" => 400],
+                ["q" => "What is a 'Carnet' (ATA Carnet) in business travel?", "options" => ["A driver license", "An international customs document allowing duty-free temporary import of commercial samples/equipment", "A hotel discount card", "A flight upgrade voucher"], "ans" => 1, "xp" => 400],
+                ["q" => "What is executive 'Calendar Management' during travel?", "options" => ["Deleting all calendar entries", "Blocking out travel time, buffering transit delays, and synchronizing meeting Invites across devices", "Printing a wall calendar", "Using paper diaries only"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $oa_course_id, "category_id" => 2,
+        "title" => "Map 163: Financial Admin & Petty Cash", "desc" => "Manage petty cash floats, process invoices, handle expense claims, and track office budgets.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Petty Cash'?", "options" => ["Money for buying pets", "A small cash float kept on hand in the office for minor daily expenditures (e.g., tea, postage)", "The company's main bank balance", "The CEO's personal salary"], "ans" => 1, "xp" => 150],
+                ["q" => "What document MUST be completed every time cash is removed from the petty cash box?", "options" => ["An employment contract", "A Petty Cash Voucher supported by a physical receipt", "A bank deposit slip", "A tax return"], "ans" => 1, "xp" => 150],
+                ["q" => "What is an 'Invoice'?", "options" => ["A receipt showing payment made", "A formal request for payment issued by a seller to a buyer for goods/services provided", "A bank statement", "A price tag"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Receipt'?", "options" => ["A document requesting money", "A written acknowledgment that payment has been received", "An order form", "A credit note"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is the 'Imprest System' of managing petty cash?", "options" => ["Keeping random amounts of money", "Maintaining a fixed float balance that is periodically reimbursed equal to total spent vouchers", "Spending without records", "A digital banking system"], "ans" => 1, "xp" => 180],
+                ["q" => "What is an 'Expense Claim Form' used for by staff?", "options" => ["Requesting a promotion", "Claiming reimbursement for personal funds spent on approved company expenses", "Ordering office furniture", "Applying for annual leave"], "ans" => 1, "xp" => 180],
+                ["q" => "What does 'Reconciling' petty cash mean?", "options" => ["Counting money and giving it away", "Ensuring the remaining cash plus total physical receipts equals the original fixed float", "Hiding missing cash", "Borrowing from the float"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Purchase Order' (PO)?", "options" => ["A sales receipt", "A commercial document issued by a buyer authorizing a vendor to supply goods at a set price", "A bank statement", "An employee payslip"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Three-Way Matching' in accounts payable administration?", "options" => ["Matching 3 office keys", "Comparing the Purchase Order, Receiving/Delivery Note, and Supplier Invoice before payment", "Paying an invoice 3 times", "Matching 3 employee names"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'VAT' (Value Added Tax)?", "options" => ["Value Asset Total", "An indirect consumption tax levied on goods and services", "Voluntary Account Tax", "Variable Annual Tariff"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Tax Invoice' requirement under South African tax law (SARS)?", "options" => ["Must feature the word 'Tax Invoice', supplier/buyer VAT numbers, address, date, and breakdown", "Can be written on a napkin", "Only needs a total price", "Does not need a date"], "ans" => 0, "xp" => 210],
+                ["q" => "What is a 'Credit Note' issued by a supplier?", "options" => ["A thank you letter", "A document reducing the amount owed by a buyer due to returned goods or billing errors", "A loan application", "A cash refund"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "Where should the petty cash tin/box physically be stored in an office?", "options" => ["On the reception counter open", "In a locked safe or locked cabinet with restricted key access", "In an employee's desk drawer unlocked", "In the office kitchen"], "ans" => 1, "xp" => 250],
+                ["q" => "What is an 'I.O.U.' slip and why is it bad practice in petty cash management?", "options" => ["An informal note promising to repay cash; it violates strict petty cash audit controls", "A tax form", "A formal receipt", "A bank transfer"], "ans" => 0, "xp" => 250],
+                ["q" => "What is 'Remittance Advice'?", "options" => ["A letter asking for a loan", "A document sent to a supplier informing them that their invoice has been paid", "An unpaid invoice", "A bank penalty letter"], "ans" => 1, "xp" => 250],
+                ["q" => "What is an 'Office Budget'?", "options" => ["Total company cash", "A financial plan allocating projected income and expenditures for office operations over a period", "A list of employee salaries", "An unpaid bill"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Variance' in office budget reports?", "options" => ["A math mistake", "The difference between budgeted expenditure and actual operational spending", "A type of tax", "An invoice total"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Electronic Funds Transfer' (EFT)?", "options" => ["Cash handed in person", "Digital transfer of money from one bank account to another via electronic networks", "Writing a paper check", "Mailing cash in an envelope"], "ans" => 1, "xp" => 300],
+                ["q" => "What internal control prevents duplicate invoice payments?", "options" => ["Paying quickly", "Stamping paid invoices 'PAID' with date and transaction reference upon processing", "Hiding invoices", "Throwing away receipts"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Bank Reconciliation Statement'?", "options" => ["A request for a loan", "A report matching the company bank ledger balance against the official bank statement", "A credit card bill", "A salary slip"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Segregation of Duties' in office financial administration?", "options" => ["Having one person handle all cash, recording, and banking", "Ensuring the person approving purchases is NOT the same person issuing payments", "Working in different rooms", "Dividing office expenses equally"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Audit Compliance' regarding office financial files?", "options" => ["Keeping files for 1 week", "Maintaining clean, indexed, verifiable receipts and vouchers meeting statutory legal rules", "Hiding receipts from tax officers", "Destroying invoices after payment"], "ans" => 1, "xp" => 400],
+                ["q" => "How should unauthorized discrepancies in the petty cash float be investigated?", "options" => ["Cover the difference with personal money quietly", "Report immediately to management, audit vouchers against receipts, and log a cash discrepancy", "Ignore small missing amounts", "Falsify a receipt"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Capital Expenditure' (CapEx) vs 'Operating Expenditure' (OpEx)?", "options" => ["CapEx buys long-term assets (machinery/PCs); OpEx covers ongoing daily running costs (supplies/rent)", "CapEx is for food; OpEx is for flights", "OpEx buys buildings; CapEx pays tax", "They are identical"], "ans" => 0, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $oa_course_id, "category_id" => 2,
+        "title" => "Map 164: Inventory, Supplies & Procurement", "desc" => "Manage stationery stock, reorder levels, stock counts, and vendor contracts.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Office Inventory Management'?", "options" => ["Buying new furniture daily", "Tracking, ordering, storing, and issuing office stationery, equipment, and consumables", "Selling company products", "Counting employee desks"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Reorder Level' (Reorder Point)?", "options" => ["When all stock is completely finished", "A preset minimum stock threshold that triggers a new purchase order before running out", "The maximum storage space", "The price of the product"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Stock Requisition Form'?", "options" => ["A receipt from a shop", "An internal document used by staff to request stationery or supplies from the office store", "An invoice to a client", "A delivery note"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Delivery Note' (or Goods Received Note)?", "options" => ["A bill sent by email", "A document accompanying shipped goods listing the quantities and items delivered for verification", "A price quote", "A tax return"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Physical Stock Count' (Stocktaking)?", "options" => ["Counting money in the bank", "Physically counting every inventory item in storage to verify against inventory records", "Estimating stock by looking", "Ordering supplies online"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Lead Time' in supply procurement?", "options" => ["The time spent in a meeting", "The total time elapsed between placing an order with a supplier and receiving the goods", "The expiry date of stationery", "The time to open a box"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Stock Shrinkage'?", "options" => ["Paper shrinking in rain", "Loss of inventory due to theft, damage, loss, or administrative error", "Using pens for work", "Recycling cardboard boxes"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Preferred Vendor List'?", "options" => ["A list of popular staff", "A vetted list of approved suppliers evaluated for reliability, pricing, and quality", "A list of competitors", "A shopping catalog"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'FIFO' (First-In, First-Out) in inventory rotation?", "options" => ["Fast-In, Fast-Out", "Using/selling older inventory stock first before newer arrivals (prevents degradation/expiry)", "Final-In, Final-Out", "Filing In File Order"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Buffer Stock' (Safety Stock)?", "options" => ["Damaged stock", "Extra surplus inventory kept on hand to protect against unexpected demand or supplier delays", "Stock ready to be thrown away", "Personal employee belongings"], "ans" => 1, "xp" => 210],
+                ["q" => "What is an 'RFQ' (Request for Quotation)?", "options" => ["A receipt for quick payment", "A formal invitation sent to suppliers to submit price quotes for specified goods/services", "A delivery slip", "A complaint letter"], "ans" => 1, "xp" => 210],
+                ["q" => "What should you check immediately upon receiving a shipment of office supplies?", "options" => ["The delivery driver's ID only", "Inspect boxes for damage, count packages against delivery note, and check item condition", "Store boxes unopened", "Sign delivery note without checking"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Just-In-Time' (JIT) procurement?", "options" => ["Buying stock 1 year early", "Ordering supplies to arrive exactly as needed, minimizing storage space and holding costs", "Arriving late to work", "Emergency buying at double cost"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Centralized Procurement'?", "options" => ["Every employee buying their own pens", "Purchasing all company supplies through a single dedicated administrative department for bulk discounts", "Buying supplies in the city center", "Ordering items overseas only"], "ans" => 1, "xp" => 250],
+                ["q" => "How should office stationery cupboards be physically organized?", "options" => ["Pile everything randomly", "Label shelves clearly, group by category, keep heavy items low, and maintain clear aisles", "Lock all items away without labels", "Keep supplies on individual desks"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Consumables' in office inventory?", "options" => ["Office chairs and desks", "Items used up regularly (e.g., paper, pens, printer toner, coffee, cleaning fluids)", "Computers and screens", "Company vehicles"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Vendor Performance Evaluation'?", "options" => ["Rating vendor social media", "Systematically assessing suppliers on delivery speed, product quality, accuracy, and pricing", "Paying vendors late", "Buying from new vendors daily"], "ans" => 1, "xp" => 300],
+                ["q" => "What is an 'Asset Register' compared to an Inventory Log?", "options" => ["Asset register tracks durable high-value company property (furniture, PCs); inventory tracks short-term supplies", "Inventory tracks capital; Asset register tracks pens", "They are identical", "Asset register tracks staff names"], "ans" => 0, "xp" => 300],
+                ["q" => "What is a 'Consignment Stock' arrangement?", "options" => ["Buying stolen goods", "Goods stored at the buyer's office, but owned by the supplier until used/sold", "Buying stock in bulk cash", "Emergency stock"], "ans" => 1, "xp" => 300],
+                ["q" => "How do bulk purchasing discounts affect office operating costs?", "options" => ["Increase unit cost", "Reduce unit cost, but increase storage space needs and tying up working capital", "Have no impact", "Are prohibited by law"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Obsolete Stock' and how should it be managed?", "options" => ["Stock used daily", "Outdated supplies (e.g., old printer cartridges) that should be written off or recycled", "New inventory", "Emergency stock"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Barcoding' / RFID integration in modern stockrooms?", "options" => ["Manual pencil tracking", "Automated scanning systems that instantly update inventory databases when stock moves", "Coloring boxes with markers", "Locking doors electronically"], "ans" => 1, "xp" => 400],
+                ["q" => "What ethical hazard must be avoided during procurement and supplier selection?", "options" => ["Asking for lower prices", "Accepting personal gifts, bribes, or kickbacks from vendors (Conflict of Interest)", "Comparing multiple quotes", "Demanding fast delivery"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Sustainable Procurement' in modern office administration?", "options" => ["Buying paper continuously", "Selecting eco-friendly, recycled, energy-efficient, and ethically sourced office products", "Buying the cheapest plastic items", "Ordering supplies by air freight"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+
+    // CATEGORY 3: ADVANCED OFFICE MANAGEMENT & CAPSTONE (Maps 165-168)
+    [
+        "id" => ++$highest_id, "course_id" => $oa_course_id, "category_id" => 3,
+        "title" => "Map 165: Ethics, Confidentiality & POPIA", "desc" => "Protect sensitive company records, comply with data privacy laws, and maintain professional integrity.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What does 'POPIA' stand for in South Africa?", "options" => ["Public Office Performance Inspection Act", "Protection of Personal Information Act", "Private Organization Privacy Insurance Agreement", "Professional Officer Protection Act"], "ans" => 1, "xp" => 150],
+                ["q" => "What is considered 'Personal Information' under data privacy laws?", "options" => ["Company logo", "ID numbers, phone numbers, addresses, medical history, and personal financial data", "Public office phone numbers", "General weather reports"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the 'Clean Desk Policy'?", "options" => ["Wiping desks with disinfectant hourly", "Ensuring sensitive documents and storage drives are locked away when leaving the desk", "Having no desk furniture", "Painting desks white"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Non-Disclosure Agreement' (NDA)?", "options" => ["A job application", "A legal contract binding parties to keep sensitive proprietary information confidential", "A tax exemption form", "A leave request"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Conflict of Interest' in office administration?", "options" => ["Disliking a coworker", "When personal interests or relationships compromise professional objectivity and duty to the employer", "Working two jobs legally", "Having a debate in a meeting"], "ans" => 1, "xp" => 180],
+                ["q" => "How should an administrator handle overheard executive conversations or confidential files?", "options" => ["Share details with trusted work friends", "Maintain absolute discretion and confidentiality without disclosing info to anyone", "Post subtle hints on social media", "Sell the info"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Shoulder Surfing' security hazard?", "options" => ["Surfing at the beach", "Unauthorised individuals looking over your shoulder to view credentials or private screen data", "Wearing computer glasses", "Using two screens"], "ans" => 1, "xp" => 180],
+                ["q" => "What action is required under POPIA if a data breach occurs involving employee/client records?", "options" => ["Hide the breach quietly", "Notify the Information Regulator and affected data subjects as soon as reasonably possible", "Delete all database backups", "Blame the IT contractor"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Data Minimization' principle?", "options" => ["Compressing computer zip files", "Collecting and storing only the personal data that is strictly necessary for a specific purpose", "Deleting files every month", "Using smaller fonts"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Whistleblower' policy?", "options" => ["Rules for sports referees", "Protected channels allowing staff to report illegal or unethical organizational activity without fear", "A noise complaint procedure", "A fire drill signal"], "ans" => 1, "xp" => 210],
+                ["q" => "Why must computer screens be locked (Windows + L) when stepping away from the desk?", "options" => ["To save computer screen life", "To prevent unauthorized access to open files, emails, and corporate systems", "To update Windows", "To hide screen brightness"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Gifts and Hospitality' policy?", "options" => ["Ordering office snacks", "Rules governing the acceptance of gifts from vendors to prevent bribery or perceived bias", "A holiday party schedule", "Buying hotel rooms"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "Who is the 'Information Officer' in a company under POPIA?", "options" => ["The IT repair person", "The designated individual responsible for ensuring the organization complies with data privacy laws", "The receptionist", "The external auditor"], "ans" => 1, "xp" => 250],
+                ["q" => "What is the penalty for severe non-compliance or intentional misuse of personal data under POPIA?", "options" => ["A verbal apology letter", "Significant financial fines (up to R10 million) and potential imprisonment", "Losing 1 day of leave", "A warning email"], "ans" => 1, "xp" => 250],
+                ["q" => "How should physical HR employee files containing medical or bank details be stored?", "options" => ["In unlocked cardboard boxes in the hallway", "In locked filing cabinets inside restricted HR offices with logged key access", "On open reception shelves", "On shared drive folders open to all"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Consent' in personal data processing?", "options" => ["Assuming permission automatically", "Voluntary, specific, and informed agreement from the individual to process their personal info", "Forcing staff to sign forms", "A verbal rumor"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Social Engineering' in office security?", "options" => ["Planning office team parties", "Psychological manipulation tricks used by hackers/scammers to dupe staff into handing over private data", "Building office furniture", "Using social media"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Redaction' in public document release?", "options" => ["Editing spelling", "Permanently blacking out or erasing sensitive personal/financial details before sharing a file", "Highlighting text in red", "Printing on red paper"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Intellectual Property' (IP) protection in administrative support?", "options" => ["Buying smart devices", "Safeguarding company patents, trade secrets, logos, and proprietary templates from external leak", "Cleaning smart boards", "Insuring computers"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Fiduciary Responsibility' of an executive administrator?", "options" => ["Doing math fast", "An ethical and legal trust duty to act solely in the best financial and operational interests of the employer", "Signing checks independently", "Managing social events"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Data Subject Access Request' (DSAR)?", "options" => ["An IT password reset", "A legal right allowing individuals to request a copy of all personal data an organization holds on them", "A job application", "A bank transfer"], "ans" => 1, "xp" => 400],
+                ["q" => "How should an administrator destroy old hard drives or USB drives holding confidential data?", "options" => ["Throwing them in general waste", "Certified physical degaussing or mechanical shredding through approved e-waste recyclers", "Formatting once in Windows", "Leaving them in storage drawers"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Ethical Leadership' in office administration?", "options" => ["Enforcing rules on subordinates while ignoring them yourself", "Setting a personal standard of honesty, fairness, accountability, and legal compliance daily", "Making decisions based on popularity", "Prioritizing profit over safety"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the ultimate organizational benefit of a robust ethics and privacy compliance framework?", "options" => ["Increasing paperwork", "Building deep stakeholder trust, protecting brand reputation, and avoiding catastrophic legal penalties", "Slowing down business operations", "Preventing employee promotions"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $oa_course_id, "category_id" => 3,
+        "title" => "Map 166: Time Management & Workflow", "desc" => "Prioritize tasks, eliminate time-wasters, handle interruptions, and manage stress.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the 'Eisenhower Matrix' used for in task management?", "options" => ["Calculating taxes", "Categorizing tasks by Urgency and Importance to prioritize work effectively", "Scheduling flight itineraries", "Designing office layouts"], "ans" => 1, "xp" => 150],
+                ["q" => "In the Eisenhower Matrix, how should tasks that are 'Important but NOT Urgent' be handled?", "options" => ["Do them immediately with panic", "Schedule/Plan a dedicated time to do them", "Delegate them to someone else", "Ignore them forever"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Procrastination'?", "options" => ["Working extremely fast", "The act of delaying or postponing tasks despite knowing there will be negative consequences", "Delegating work properly", "Filing documents alphabetically"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the 'Pomodoro Technique'?", "options" => ["An Italian cooking recipe", "A time management method using 25-minute focused work intervals separated by short breaks", "A meeting management system", "A filing system"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Time Blocking'?", "options" => ["Blocking calls on the phone", "Dividing your workday into dedicated blocks of time for specific tasks or categories", "Stopping meetings completely", "Working overtime without breaks"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Time-Wasters' audit in an office environment?", "options" => ["Checking clock batteries", "Identifying non-productive habits (e.g., social media scrolling, unnecessary meetings, unstructured drop-ins)", "Timing employee bathroom visits", "Measuring printer speed"], "ans" => 1, "xp" => 180],
+                ["q" => "What is the '80/20 Rule' (Pareto Principle) in productivity?", "options" => ["80% of staff do 20% of work", "80% of results come from 20% of effort/prioritized tasks", "Spend 80 minutes working and 20 minutes resting", "Work 80 hours a week"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Delegation'?", "options" => ["Doing every task yourself", "Entrusting responsibility and authority for specific tasks to capable colleagues", "Firing low performers", "Canceling meetings"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "How should an administrative assistant handle frequent unscheduled office drop-in interruptions?", "options" => ["Lock the office door permanently", "Politely set boundaries, establish 'open door' office hours, or offer brief scheduled check-ins", "Ignore the person standing there", "Resign from the job"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Multitasking' myth in cognitive productivity?", "options" => ["Multitasking increases accuracy", "Switching rapidly between complex tasks actually reduces efficiency and increases error rates by up to 40%", "Multitasking is required by law", "Humans have infinite focus"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Batch Processing' (Task Batching)?", "options" => ["Baking food in the office", "Grouping similar small tasks together (e.g., answering emails, processing invoices) to do in one dedicated block", "Doing tasks one by one as they arrive", "Delegating all tasks"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'To-Do List' best practice?", "options" => ["Write 100 items randomly", "Prioritize 3-5 high-impact core tasks daily and estimate realistic completion times", "Keep the list in your head", "Never update the list"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Parkinson’s Law'?", "options" => ["Work expands to fill the time allotted for its completion", "Computers get faster every year", "Taxes always increase", "Meetings always start late"], "ans" => 0, "xp" => 250],
+                ["q" => "What is 'Workplace Burnout'?", "options" => ["An electrical fire", "State of physical, emotional, and mental exhaustion caused by excessive, prolonged work stress", "Taking a lunch break", "Quitting a job gracefully"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Eat the Frog' productivity technique?", "options" => ["Eating lunch early", "Tackling your hardest, most important task first thing in the morning", "Doing simple easy tasks first", "Delegating lunch preparation"], "ans" => 1, "xp" => 250],
+                ["q" => "How do digital calendar tools (e.g., Outlook/Google Calendar) improve executive workflow?", "options" => ["By replacing meeting minutes", "By setting automated reminders, sharing availability, and preventing double-booking", "By typing emails automatically", "By calculating salaries"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Workflow Optimization'?", "options" => ["Working faster without rules", "Analyzing and refining step-by-step administrative processes to eliminate bottlenecks and redundancy", "Buying new furniture", "Hiring extra staff"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Stress Management' resilience for administrators?", "options" => ["Drinking coffee continuously", "Practicing boundary setting, prioritization, deep breathing, physical breaks, and task delegation", "Working 18 hours daily", "Ignoring problem signs"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Gantt Chart' used for in administrative project tracking?", "options" => ["Tracking petty cash", "A visual bar chart illustrating project timelines, task dependencies, and completion status", "Writing meeting minutes", "Filing invoices"], "ans" => 1, "xp" => 300],
+                ["q" => "What is the primary benefit of setting clear 'Buffer Time' between executive meetings?", "options" => ["Allows time for social media", "Provides transit time, note review, emergent task handling, and mental reset between commitments", "Makes the day longer", "Cancels subsequent meetings"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Critical Path' in administrative event/project management?", "options" => ["The exit walkway in a fire", "The sequence of dependent tasks that determines the minimum total time required to finish a project", "A high-priority phone call", "The reception hallway"], "ans" => 1, "xp" => 400],
+                ["q" => "How does 'Kanban' (e.g., Trello) visualize administrative workflows?", "options" => ["Using pie charts", "Using visual boards with cards moving through columns (e.g., To Do, In Progress, Done)", "Using spreadsheet formulas", "Using text documents"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Executive Gatekeeping' in time management?", "options" => ["Locking office gates physically", "Protecting an executive's schedule by filtering low-priority requests, calls, and meeting demands", "Booking flights", "Managing payroll"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the ultimate goal of mastering time management as an office administrator?", "options" => ["To look busy always", "To maximize operational output, reduce stress, maintain high work quality, and achieve work-life balance", "To finish work in 1 hour and leave", "To manage other people's lives completely"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $oa_course_id, "category_id" => 3,
+        "title" => "Map 167: Customer Service & Conflict in the Office", "desc" => "Handle internal/external clients, de-escalate workplace conflict, and build stakeholder trust.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "Who is an 'Internal Customer' in office administration?", "options" => ["A paying external client", "Coworkers, managers, and departments within your organization who rely on your administrative services", "A government inspector", "A delivery driver"], "ans" => 1, "xp" => 150],
+                ["q" => "Who is an 'External Customer'?", "options" => ["The office manager", "Outside clients, vendors, partners, and visitors interacting with the business", "The IT support team", "Internal auditors"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Empathy' in customer service?", "options" => ["Feeling sorry for someone", "The ability to understand and validate the feelings and perspective of another person", "Agreement with a mistake", "Talking loudly"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'First Contact Resolution' (FCR)?", "options" => ["Solving a problem on the very first interaction without transferring or delaying", "Answering the phone on 1 ring", "Calling back after 1 week", "Sending an automated email"], "ans" => 0, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is the 'LAST' model for handling customer complaints?", "options" => ["Listen, Apologize, Solve, Thank", "Laugh, Argue, Shout, Terminate", "Lock, Ask, Send, Transfer", "Log, Audit, Save, Tax"], "ans" => 0, "xp" => 180],
+                ["q" => "What is 'De-escalation' in conflict management?", "options" => ["Starting a physical fight", "Techniques used to reduce anger, tension, and emotional intensity during an argument", "Ignoring the problem", "Yelling louder than the other person"], "ans" => 1, "xp" => 180],
+                ["q" => "Why should you avoid saying 'That's not my job' to a customer or executive?", "options" => ["It's illegal", "It appears unhelpful and unprofessional; instead, state what you CAN do to assist or connect them", "It takes too long to say", "It's a secret phrase"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Assertiveness' vs 'Aggressiveness'?", "options" => ["Assertiveness communicates needs clearly and respectfully; Aggressiveness violates others' rights with force", "They are identical", "Aggressiveness is professional", "Assertiveness is weak"], "ans" => 0, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "How should an administrator handle a confrontation between two coworkers in the office?", "options" => ["Join the argument", "Maintain neutrality, facilitate calm private dialogue, or escalate to HR/Management if necessary", "Gossip about it with reception", "Ignore it completely"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'CRM' (Customer Relationship Management) software used for?", "options" => ["Creating invoices", "Centralizing customer contact history, inquiries, service tickets, and communication logs", "Designing logos", "Payroll processing"], "ans" => 1, "xp" => 210],
+                ["q" => "What does 'Service Recovery Paradox' mean?", "options" => ["When a customer leaves forever", "When a customer becomes MORE loyal after a service failure that was resolved exceptionally well", "Losing money on customer refunds", "A broken phone line"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Active Listening' during conflict resolution?", "options" => ["Waiting for your turn to speak", "Focusing fully on the speaker, reflecting emotions, asking clarifying questions, and confirming understanding", "Nodding while thinking of lunch", "Interrupting with facts"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Reframing' in conflict communication?", "options" => ["Changing a picture frame", "Restating a negative statement into a neutral, problem-solving focus", "Deleting an email thread", "Blaming another party"], "ans" => 1, "xp" => 250],
+                ["q" => "How should an administrator handle an abusive customer who refuses to stop swearing?", "options" => ["Swear back at them", "Respectfully state the policy boundary, advise that the interaction will end if abuse continues, then disconnect if unheeded", "Cry on the phone", "Give them free money"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Service Level Agreement' (SLA) tracking in internal office requests?", "options" => ["Measuring internet speed", "Monitoring administrative turn-around times against agreed department service deadlines (e.g., 24-hr booking turnaround)", "Tracking employee arrival times", "Auditing tax forms"], "ans" => 1, "xp" => 250],
+                ["q" => "What is the importance of 'Feedback Loops' in administrative service delivery?", "options" => ["Loud audio microphone noise", "Systematically gathering user feedback to identify recurring flaws and continuously improve operations", "Sending automated spam emails", "Checking clock times"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Emotional Intelligence' (EQ) in workplace relationship management?", "options" => ["Having a high academic IQ score", "The ability to perceive, understand, manage, and handle emotions constructively in social interactions", "Being overly emotional at work", "Ignoring feelings entirely"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Root Cause Analysis' following a major service failure?", "options" => ["Blaming the receptionist", "Investigating deep system/process breakdowns to prevent the error from ever recurring", "Giving a quick refund only", "Writing an apology letter only"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Win-Win' negotiation outcome in office administrative disputes?", "options" => ["One party loses completely", "A collaborative solution where both parties achieve core goals and feel respected", "Giving up all company funds", "Canceling the project"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Professional Discretion' when managing executive complaints?", "options" => ["Telling everyone in the office", "Addressing sensitive issues privately, calmly, and without escalating gossip or panic", "Writing a blog post about it", "Ignoring the executive"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Psychological Safety' in an office team environment?", "options" => ["Having physical security guards at desks", "A workplace culture where team members feel safe to speak up, report errors, and offer ideas without fear of humiliation", "Having no work stress", "Working from home permanently"], "ans" => 1, "xp" => 400],
+                ["q" => "How does exceptional front-office customer service directly impact corporate brand reputation?", "options" => ["It doesn't impact brand", "Front-line interactions create lasting first impressions that drive client retention, referrals, and brand trust", "It increases advertising costs", "It replaces the need for quality products"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Debriefing' following a severe workplace crisis or high-stress conflict?", "options" => ["Changing work clothes", "A structured review session with team members to process emotional impact, review actions, and learn lessons", "Filing a lawsuit", "Taking a vacation"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the hallmark of a master Office Administrator in customer service?", "options" => ["Being strict and unyielding", "Seamless adaptability, high emotional intelligence, flawless organization, and a solution-oriented mindset", "Talking as fast as possible", "Delegating all work to others"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $oa_course_id, "category_id" => 3,
+        "title" => "Map 168: Final Office Administration Capstone", "desc" => "The ultimate challenge. Integrate reception, financial admin, meeting coordination, and compliance in complex scenarios.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "SCENARIO: An unannounced VIP client arrives while the CEO is in an urgent meeting. What is the BEST administrative procedure?", "options" => ["Interrupt the meeting loudly", "Welcome them warmly, offer refreshments, seat them in a private area, and discretely notify the CEO via message", "Tell them to leave and book online", "Give them confidential company files to read"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: The petty cash float of R1,000 shows R300 cash remaining and R650 in valid receipts. What is the discrepancy and action?", "options" => ["R50 short; report the discrepancy, audit vouchers, and request reimbursement of R700 with manager approval", "R100 over; take the cash", "No discrepancy exists", "Throw away all receipts"], "ans" => 0, "xp" => 200],
+                ["q" => "SCENARIO: You are taking minutes at a Board Meeting and two directors enter an intense argument over a motion. What do you record?", "options" => ["Record word-for-word insults", "Record key arguments objectively, the formal motion put forward, seconded status, and the final vote outcome", "Omit the entire discussion from minutes", "Stop taking notes until they finish"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: An executive needs to travel to London in 3 days. What travel checks must be completed first?", "options" => ["Passport validity (6+ months), UK visa requirements, management budget approval (TAF), and flight/hotel options", "Book flights immediately without approval", "Pack their luggage", "Order foreign currency only"], "ans" => 0, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "SCENARIO: A vendor sends an invoice for 50 boxes of paper, but the Goods Received Note shows only 30 were delivered. What do you do?", "options" => ["Pay the full invoice immediately", "Perform Three-Way Matching, notify the vendor of the variance, and request a corrected invoice or Credit Note before payment", "Throw away the delivery note", "Pay for 30 boxes in cash from petty cash"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: You receive an email from 'the CEO' asking for urgent employee tax records to be sent to a personal Gmail. What is this?", "options" => ["A routine request", "A Phishing/Whaling social engineering attack; verify via official phone/in-person before acting and report to IT", "A command to execute immediately", "An internal memo"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: You need to organize an AGM with 100 attendees in 4 weeks. What is the FIRST step?", "options" => ["Order lunch catering", "Prepare and distribute the formal Notice of Meeting, Agenda, and Proxy forms according to statutory deadlines", "Book flights", "Decorate the room"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: A client submits a formal request under POPIA to delete all their personal contact data. How do you respond?", "options" => ["Delete everything instantly without checking", "Verify their identity, check if statutory retention laws (e.g., tax/invoicing) require keeping certain data, and process compliant deletion", "Refuse the request rudely", "Charge them a fine"], "ans" => 1, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "SCENARIO: Office paper stock reaches the preset Reorder Point of 5 boxes. What is the procurement process?", "options" => ["Wait until paper is zero", "Issue a Stock Requisition / Purchase Order to approved vendors, obtain quotes if required, and submit for approval", "Buy paper with personal cash", "Take paper from another company"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: You step away from the reception desk for 5 minutes. What safety and security measures MUST be taken?", "options" => ["Leave computer unlocked and desk open", "Lock computer screen (Win+L), secure visitor log/files, and ensure a backup staff member covers the desk", "Close the front building door", "Turn off all lights"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: An irate caller is screaming on the phone about a late delivery. Which technique de-escalates effectively?", "options" => ["Shout 'Calm down!' repeatedly", "Use the LAST model: Listen without interrupting, Apologize for the frustration, Solve with an action plan, and Thank them", "Transfer the call to an empty extension", "Put them on hold forever"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: You have 10 urgent tasks, an executive asking for flight changes, and a broken printer. How do you prioritize?", "options" => ["Panic and work on whatever is closest", "Use the Eisenhower Matrix to tackle urgent/important tasks first, delegate/schedule secondary items, and log printer maintenance", "Do easy tasks only", "Go on lunch break"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "SCENARIO: An employee asks to borrow a confidential executive personnel folder from the file room. What is the rule?", "options" => ["Hand it over immediately", "Verify authorization level, check access control permissions, log the file checkout, and enforce confidentiality rules", "Sell the file", "Let them read it at reception"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: You are managing travel during severe international weather alerts. What precaution safeguards the executive?", "options" => ["Do nothing until they are stranded", "Monitor flight statuses continuously, provide 24/7 TMC emergency contacts, and prep contingency itineraries", "Cancel the business completely", "Book non-refundable tickets"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: The office photocopier displays a high-level error code and smudges every print. What is the administrative procedure?", "options" => ["Try to dismantle the machine with a screwdriver", "Log the fault in the equipment logbook, place an 'Out of Service' tag, and call the SLA service technician", "Throw the copier away", "Keep printing damaged pages"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: A fire alarm sounds during a catered executive board meeting. What is the administrator's immediate duty?", "options" => ["Pack up the catering food", "Stop the meeting, guide board members and guests via emergency exits to the assembly point, and take roll call", "Save the board laptops first", "Lock the boardroom door"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "MASTER FINAL: What defines true excellence in professional Office Administration?", "options" => ["Executing basic typing tasks only", "Proactive organizational support, high ethical standards, operational efficiency, and master communication", "Managing corporate finance alone", "Working without breaks"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: What is the core relationship between Administrative Support and Organizational Success?", "options" => ["Administration is an unnecessary cost", "Administrators form the operational backbone that enables executives, teams, and systems to function seamlessly", "Administration only handles telephone calls", "Administration operates independently of business goals"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: Why is strict data privacy (POPIA) compliance essential for front-office administrators?", "options" => ["It makes filing more fun", "Administrators control sensitive personnel, client, and financial data; breaches ruin trust and invite legal liability", "It is only required for IT staff", "It increases office paper sales"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: How does an administrative manager maintain continuous improvement in office operations?", "options" => ["Never change existing routines", "Regularly review workflows, audit inventory/financial controls, gather stakeholder feedback, and embrace technology", "Fire staff annually", "Reduce office budget to zero"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "EXAM: How do Financial Admin, Procurement, and Inventory Management interlock in office management?", "options" => ["They are separate entities", "Requisitioned inventory drives procurement POs, which generate supplier invoices processed through financial admin controls", "They compete against each other", "They are only used during audits"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: What is the paramount ethical responsibility of an Executive Administrator?", "options" => ["Being liked by everyone", "Absolute integrity, unyielding confidentiality, legal compliance, and loyal stewardship of corporate assets", "Earning the highest salary", "Working 24 hours a day"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: What is the hallmark of a world-class Office Administrator?", "options" => ["Reacting to chaos after it happens", "Anticipating executive needs, maintaining composure under pressure, and executing flawless administrative precision", "Doing technical IT programming", "Making decisions without authority"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: What is the ultimate goal of completing the Office Administration curriculum?", "options" => ["To obtain a digital badge only", "To master the practical skills, legal compliance, and strategic mindset required to lead modern office operations", "To work as a computer technician", "To replace corporate legal counsel"], "ans" => 1, "xp" => 600]
+            ]]
+        ]
+    ]
+];
+
+// ==========================================================
+// SYSTEM DEVELOPMENT CURRICULUM (Maps 169-180)
+// ==========================================================
+$sd_maps = [
+    // CATEGORY 1: FOUNDATIONS & SDLC (Maps 169-172)
+    [
+        "id" => ++$highest_id, "course_id" => $sd_course_id, "category_id" => 1,
+        "title" => "Map 169: Introduction to System Development", "desc" => "Foundations of information systems, hardware-software integration, and development roles.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the primary goal of System Development?", "options" => ["To buy new hardware", "To create or improve an information system to meet business needs", "To only write code", "To fix broken computers"], "ans" => 1, "xp" => 200],
+                ["q" => "What is an 'Information System'?", "options" => ["A single computer", "A combination of hardware, software, data, people, and procedures", "A type of internet connection", "A software manual"], "ans" => 1, "xp" => 200],
+                ["q" => "Which role is responsible for bridging the gap between business needs and technical solutions?", "options" => ["Programmer", "Systems Analyst", "Hardware Technician", "Database Entry Clerk"], "ans" => 1, "xp" => 200],
+                ["q" => "What is 'Stakeholder' in system development?", "options" => ["The person holding the wood", "Anyone affected by or involved in the new system", "Only the developer", "A type of software tool"], "ans" => 1, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Legacy System'?", "options" => ["A brand new system", "An old system that is still in use but may be outdated", "A system for lawyers", "A cloud-based system"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'Scalability'?", "options" => ["The weight of a PC", "The ability of a system to handle a growing amount of work or users", "How many pixels are on screen", "The speed of the mouse"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'System Integration'?", "options" => ["Deleting old data", "Connecting different sub-systems to work as one cohesive unit", "Installing a new OS", "Buying a server"], "ans" => 1, "xp" => 240],
+                ["q" => "Which of these is a 'Non-functional' requirement?", "options" => ["The system must process payments", "The system must load in under 2 seconds", "The system must save user names", "The system must generate reports"], "ans" => 1, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'End-User Computing'?", "options" => ["Computers turning off", "Systems developed or managed directly by the people who use them", "Professional coding", "Server-side processing"], "ans" => 1, "xp" => 280],
+                ["q" => "What is a 'Business Case' for a new system?", "options" => ["A plastic case for a laptop", "A justification for the investment in a new system based on costs/benefits", "A list of technical bugs", "A software license"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'Feasibility Study'?", "options" => ["A medical test", "An evaluation of whether a project is technically, financially, and legally possible", "Learning how to type", "A final system test"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'Technical Feasibility'?", "options" => ["Having enough money", "Determining if the organization has the technology and expertise to build the system", "Checking if the office is clean", "Hiring a new CEO"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Economic Feasibility'?", "options" => ["Being fast", "Determining if the system provides enough value to justify the cost", "Buying new hardware", "Paying taxes"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Operational Feasibility'?", "options" => ["Checking if servers are on", "Determining if the system will actually be used and supported by the organization", "Fixed-price contracts", "Software updates"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'System Documentation'?", "options" => ["A photo of a PC", "Written information describing how the system works for users and developers", "A list of passwords", "An invoice"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Outsourcing' in development?", "options" => ["Working outside", "Hiring an external company to develop or manage the system", "Buying used computers", "Selling hardware"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'In-house Development'?", "options" => ["Working from home", "Building a system using the organization's own IT staff", "Buying software from Microsoft", "Building a house"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Application Software'?", "options" => ["Windows 11", "Software that performs specific tasks for users (e.g. Accounting, CRM)", "The motherboard", "A power cable"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'System Software'?", "options" => ["Microsoft Word", "Software that manages hardware and provides a platform for apps (e.g. OS)", "A spreadsheet", "A game"], "ans" => 1, "xp" => 400],
+                ["q" => "What is a 'Prototype'?", "options" => ["The final product", "An early, simplified version of a system built for testing and feedback", "A technical manual", "A type of virus"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Commercial Off-The-Shelf' (COTS) software?", "options" => ["Custom built software", "Ready-made software available for purchase by the general public", "Free software", "Software written in COBOL"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Custom Development'?", "options" => ["Buying from a shop", "Building a system from scratch to meet unique requirements", "Using a template", "Installing an OS"], "ans" => 1, "xp" => 500],
+                ["q" => "What is the 'Project Manager' role?", "options" => ["To write all code", "To oversee the project to ensure it is on time, on budget, and meets goals", "To fix the Wi-Fi", "To enter data"], "ans" => 1, "xp" => 500],
+                ["q" => "What is a 'Constraint' in system development?", "options" => ["A goal", "A limitation or restriction (e.g. budget, time, hardware)", "A type of code", "A new feature"], "ans" => 1, "xp" => 500]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $sd_course_id, "category_id" => 1,
+        "title" => "Map 170: The System Development Life Cycle", "desc" => "Master the phases of SDLC: Planning, Analysis, Design, Implementation, and Maintenance.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What does SDLC stand for?", "options" => ["Software Data Logic Code", "System Development Life Cycle", "Secure Digital Link Connection", "Standard Development Logic Chart"], "ans" => 1, "xp" => 200],
+                ["q" => "What is the first phase of the traditional SDLC?", "options" => ["Analysis", "Planning / Preliminary Investigation", "Coding", "Testing"], "ans" => 1, "xp" => 200],
+                ["q" => "What is the primary goal of the 'Analysis' phase?", "options" => ["To build hardware", "To understand and document what the system must do", "To write the final code", "To train the users"], "ans" => 1, "xp" => 200],
+                ["q" => "What is the primary goal of the 'Design' phase?", "options" => ["To interview users", "To determine HOW the system will be built (architecture, UI, DB)", "To fix old bugs", "To buy new servers"], "ans" => 1, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What happens during the 'Implementation' phase?", "options" => ["Setting goals", "Coding, testing, and installing the system", "Archiving old data", "Closing the company"], "ans" => 1, "xp" => 240],
+                ["q" => "What is the 'Waterfall' model?", "options" => ["A circular model", "A linear, sequential approach where each phase must be finished before the next", "A type of water cooling", "An iterative approach"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'Agile' development?", "options" => ["Strictly linear", "An iterative approach that focuses on flexibility and continuous user feedback", "A system for fast servers", "Coding without planning"], "ans" => 1, "xp" => 240],
+                ["q" => "What is a 'Sprint' in Agile?", "options" => ["A long 2-year project", "A short, time-boxed period (e.g. 2 weeks) to complete specific tasks", "A fast computer processor", "A type of network cable"], "ans" => 1, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Maintenance' in the SDLC?", "options" => ["Building a new system", "Ongoing support and updates after the system is launched", "Buying new chairs", "Deleting the code"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'Requirement Gathering'?", "options" => ["Ordering parts", "The process of discovering what users need from the system", "Sorting files", "Calculating taxes"], "ans" => 1, "xp" => 280],
+                ["q" => "What is a 'Functional' requirement?", "options" => ["How the system looks", "What the system must DO (e.g. calculate interest)", "The color of the server", "The price of the software"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'Prototyping' in SDLC?", "options" => ["Final launch", "Building a working model to test design concepts with users", "Writing a 500-page manual", "Hiring a new team"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'RAD'?", "options" => ["Random Access Data", "Rapid Application Development", "Real-time Analytic Design", "Robust Array Deployment"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Scrum'?", "options" => ["A rugby term only", "An Agile framework for managing complex software development", "A type of computer screen", "A security protocol"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'User Acceptance Testing' (UAT)?", "options" => ["Testing if a PC turns on", "Final testing by the end-users to ensure the system meets their needs", "A logic test", "Testing the printer"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Conversion' or 'Cutover'?", "options" => ["Deleting data", "The process of switching from the old system to the new one", "A type of math", "Updating a driver"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Direct Cutover'?", "options" => ["Stopping the old system and starting the new one immediately", "Running both systems together", "Slowly moving one department", "Losing all power"], "ans" => 0, "xp" => 400],
+                ["q" => "What is 'Parallel Conversion'?", "options" => ["Turning off both systems", "Running both the old and new systems simultaneously for a period", "A type of geometry", "Hiring two teams"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Phased Conversion'?", "options" => ["A fast switch", "Implementing the new system in stages (e.g. one department at a time)", "Updating a logo", "Changing a battery"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Pilot Conversion'?", "options" => ["Switching at an airport", "Implementing the system at one location to test it before a full launch", "A type of airplane system", "A manual switch"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Perfective Maintenance'?", "options" => ["Fixing bugs", "Making the system better or faster even if there are no errors", "A fresh install", "Cleaning the keyboard"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Corrective Maintenance'?", "options" => ["Adding features", "Fixing errors or bugs found after launch", "A type of logic", "Replacing hardware"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Adaptive Maintenance'?", "options" => ["Fixing errors", "Updating the system to work in a new environment (e.g. new OS)", "Buying a new PC", "Deleting the system"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Systems Request' document?", "options" => ["A bill", "The formal starting point for a project detailing the need for a new system", "A logic error", "A marketing flyer"], "ans" => 1, "xp" => 500]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $sd_course_id, "category_id" => 1,
+        "title" => "Map 171: Requirement Engineering", "desc" => "Learn to gather, analyze, and document exactly what a system needs to do.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'System Requirement'?", "options" => ["A type of computer", "A condition or capability the system must have to solve a problem", "A list of hardware only", "A programmer's name"], "ans" => 1, "xp" => 200],
+                ["q" => "What is a 'Functional Requirement'?", "options" => ["How the system looks", "What the system must DO (behavior/tasks)", "The speed of the CPU", "The storage limit"], "ans" => 1, "xp" => 200],
+                ["q" => "Which of these is a Functional requirement?", "options" => ["The system must be secure", "The system must allow users to reset their passwords", "The system must be blue", "The system must be easy to use"], "ans" => 1, "xp" => 200],
+                ["q" => "What is a 'Non-functional Requirement'?", "options" => ["A requirement that is broken", "Quality constraints like performance, security, and reliability", "A task the user performs", "A math formula"], "ans" => 1, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "Which of these is a Non-functional requirement?", "options" => ["The system must calculate tax", "The system must encrypt all stored passwords", "The system must generate PDF invoices", "The system must send emails"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'Requirement Elicitation'?", "options" => ["Deleting requirements", "The process of gathering information from users and stakeholders", "Writing the code", "Testing the database"], "ans" => 1, "xp" => 240],
+                ["q" => "Which technique involves watching a user perform their daily tasks?", "options" => ["Interview", "Observation", "Questionnaire", "Brainstorming"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'JAD'?", "options" => ["Just Add Data", "Joint Application Development (intensive sessions with users and developers)", "Junior Admin Duty", "Job Allocation Desk"], "ans" => 1, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Use Case'?", "options" => ["A container for a PC", "A description of how a user interacts with a system to achieve a goal", "A type of variable", "A logic error"], "ans" => 1, "xp" => 280],
+                ["q" => "In a Use Case diagram, who is an 'Actor'?", "options" => ["A person in a movie", "An external entity (user or another system) that interacts with the system", "A developer", "A database server"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'Scope Creep'?", "options" => ["A person walking slowly", "When the project requirements grow beyond the original plan without control", "A type of software", "Deleting code"], "ans" => 1, "xp" => 280],
+                ["q" => "What is a 'Requirement Specification' (SRS)?", "options" => ["A price list", "A formal document that lists all the requirements for the system", "A hardware manual", "An employee list"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Validation' of requirements?", "options" => ["Checking if the code runs", "Ensuring the documented requirements accurately reflect what the user wants", "Paying for software", "Hiring a tester"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Traceability' in requirements?", "options" => ["Drawing a picture", "The ability to track a requirement from its origin to implementation and testing", "Fast typing", "Using a mouse"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Feasibility'?", "options" => ["Checking if it's possible", "Checking if it's fast", "Checking if it's pretty", "Checking if it's blue"], "ans" => 0, "xp" => 350],
+                ["q" => "What is a 'Functional Decomposition'?", "options" => ["Breaking a system", "Breaking down complex functions into smaller, manageable sub-functions", "A logic error", "Deleting data"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Requirement Conflict'?", "options" => ["A software bug", "When two different stakeholders want opposite things from the system", "Two people fighting", "A broken monitor"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Requirement Management'?", "options" => ["Managing a team", "The process of tracking and controlling changes to requirements throughout the project", "Writing code", "Buying hardware"], "ans" => 1, "xp" => 400],
+                ["q" => "What is an 'Iterative' elicitation process?", "options" => ["Gathering once", "Gathering requirements in cycles, refining them as you learn more", "Using a computer", "Asking one person"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Prioritization' in requirements?", "options" => ["Deleting them", "Deciding which requirements are most critical and must be built first", "Making them all equal", "Sorting by color"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'MoSCoW' prioritization?", "options" => ["A city in Russia", "Must have, Should have, Could have, Won't have", "Math, Science, Code, Web", "More, Some, Count, Win"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Ambiguity' in requirements?", "options" => ["Being clear", "When a requirement can be interpreted in more than one way", "A type of logic", "A spelling error"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Market Analysis'?", "options" => ["Analyzing a shop", "Studying competitors and market trends to define system features", "Fixing hardware", "Counting staff"], "ans" => 1, "xp" => 500],
+                ["q" => "Why is user feedback critical in Requirement Engineering?", "options" => ["It's not", "To ensure the final system actually meets the business needs and is usable", "To make the project longer", "To pay the developer less"], "ans" => 1, "xp" => 500]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $sd_course_id, "category_id" => 1,
+        "title" => "Map 172: Algorithm Design & Logic", "desc" => "Foundations of computational thinking: Flowcharts, Pseudocode, and Logic Gates.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is an 'Algorithm'?", "options" => ["A type of computer", "A step-by-step set of instructions to solve a problem", "A math formula only", "A computer language"], "ans" => 1, "xp" => 200],
+                ["q" => "What is 'Pseudocode'?", "options" => ["Fake computer code", "A human-readable description of an algorithm using simple English and code-like structure", "A type of virus", "A database table"], "ans" => 1, "xp" => 200],
+                ["q" => "What is a 'Flowchart'?", "options" => ["A map of a river", "A visual representation of an algorithm using standard shapes and arrows", "A type of printer", "A list of names"], "ans" => 1, "xp" => 200],
+                ["q" => "Which shape represents a 'Decision' in a flowchart?", "options" => ["Rectangle", "Diamond", "Oval", "Parallelogram"], "ans" => 1, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "Which shape represents a 'Process' (step) in a flowchart?", "options" => ["Circle", "Rectangle", "Diamond", "Triangle"], "ans" => 1, "xp" => 240],
+                ["q" => "Which shape represents 'Start/End' in a flowchart?", "options" => ["Square", "Oval / Rounded Rectangle", "Parallelogram", "Pentagon"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'Logic' in programming?", "options" => ["The way a CPU is built", "The formal system of reasoning used to control the flow of a program", "The speed of the internet", "The size of a monitor"], "ans" => 1, "xp" => 240],
+                ["q" => "Which logic gate returns TRUE only if BOTH inputs are TRUE?", "options" => ["OR", "AND", "NOT", "XOR"], "ans" => 1, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "Which logic gate returns TRUE if AT LEAST one input is TRUE?", "options" => ["AND", "OR", "NAND", "NOR"], "ans" => 1, "xp" => 280],
+                ["q" => "What does a 'NOT' gate do?", "options" => ["Adds two numbers", "Inverts the input (TRUE becomes FALSE and vice versa)", "Stops the program", "Clears the memory"], "ans" => 1, "xp" => 280],
+                ["q" => "What is a 'Variable' in an algorithm?", "options" => ["Something that never changes", "A named storage location that holds a piece of data that can change", "A type of monitor", "A logic error"], "ans" => 1, "xp" => 280],
+                ["q" => "What is an 'Iteration' (Loop)?", "options" => ["Doing something once", "Repeating a set of instructions multiple times", "Ending a program", "A type of hardware"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Boolean' value?", "options" => ["A whole number", "A value that can only be TRUE or FALSE", "A text string", "A type of decimal"], "ans" => 1, "xp" => 350],
+                ["q" => "What is a 'Condition'?", "options" => ["The state of the PC", "A logical test that results in TRUE or FALSE (e.g. x > 10)", "A math error", "A type of code"], "ans" => 1, "xp" => 350],
+                ["q" => "What is an 'IF-THEN-ELSE' structure?", "options" => ["A loop", "A decision structure that performs different actions based on a condition", "A way to save files", "A type of variable"], "ans" => 1, "xp" => 350],
+                ["q" => "What is an 'Infinite Loop'?", "options" => ["A fast loop", "A loop that never ends because the condition is never met", "A broken computer", "A logic gate"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Decomposition' in computational thinking?", "options" => ["Breaking hardware", "Breaking a large problem down into smaller, easier-to-solve parts", "Deleting files", "A type of virus"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Pattern Recognition'?", "options" => ["Looking at colors", "Identifying similarities between problems to solve them more efficiently", "Typing fast", "Using a scanner"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Abstraction'?", "options" => ["Adding more detail", "Removing unnecessary details to focus on the essential features of a problem", "Fixing bugs", "Writing in binary"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Binary' logic?", "options" => ["Base 10 math", "Logic based on two states (1 and 0)", "Logic for 10 people", "A type of hardware"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Dry Running' an algorithm?", "options" => ["Using no water", "Manually walking through the steps of an algorithm on paper to check for errors", "Testing it on a server", "Deleting the code"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Time Complexity'?", "options" => ["The time it takes to type", "A measure of how long an algorithm takes to run as the input size increases", "A date in a calendar", "The clock speed of a CPU"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Space Complexity'?", "options" => ["The size of the office", "A measure of how much memory an algorithm uses", "The size of a monitor", "A logic gate"], "ans" => 1, "xp" => 500],
+                ["q" => "Which shape represents 'Input/Output' in a flowchart?", "options" => ["Rectangle", "Parallelogram", "Circle", "Triangle"], "ans" => 1, "xp" => 500]
+            ]]
+        ]
+    ],
+
+    // CATEGORY 2: PROGRAMMING & DATABASE CORE (Maps 173-176)
+    [
+        "id" => ++$highest_id, "course_id" => $sd_course_id, "category_id" => 2,
+        "title" => "Map 173: Fundamentals of Programming", "desc" => "Master syntax, data types, variables, and control structures.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Source Code'?", "options" => ["The final app", "The human-readable instructions written by a programmer", "A type of hardware", "A secret password"], "ans" => 1, "xp" => 200],
+                ["q" => "What is a 'Compiler'?", "options" => ["A person who writes code", "Software that translates source code into machine code for the CPU to run", "A type of keyboard", "A virus scanner"], "ans" => 1, "xp" => 200],
+                ["q" => "Which data type is used for whole numbers (e.g. 5, -10)?", "options" => ["String", "Integer (int)", "Boolean", "Float"], "ans" => 1, "xp" => 200],
+                ["q" => "Which data type is used for text (e.g. 'Hello')?", "options" => ["Integer", "String", "Char", "Double"], "ans" => 1, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Float' or 'Double' data type used for?", "options" => ["Whole numbers", "Numbers with decimal points", "True/False values", "Single letters"], "ans" => 1, "xp" => 240],
+                ["q" => "What is an 'Operator' (e.g. +, -, *)?", "options" => ["A person using the PC", "A symbol used to perform calculations or comparisons", "A part of a loop", "A logic error"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'Syntax' in programming?", "options" => ["A tax on code", "The set of rules defining how code must be structured to be valid", "A type of variable", "A fast computer"], "ans" => 1, "xp" => 240],
+                ["q" => "What is a 'Syntax Error'?", "options" => ["A math mistake", "An error caused by breaking the rules of the language (e.g. missing a semicolon)", "A logical flaw", "A hardware failure"], "ans" => 1, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is an 'Array'?", "options" => ["A single variable", "A collection of items stored at contiguous memory locations", "A type of monitor", "A logic gate"], "ans" => 1, "xp" => 280],
+                ["q" => "What is a 'Function' (or Method)?", "options" => ["A type of hardware", "A reusable block of code designed to perform a specific task", "A long variable", "A math error"], "ans" => 1, "xp" => 280],
+                ["q" => "What is a 'Parameter' (or Argument)?", "options" => ["A fight", "Information passed into a function", "A type of loop", "A security rule"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'Debugging'?", "options" => ["Adding bugs", "The process of finding and fixing errors in code", "Cleaning a keyboard", "Upgrading hardware"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Logical Error'?", "options" => ["A syntax mistake", "A flaw in the thinking/logic that causes the wrong output even if the code runs", "A broken screen", "A virus"], "ans" => 1, "xp" => 350],
+                ["q" => "What is an 'IDE'?", "options" => ["Internal Drive Engine", "Integrated Development Environment (e.g. VS Code)", "Instant Data Entry", "International Digital Expert"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Comment' in code?", "options" => ["An error message", "Notes for humans that are ignored by the computer", "A type of variable", "A final launch command"], "ans" => 1, "xp" => 350],
+                ["q" => "Which structure repeats code UNTIL a condition is met?", "options" => ["IF statement", "WHILE loop", "Integer", "Function"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Constant'?", "options" => ["Something that changes", "A variable whose value cannot be altered after it is set", "A fast loop", "A type of monitor"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Concatenation'?", "options" => ["Dividing numbers", "Joining two strings together (e.g. 'Hello ' + 'World')", "A logic error", "Deleting data"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Casting' (or Type Conversion)?", "options" => ["Throwing a PC", "Converting a value from one data type to another (e.g. int to string)", "Writing code for movies", "Fixing a bug"], "ans" => 1, "xp" => 400],
+                ["q" => "What is a 'Reserved Word' (or Keyword)?", "options" => ["A password", "Words that have special meaning to the language and cannot be used as variable names", "A long word", "A comment"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Recursion'?", "options" => ["Deleting a function", "When a function calls itself", "A type of loop", "A hardware crash"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Library' in programming?", "options" => ["A building for books", "A collection of pre-written code that developers can reuse", "A list of users", "A type of variable"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Machine Code'?", "options" => ["English words", "The 1s and 0s that the CPU understands directly", "A type of font", "A design manual"], "ans" => 1, "xp" => 500],
+                ["q" => "What is a 'Pointer' (in C/C++)?", "options" => ["A mouse cursor", "A variable that stores the memory address of another variable", "A logic error", "A type of monitor"], "ans" => 1, "xp" => 500]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $sd_course_id, "category_id" => 2,
+        "title" => "Map 174: Object-Oriented Programming", "desc" => "Understand Classes, Objects, Inheritance, and Encapsulation.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'OOP'?", "options" => ["Office Order Process", "Object-Oriented Programming", "Official Operational Plan", "Output Online Protocol"], "ans" => 1, "xp" => 200],
+                ["q" => "What is a 'Class'?", "options" => ["A room in a school", "A blueprint or template for creating objects", "A single piece of data", "A type of loop"], "ans" => 1, "xp" => 200],
+                ["q" => "What is an 'Object'?", "options" => ["A blueprint", "An instance of a class with its own state and behavior", "A part of a screen", "A logic gate"], "ans" => 1, "xp" => 200],
+                ["q" => "What are 'Attributes' (or Fields)?", "options" => ["Reusable code blocks", "The data or properties stored inside an object", "The speed of the program", "The names of developers"], "ans" => 1, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What are 'Methods' in a class?", "options" => ["Types of hardware", "The behaviors or actions an object can perform", "The colors of a logo", "The names of variables"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'Encapsulation'?", "options" => ["Opening a box", "Hiding internal data and requiring all interaction through methods", "Breaking code into parts", "Buying software"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'Inheritance'?", "options" => ["Getting money from a relative", "When one class acquires the properties and methods of another class", "A type of logic error", "A system update"], "ans" => 1, "xp" => 240],
+                ["q" => "What is a 'Constructor'?", "options" => ["A person building a house", "A special method that runs when an object is first created", "A part of a CPU", "A type of variable"], "ans" => 1, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Polymorphism'?", "options" => ["Having many shapes", "The ability of different objects to respond to the same method call in different ways", "A logic error", "A type of hardware"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'Abstraction' in OOP?", "options" => ["Adding more code", "Hiding complex implementation details and showing only the essential features", "Deleting old data", "Fixing a bug"], "ans" => 1, "xp" => 280],
+                ["q" => "What is a 'Parent' (or Base) class?", "options" => ["A junior class", "The class that is being inherited FROM", "A type of variable", "A logic gate"], "ans" => 1, "xp" => 280],
+                ["q" => "What is a 'Child' (or Derived) class?", "options" => ["A senior class", "The class that inherits from another class", "A part of a loop", "A security rule"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Overriding' a method?", "options" => ["Deleting code", "Providing a new implementation for a method inherited from a parent class", "A type of loop", "A hardware crash"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Overloading' a method?", "options" => ["Having too much code", "Defining multiple methods with the same name but different parameters", "A broken computer", "A virus scanner"], "ans" => 1, "xp" => 350],
+                ["q" => "What is an 'Interface' in OOP?", "options" => ["A monitor", "A contract that defines what methods a class MUST implement", "A type of variable", "A final launch command"], "ans" => 1, "xp" => 350],
+                ["q" => "What is a 'Static' member?", "options" => ["Something that moves", "A variable or method that belongs to the class itself rather than an instance", "A broken monitor", "A logic error"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Access Modifier' (e.g. Public, Private)?", "options" => ["A key for a door", "Keywords that define the visibility and accessibility of classes/members", "A type of loop", "A fast computer"], "ans" => 1, "xp" => 400],
+                ["q" => "What does 'Private' mean in OOP?", "options" => ["Everyone can see it", "The member can only be accessed within the same class", "It's a secret password", "It's for managers only"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Composition'?", "options" => ["Deleting code", "Building complex objects by combining simpler ones ('has-a' relationship)", "A type of variable", "A security rule"], "ans" => 1, "xp" => 400],
+                ["q" => "What is an 'Abstract Class'?", "options" => ["A finished class", "A class that cannot be instantiated and is meant to be a base for other classes", "A type of logic error", "A hardware failure"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Coupling'?", "options" => ["Connecting two PCs", "The degree of dependency between different modules or classes", "A type of variable", "A software license"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Cohesion'?", "options" => ["Breaking things apart", "The degree to which elements inside a module belong together", "A type of hardware", "A logic gate"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'UML'?", "options" => ["Universal Machine Logic", "Unified Modeling Language (visualizing OOP designs)", "Unit Management List", "User Machine Level"], "ans" => 1, "xp" => 500],
+                ["q" => "Which OOP concept best supports 'Code Reuse'?", "options" => ["Variables", "Inheritance", "Semicolons", "Printers"], "ans" => 1, "xp" => 500]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $sd_course_id, "category_id" => 2,
+        "title" => "Map 175: Database Systems & SQL", "desc" => "Relational models, Tables, Keys, and Structured Query Language.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Database'?", "options" => ["A single folder", "A structured collection of data stored electronically", "A type of keyboard", "A computer monitor"], "ans" => 1, "xp" => 200],
+                ["q" => "What is 'SQL'?", "options" => ["Secure Query Logic", "Structured Query Language", "Simple Queue List", "System Quantified Level"], "ans" => 1, "xp" => 200],
+                ["q" => "In a database, what is a 'Table'?", "options" => ["A piece of furniture", "A collection of related data entries organized in rows and columns", "A list of passwords", "A type of processor"], "ans" => 1, "xp" => 200],
+                ["q" => "What is a 'Record' (or Row)?", "options" => ["A whole table", "A single entry or item in a database table", "A column name", "A logic error"], "ans" => 1, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Field' (or Column)?", "options" => ["A whole table", "A specific category of information within a record (e.g. Last Name)", "A type of virus", "A database name"], "ans" => 1, "xp" => 240],
+                ["q" => "What is a 'Primary Key'?", "options" => ["The main password", "A unique identifier for each record in a table", "A type of logic gate", "A marketing plan"], "ans" => 1, "xp" => 240],
+                ["q" => "What is a 'Foreign Key'?", "options" => ["A key from another country", "A column that creates a link between data in two different tables", "A backup key", "A type of hardware"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'DBMS'?", "options" => ["Database Management System (software to manage DBs)", "Digital Block Management Service", "Data Base Multi System", "Departmental Budget Mode"], "ans" => 0, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "Which SQL command is used to retrieve data from a table?", "options" => ["GET", "SELECT", "FIND", "VIEW"], "ans" => 1, "xp" => 280],
+                ["q" => "Which SQL clause is used to filter records based on a condition?", "options" => ["IF", "WHERE", "WHEN", "LIMIT"], "ans" => 1, "xp" => 280],
+                ["q" => "Which SQL command is used to add new data to a table?", "options" => ["ADD", "INSERT INTO", "PUT", "CREATE"], "ans" => 1, "xp" => 280],
+                ["q" => "Which SQL command is used to modify existing data?", "options" => ["CHANGE", "UPDATE", "FIX", "ALTER"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "Which SQL command is used to remove data?", "options" => ["REMOVE", "DELETE", "ERASE", "TRASH"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Normalization'?", "options" => ["Deleting old data", "The process of organizing data to reduce redundancy and improve integrity", "Making a system faster", "Calculating sums"], "ans" => 1, "xp" => 350],
+                ["q" => "What is an 'ERD'?", "options" => ["Electronic Record Desk", "Entity Relationship Diagram (visualizing DB structure)", "Expert Research Data", "Engine Robust Design"], "ans" => 1, "xp" => 350],
+                ["q" => "What is a 'Relationship' between tables?", "options" => ["A fight", "An association between entities (e.g. One-to-Many)", "A shared password", "A type of logic"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'One-to-Many' relationship?", "options" => ["One person has one car", "One record in Table A can be linked to multiple records in Table B", "Many people have one car", "Deleting multiple records"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Referential Integrity'?", "options" => ["Trusting a user", "Ensuring that relationships between tables remain consistent and accurate", "Encrypting a file", "Checking for viruses"], "ans" => 1, "xp" => 400],
+                ["q" => "What is an 'Index' in a database?", "options" => ["A list of tables", "A data structure that speeds up data retrieval", "A logic error", "A type of variable"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'ACID' in database transactions?", "options" => ["A chemical test", "Properties (Atomicity, Consistency, Isolation, Durability) that guarantee reliability", "A type of hardware", "A security rule"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'NoSQL'?", "options" => ["A database with no code", "A non-relational database for unstructured data", "A fast SQL", "A type of monitor"], "ans" => 1, "xp" => 500],
+                ["q" => "What is a 'Query'?", "options" => ["A question", "A specific request for data from a database", "A type of loop", "A hardware crash"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Data Redundancy'?", "options" => ["Safe backups", "Unnecessary duplication of data (which normalization tries to fix)", "A fast computer", "A type of variable"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Data Mining'?", "options" => ["Finding gold", "Discovering patterns and knowledge from large amounts of data", "Deleting records", "Fixing a phone"], "ans" => 1, "xp" => 500]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $sd_course_id, "category_id" => 2,
+        "title" => "Map 176: System Architecture & Infrastructure", "desc" => "Client-Server models, Cloud computing, and Network topologies.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'System Architecture'?", "options" => ["The shape of the building", "The conceptual model defining the structure and behavior of a system", "The brand of the computer", "A type of programming language"], "ans" => 1, "xp" => 200],
+                ["q" => "What is 'Client-Server' architecture?", "options" => ["One person using two PCs", "A model where 'clients' request resources and 'servers' provide them", "A type of internet cable", "A security manual"], "ans" => 1, "xp" => 200],
+                ["q" => "Which part of a system handles the user interface and interaction?", "options" => ["Back-end", "Front-end", "Database", "Hardware"], "ans" => 1, "xp" => 200],
+                ["q" => "Which part of a system handles logic, calculations, and data storage?", "options" => ["Front-end", "Back-end", "Monitor", "Keyboard"], "ans" => 1, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Cloud Computing'?", "options" => ["Working in the rain", "Delivering computing services over the internet", "A type of airplane", "A weather report"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'SaaS'?", "options" => ["Software as a Service (subscription software)", "System and Analytic Service", "Secure Asset Access", "Small Area Support"], "ans" => 0, "xp" => 240],
+                ["q" => "What is 'IaaS'?", "options" => ["Information and Asset Service", "Infrastructure as a Service (renting virtual servers/storage)", "Internal Area Service", "Instant Analytic System"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'PaaS'?", "options" => ["Platform as a Service (tools for developers to build apps)", "Price and Asset Service", "Public Account System", "Paper and Admin Service"], "ans" => 0, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Middleware'?", "options" => ["Software in the middle of the room", "Software that connects different applications or components", "A type of hardware", "A logic error"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'API'?", "options" => ["All Project Info", "Application Programming Interface (rules for software to talk)", "Advanced Power Input", "Automated Path Interface"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'Multi-tier' architecture?", "options" => ["Having many monitors", "Separating a system into distinct layers (e.g. UI, Logic, Data)", "A type of network cable", "Hiring many developers"], "ans" => 1, "xp" => 280],
+                ["q" => "What is a 'Web Server'?", "options" => ["A person who builds websites", "A computer that stores and delivers web content to browsers", "A type of router", "A logic gate"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Thin Client'?", "options" => ["A skinny person", "A client that relies heavily on a server for processing", "A small laptop", "A fast computer"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Fat Client' (or Thick Client)?", "options" => ["A large computer", "A client that performs most processing locally", "A slow computer", "A high-power server"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Virtualization'?", "options" => ["A video game", "Creating a software-based representation of something (like a server)", "Hiring remote staff", "Cleaning the station"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Distributed Computing'?", "options" => ["Giving out free PCs", "A system where components are located on different networked computers", "A type of logic", "A marketing plan"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Latency' in a network?", "options" => ["The speed of light", "The delay in data being sent over a network", "The size of a monitor", "The price of the internet"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Bandwidth'?", "options" => ["The weight of the cable", "The maximum rate of data transfer across a network", "The number of users", "A type of monitor"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Redundancy' in architecture?", "options" => ["Safe backups", "Duplicate components to ensure the system works if one fails", "A logic error", "Deleting data"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'High Availability'?", "options" => ["Being very tall", "A system designed to be operational for a very high percentage of time", "Fast CPU speed", "A security rule"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Microservices' architecture?", "options" => ["One giant app", "Breaking an app into small, independent services that talk to each other", "Using small computers", "A type of variable"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Legacy Modernization'?", "options" => ["Buying new PCs", "Updating old systems to modern architectures or technologies", "Deleting the code", "Firing staff"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Disaster Recovery'?", "options" => ["Fixing a truck", "The plan for restoring a system after a major failure or catastrophe", "A type of tax", "Hiring a lawyer"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Load Balancing'?", "options" => ["Weighing a server", "Distributing network traffic across multiple servers to prevent overload", "A type of power cable", "A security rule"], "ans" => 1, "xp" => 500]
+            ]]
+        ]
+    ],
+
+    // CATEGORY 3: ADVANCED DEVELOPMENT & CAPSTONE (Maps 177-180)
+    [
+        "id" => ++$highest_id, "course_id" => $sd_course_id, "category_id" => 3,
+        "title" => "Map 177: UI/UX & Web Development", "desc" => "Design interfaces that work. Accessibility, usability, and web standards.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'UI'?", "options" => ["User Interaction", "User Interface (the visual look of a system)", "Universal Interest", "Unit Integration"], "ans" => 1, "xp" => 200],
+                ["q" => "What is 'UX'?", "options" => ["User Experience (how the user feels and interacts)", "Unit Exercise", "Universal Exchange", "User Extra"], "ans" => 0, "xp" => 200],
+                ["q" => "What is 'Usability'?", "options" => ["The weight of a product", "How easy and satisfying a system is to use", "How many people use it", "The price of the product"], "ans" => 1, "xp" => 200],
+                ["q" => "Which language provides the 'structure' of a webpage?", "options" => ["CSS", "HTML", "JavaScript", "PHP"], "ans" => 1, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "Which language provides the 'styling' (colors, fonts) of a webpage?", "options" => ["HTML", "CSS", "SQL", "Java"], "ans" => 1, "xp" => 240],
+                ["q" => "Which language provides the 'interactivity' on a webpage?", "options" => ["HTML", "JavaScript", "C++", "Python"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'Responsive Design'?", "options" => ["A fast website", "A design that adjusts perfectly to different screen sizes (Mobile, Tablet, Desktop)", "A website with a chatbot", "A dark mode theme"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'Accessibility' in web dev?", "options" => ["Having free Wi-Fi", "Designing so that people with disabilities can use the system", "A login screen", "A fast computer"], "ans" => 1, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Wireframe'?", "options" => ["A 3D model", "A basic visual skeleton showing where elements go on a screen", "A piece of code", "A hardware component"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'Color Contrast' importance?", "options" => ["To look artistic", "To ensure text is readable against the background for all users", "To save battery", "To make it bright"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'Navigation' in UI?", "options" => ["A GPS", "The system of menus and links that allows users to move through an app", "Typing on a keyboard", "Opening a file"], "ans" => 1, "xp" => 280],
+                ["q" => "What is a 'Breadcrumb' in web design?", "options" => ["Food", "A navigation trail showing the user's location in the site hierarchy", "A logic error", "A type of virus"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Mobile-First' design?", "options" => ["Buying a new phone", "Designing for small screens first before expanding to larger screens", "Using only mobile apps", "Hiring a mobile team"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'User Research'?", "options" => ["Watching movies", "Gathering data about user needs, behaviors, and pain points", "Reading a textbook", "Asking a friend"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'A/B Testing' in UX?", "options" => ["A school test", "Comparing two versions of a design to see which one users prefer", "A logic gate", "A hardware test"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Visual Hierarchy'?", "options" => ["A list of managers", "Arranging elements to guide the user's eye to the most important info first", "A type of font", "A security rule"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is an 'Affordance'?", "options" => ["The price of a PC", "A visual cue that tells a user how an object can be used (e.g. a button looks clickable)", "A logic gate", "A type of variable"], "ans" => 1, "xp" => 400],
+                ["q" => "What is a 'Prototype' in UI/UX?", "options" => ["Final launch", "A mock-up of the interface used for user testing and feedback", "A technical manual", "A type of code"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Typography'?", "options" => ["Taking photos", "The art and technique of arranging type/fonts to make text readable and appealing", "Fixing a printer", "A type of math"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Front-end Framework' (e.g. React, Angular)?", "options" => ["A type of OS", "A library of pre-written code to build user interfaces faster", "A database system", "A logic gate"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'SEO' in web development?", "options" => ["Search Engine Optimization (making sites rank higher on Google)", "Secure Entry Office", "System Error Option", "Small Engine Output"], "ans" => 0, "xp" => 500],
+                ["q" => "What is 'DOM'?", "options" => ["Document Object Model (how browsers represent pages)", "Digital Online Model", "Direct Office Mode", "Data Output Manager"], "ans" => 0, "xp" => 500],
+                ["q" => "What is 'HTTP'?", "options" => ["Hard Total Power", "HyperText Transfer Protocol (how web data is sent)", "High Tech Path", "Hyper Time Process"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'HTTPS'?", "options" => ["A faster version of HTTP", "The secure, encrypted version of HTTP", "A type of monitor", "A logic error"], "ans" => 1, "xp" => 500]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $sd_course_id, "category_id" => 3,
+        "title" => "Map 178: Testing & Quality Assurance", "desc" => "Ensure your system is bug-free and reliable. Unit tests, Integration, and UAT.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the primary purpose of Software Testing?", "options" => ["To add more code", "To identify and fix bugs to ensure quality", "To make the project longer", "To buy new hardware"], "ans" => 1, "xp" => 200],
+                ["q" => "What is a 'Bug'?", "options" => ["An insect", "An error, flaw, or failure in a computer program", "A type of feature", "A hardware part"], "ans" => 1, "xp" => 200],
+                ["q" => "What is 'Unit Testing'?", "options" => ["Testing the whole system", "Testing individual small components or functions of code in isolation", "Testing the monitor", "A logic error"], "ans" => 1, "xp" => 200],
+                ["q" => "What is 'Quality Assurance' (QA)?", "options" => ["Promising good work", "A systematic process to ensure products meet specified requirements", "Buying new software", "Hiring staff"], "ans" => 1, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Integration Testing'?", "options" => ["Testing code alone", "Testing how different modules of a system work together", "Deleting old data", "Fixing a phone"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'System Testing'?", "options" => ["Testing one function", "Testing the entire integrated system to ensure it meets all requirements", "Buying a new PC", "A logic gate"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'Black-box Testing'?", "options" => ["Testing in a dark room", "Testing a system without knowing its internal code structure", "Testing a printer", "A type of virus"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'White-box Testing'?", "options" => ["Testing on a white desk", "Testing with full knowledge of the internal code and structure", "A security check", "Hiring an external firm"], "ans" => 1, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Regression Testing'?", "options" => ["Testing new features", "Re-testing existing features after a change to ensure nothing broke", "A type of math", "Deleting a database"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'User Acceptance Testing' (UAT)?", "options" => ["Testing if a PC turns on", "Final testing by the end-users to see if it meets their business needs", "A logic test", "Testing the Wi-Fi"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'Alpha Testing'?", "options" => ["The final launch", "Internal testing by the developers before releasing to anyone else", "Testing for dogs", "A type of variable"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'Beta Testing'?", "options" => ["Final product", "Releasing an early version to a group of external users for feedback", "Testing two things", "A hardware crash"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Test Case'?", "options" => ["A box for a PC", "A set of conditions and steps used to verify a specific feature", "A type of logic", "A security rule"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Performance Testing'?", "options" => ["Watching a movie", "Testing how the system performs under a heavy load (many users)", "Checking the screen color", "Asking for a bonus"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Security Testing'?", "options" => ["Locking the office", "Testing the system to find vulnerabilities and protect data", "A fire drill", "An anti-virus scan"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Automated Testing'?", "options" => ["Testing by hand", "Using software tools to run tests automatically", "A type of robot", "Fixing a machine"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Test-Driven Development' (TDD)?", "options" => ["Writing tests last", "Writing tests BEFORE writing the actual code", "Deleting requirements", "A type of variable"], "ans" => 1, "xp" => 400],
+                ["q" => "What is a 'Sanity Test'?", "options" => ["A medical test", "A quick check to see if a system is working enough to do further testing", "Testing the office air", "A logic error"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Boundary Value Analysis'?", "options" => ["Looking at the wall", "Testing the system with values at the edges of allowed ranges (e.g. 0, 100)", "A math test", "A type of font"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Compatibility Testing'?", "options" => ["Being friends", "Ensuring the system works on different browsers, devices, and operating systems", "A hardware part", "A marketing plan"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Bug Report'?", "options" => ["An insect collection", "A document describing a bug, how to find it, and its severity", "A bill", "A staff list"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Stress Testing'?", "options" => ["Working hard", "Testing a system beyond its normal limits to see where it breaks", "Being angry", "A medical exam"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Usability Testing'?", "options" => ["Testing if it's heavy", "Observing real users to see how easy the system is to use", "A logic gate", "Fixing hardware"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Verification' vs 'Validation'?", "options" => ["They are the same", "Verification is 'Did we build the system right?'; Validation is 'Did we build the right system?'", "Verification is for code; Validation is for math", "They are types of hardware"], "ans" => 1, "xp" => 500]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $sd_course_id, "category_id" => 3,
+        "title" => "Map 179: Deployment & Maintenance", "desc" => "Take the system live and manage its long-term health.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'System Deployment'?", "options" => ["Deleting the system", "The process of making a system available for use (launching it)", "Writing the code", "Buying servers"], "ans" => 1, "xp" => 200],
+                ["q" => "What is a 'Production Environment'?", "options" => ["A developer's PC", "The live setting where real users interact with the system", "A testing room", "A hardware factory"], "ans" => 1, "xp" => 200],
+                ["q" => "What is 'Version Control' (e.g. Git)?", "options" => ["Checking the time", "A system that records changes to code over time and allows collaboration", "A type of variable", "A security manual"], "ans" => 1, "xp" => 200],
+                ["q" => "What is a 'Repository'?", "options" => ["A room for books", "A central location where code and its history are stored", "A type of monitor", "A logic gate"], "ans" => 1, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Release'?", "options" => ["Letting someone go", "A specific version of the software distributed to users", "A type of loop", "A hardware part"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'CI/CD'?", "options" => ["Computer Info / Code Data", "Continuous Integration / Continuous Deployment", "Coded Input / Cached Data", "Central Intel / Coded Design"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'Staging' environment?", "options" => ["A live site", "A copy of the production environment used for final testing before launch", "A developer's desk", "A storage room"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'Rollback'?", "options" => ["Rolling a ball", "Reverting to a previous stable version of the system if a new launch fails", "A logic error", "A type of variable"], "ans" => 1, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Patching'?", "options" => ["Cleaning a screen", "Updating software to fix a specific bug or security vulnerability", "A type of fabric", "Buying new gear"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'Change Control'?", "options" => ["Being a boss", "A formal process to ensure changes to the system are documented and approved", "Deleting code", "A hardware fix"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'User Training'?", "options" => ["Hiring staff", "Educating users on how to operate the new system effectively", "A logic test", "A marathon"], "ans" => 1, "xp" => 280],
+                ["q" => "What is a 'User Manual'?", "options" => ["A person named Manuel", "A document providing instructions for end-users on how to use the system", "A code guide", "An invoice"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Post-Implementation Review'?", "options" => ["An office party", "Evaluating the project after launch to see if goals were met and learn lessons", "Writing more code", "A budget report"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Legacy Data Migration'?", "options" => ["Deleting old files", "Moving data from an old system into the new one", "Buying a new PC", "A type of tax"], "ans" => 1, "xp" => 350],
+                ["q" => "What is a 'Service Desk' (or Help Desk)?", "options" => ["A wooden desk", "A central point for users to report issues and get technical support", "A department in a bank", "A logic gate"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'System Uptime'?", "options" => ["The clock time", "The percentage of time the system is operational and available to users", "CPU speed", "A security rule"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Performance Monitoring'?", "options" => ["Watching a movie", "Continuously tracking the system's speed and resource usage in production", "Hiring staff", "Fixing bugs"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Backup and Recovery'?", "options" => ["Safe storage", "Regularly copying data and having a plan to restore it after a failure", "Deleting records", "Hiding money"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Disaster Recovery Plan'?", "options" => ["A fire drill", "A documented process to restore IT infrastructure after a catastrophe", "A logic error", "A marketing plan"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Scalability' in production?", "options" => ["How heavy it is", "The system's ability to handle more users by adding more server power", "The font size", "A type of color"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Technical Debt' risk?", "options" => ["A bank loan", "The danger that quick fixes will make the system impossible to maintain later", "Buying too many PCs", "A software update"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'End-of-life' (EOL) for a system?", "options" => ["A battery dying", "When a system is no longer supported or sold by the manufacturer", "A logic gate", "The end of a shift"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Decommissioning'?", "options" => ["Starting a system", "Formally taking a system out of service and archiving its data", "Hiring a manager", "Painting a room"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Continuous Improvement'?", "options" => ["Staying the same", "The ongoing effort to improve the system based on performance data and feedback", "Buying new gear", "Fixing one bug"], "ans" => 1, "xp" => 500]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $sd_course_id, "category_id" => 3,
+        "title" => "Map 180: Final System Development Capstone", "desc" => "The ultimate challenge. Prove your mastery across all development disciplines.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "SCENARIO: A client wants a system but isn't sure of the exact features. Which model is best?", "options" => ["Waterfall", "Agile / Iterative", "Strict Linear", "Manual"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: You need to ensure a database has no duplicate data. What process do you use?", "options" => ["Formatting", "Normalization", "Scaling", "Integration"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: You want to hide internal variables from being changed directly. Which OOP concept is this?", "options" => ["Inheritance", "Encapsulation", "Polymorphism", "Abstraction"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: A web server is overloaded during peak hours. What architectural fix is needed?", "options" => ["Buy a better mouse", "Implement Load Balancing and Horizontal Scaling", "Restart the PC", "Change the website color"], "ans" => 1, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "SCENARIO: You need to get data from a table called 'Users'. What is the SQL?", "options" => ["GET ALL FROM Users", "SELECT * FROM Users", "FIND Users", "SHOW Users"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: You added a new feature and want to make sure it didn't break old features. What test is this?", "options" => ["Unit Test", "Regression Test", "Stress Test", "Sanity Test"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: You need to visualize the logic of a complex calculation. What tool do you use?", "options" => ["A text document", "A Flowchart", "An Excel sheet", "A hardware diagram"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: A system must be secure. Which of these is a non-functional requirement?", "options" => ["The system must log in users", "The system must load in under 1 second", "The system must process payments", "The system must generate PDF invoices"], "ans" => 1, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "SCENARIO: You want to reuse a 'Vehicle' class to create a 'Car' class. Which OOP concept is this?", "options" => ["Abstraction", "Inheritance", "Encapsulation", "Variables"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: You need to move authority to a live environment automatically. What is this?", "options" => ["Manual cutover", "CI/CD Pipeline", "Backup strategy", "Coding phase"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: You are checking if the documented requirements match what the user wants. What is this?", "options" => ["Verification", "Validation", "Scaling", "Debugging"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: A logic gate returns TRUE only if BOTH inputs are TRUE. What gate is this?", "options" => ["OR", "AND", "NOT", "XOR"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "SCENARIO: You are using a blueprint to create a specific user profile. What is the profile called?", "options" => ["A Class", "An Object (Instance)", "A Variable", "A Function"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: You need to prove to an investor that the project is worth doing. What do you write?", "options" => ["A piece of code", "A Business Case / Feasibility Study", "A thank you note", "A logic gate"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: A developer's quick fix makes future updates very hard. what is this cost called?", "options" => ["Technical Debt", "System Audit", "Project Overhead", "Bonus Payment"], "ans" => 0, "xp" => 350],
+                ["q" => "SCENARIO: You are identifying if the system is ready for real users. What is the final stage?", "options" => ["Alpha Testing", "User Acceptance Testing (UAT)", "Unit Testing", "Code Review"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "MASTER FINAL: What is the most critical factor for successful system development?", "options" => ["Having the fastest PC", "Understanding and meeting user and business requirements accurately", "Writing code as fast as possible", "Buying the most expensive software"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: How do logic, programming, and databases work together?", "options" => ["They don't", "Logic structures the flow, programming executes tasks, and databases store information", "They are separate rooms in an office", "They only interact during testing"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: Why is the SDLC loop continuous?", "options" => ["Because it's a circle", "Because systems must evolve, be maintained, and eventually be replaced over time", "Because it's a game", "Because programmers like loops"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: What is the hallmark of a world-class system developer?", "options" => ["Being aggressive", "Problem-solving, precision, and an integrated understanding of the full SDLC", "Knowing one language perfectly only", "Having a high salary"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "EXAM: How do Analysis and Design interact?", "options" => ["They are separate", "Analysis defines 'What' is needed; Design defines 'How' to build it", "Design happens before analysis", "They are optional if you code well"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: Why is Version Control vital for modern development teams?", "options" => ["To see the time", "To allow safe collaboration, track history, and prevent code conflicts", "To see who is the best coder", "To win a prize"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: What is the true goal of the System Development journey?", "options" => ["Getting a job", "To create reliable, scalable, and valuable digital solutions for human problems", "To win an award", "Hiring friends"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: What is the core responsibility of a system analyst to their organization?", "options" => ["To fix printers", "To provide a reliable technical foundation for business growth and efficiency", "To write reports only", "To hire staff"], "ans" => 1, "xp" => 600]
+            ]]
+        ]
+    ]
+];
+
+// ==========================================================
+// TECHNICAL SUPPORT CURRICULUM (Maps 181-192)
+// ==========================================================
+$tech_maps = [
+    // CATEGORY 1: HARDWARE & SYSTEM DIAGNOSTICS (Maps 181-184)
+    [
+        "id" => ++$highest_id, "course_id" => $tech_course_id, "category_id" => 1,
+        "title" => "Map 181: Advanced Hardware Support", "desc" => "Troubleshoot CPU, Motherboard, and RAM failures at a professional level.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "If a PC makes 3 long beeps during POST, what is usually the culprit?", "options" => ["The monitor", "Memory (RAM) error", "The mouse", "The hard drive"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the primary function of a CMOS battery?", "options" => ["To power the CPU", "To maintain BIOS settings and the system clock", "To charge the laptop", "To speed up the internet"], "ans" => 1, "xp" => 150],
+                ["q" => "Which component should be checked first for 'Random Reboots'?", "options" => ["The keyboard", "The Power Supply Unit (PSU)", "The speakers", "The USB ports"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Thermal Throttling'?", "options" => ["A new CPU feature", "The CPU slowing down to prevent damage from overheating", "A type of water cooling", "A power saving mode"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is the difference between ECC and non-ECC RAM?", "options" => ["ECC is faster", "ECC can detect and correct data corruption", "Non-ECC is for servers", "There is no difference"], "ans" => 1, "xp" => 180],
+                ["q" => "What tool is used to test the voltage output of a power supply?", "options" => ["A screwdriver", "A Multimeter", "A hammer", "A USB drive"], "ans" => 1, "xp" => 180],
+                ["q" => "What is the purpose of 'S.M.A.R.T.' on a hard drive?", "options" => ["To make it faster", "To monitor drive health and predict failures", "To encrypt data", "To connect to the cloud"], "ans" => 1, "xp" => 180],
+                ["q" => "Which socket type is used by modern AMD processors?", "options" => ["LGA 1700", "AM4 / AM5", "Socket 775", "USB-C"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Overclocking'?", "options" => ["Cleaning a PC", "Increasing component clock speed beyond factory settings", "Setting a timer", "Fixing a broken fan"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Electrostatic Discharge' (ESD) protection?", "options" => ["A type of battery", "Grounding yourself to prevent static from destroying components", "Cleaning the monitor", "A fast internet line"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'RAID 0' primarily used for?", "options" => ["Data backup", "Performance and speed", "Security", "Reducing noise"], "ans" => 1, "xp" => 210],
+                ["q" => "Which component handles 'POST'?", "options" => ["Windows", "The BIOS/UEFI", "The Hard Drive", "The RAM"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'NVMe'?", "options" => ["A type of video", "A high-speed storage protocol for SSDs", "A network standard", "A virus"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'LGA' vs 'PGA' in processors?", "options" => ["LGA has pins on the motherboard; PGA has pins on the CPU", "LGA is for laptops", "PGA is faster", "They are identical"], "ans" => 0, "xp" => 250],
+                ["q" => "What is 'DIMM'?", "options" => ["A small light", "Dual In-line Memory Module (RAM)", "A type of CPU", "A storage disk"], "ans" => 1, "xp" => 250],
+                ["q" => "Which cable type is used for internal SATA drives?", "options" => ["HDMI", "SATA Data Cable", "Ethernet", "VGA"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Form Factor'?", "options" => ["A font style", "The physical size and shape of a motherboard (e.g. ATX)", "A math equation", "The price of hardware"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Integrated Graphics'?", "options" => ["A separate GPU card", "Graphics processing built into the CPU or motherboard", "A high-end monitor", "A type of cable"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'TPM' (Trusted Platform Module)?", "options" => ["A total power mode", "A hardware chip used for security and encryption", "A type of RAM", "A motherboard fan"], "ans" => 1, "xp" => 300],
+                ["q" => "What happens if you use the wrong 'Thermal Paste' amount?", "options" => ["Nothing", "It can cause overheating or poor heat transfer", "The CPU gets faster", "The PC turns blue"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Bottlenecking'?", "options" => ["Opening a drink", "When one slow component limits the speed of the whole system", "A fast computer", "A type of cooling"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Driver' software?", "options" => ["A person using the PC", "Software that allows hardware to talk to the OS", "A fast storage disk", "A game"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Peripheral' hardware?", "options" => ["Internal CPU", "External devices like mice and printers", "The motherboard", "A RAM stick"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Firmware'?", "options" => ["Soft software", "Permanent software programmed into hardware (e.g. BIOS)", "A temporary file", "A cloud backup"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $tech_course_id, "category_id" => 1,
+        "title" => "Map 182: Operating System Support", "desc" => "Troubleshoot BSODs, Registry errors, and boot failures in Windows and Linux.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What does 'BSOD' stand for?", "options" => ["Big System On Demand", "Blue Screen of Death", "Basic Software Off Duty", "Binary System Out Data"], "ans" => 1, "xp" => 150],
+                ["q" => "Which tool is used to manage startup programs in Windows?", "options" => ["Notepad", "Task Manager", "Calculator", "Paint"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Safe Mode' used for?", "options" => ["Playing games", "Starting the OS with minimal drivers for troubleshooting", "Hiding files", "Fast internet"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the 'Windows Registry'?", "options" => ["A list of all employees", "A database of settings and options for the OS and apps", "A folder for photos", "A virus"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What command is used in Windows to check for file system errors?", "options" => ["HELP", "chkdsk", "EXIT", "COLOR"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'System Restore'?", "options" => ["Deleting all files", "Rolling back the PC to a previous healthy state", "Buying a new PC", "Cleaning the keyboard"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Virtual Memory' (Paging File)?", "options" => ["A VR headset", "Space on the hard drive used when RAM is full", "Memory in the cloud", "Fake memory"], "ans" => 1, "xp" => 180],
+                ["q" => "Which Linux command displays the contents of a directory?", "options" => ["DIR", "ls", "LIST", "SHOW"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Event Viewer' used for?", "options" => ["Watching movies", "Checking system logs for errors and warnings", "Booking tickets", "Hiring staff"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Kernel'?", "options" => ["A part of popcorn", "The core part of the OS that manages hardware and software", "A type of variable", "A monitor cable"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Disk Defragmentation'?", "options" => ["Breaking a disk", "Organizing files on a HDD to speed up access", "Erasing data", "Increasing Wi-Fi speed"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'DLL Hell'?", "options" => ["A very hot PC", "Conflict between different versions of shared library files", "A virus", "A broken monitor"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Device Manager' used for?", "options" => ["Managing employees", "Viewing and updating hardware drivers", "Buying new gear", "Storing photos"], "ans" => 1, "xp" => 250],
+                ["q" => "What does 'sfc /scannow' do in Windows?", "options" => ["Speeds up the CPU", "Scans and repairs corrupted system files", "Deletes all music", "Checks the internet"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'GRUB' in Linux?", "options" => ["A type of food", "A bootloader that allows you to choose which OS to start", "A graphics card", "A security tool"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Control Panel' being replaced by in newer Windows?", "options" => ["Task Manager", "Settings App", "Registry Editor", "Terminal"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'UAC' (User Account Control)?", "options" => ["Universal Access Center", "A security feature that asks for permission before making changes", "A type of login", "A backup plan"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'BitLocker'?", "options" => ["A fast hard drive", "Full disk encryption provided by Windows", "A virus", "A type of mouse"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'PowerShell'?", "options" => ["A powerful battery", "A task automation and configuration management framework", "A high-speed monitor", "A type of SSD"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Windows Update' importance?", "options" => ["To use more data", "To fix security vulnerabilities and bugs", "To make the PC slower", "To show more ads"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Command Prompt' (CMD)?", "options" => ["A place to draw", "A command-line interpreter for Windows", "A social network", "A type of keyboard"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'GUI'?", "options" => ["General User Info", "Graphical User Interface", "Global Unit Index", "Great User Input"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Taskkill' command used for?", "options" => ["Ending a shift", "Stopping a frozen process or program", "Deleting a file", "Shutting down the PC"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Partitioning' a drive?", "options" => ["Breaking it with a hammer", "Dividing a single physical drive into multiple logical sections", "Selling the drive", "Formatting it to zero"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $tech_course_id, "category_id" => 1,
+        "title" => "Map 183: Network Support & Connectivity", "desc" => "Troubleshoot routers, IP conflicts, and wireless signals.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What does 'IP Address' stand for?", "options" => ["Internal Path", "Internet Protocol", "Instant Page", "Information Process"], "ans" => 1, "xp" => 150],
+                ["q" => "Which command checks if a website is reachable?", "options" => ["HELP", "ping", "EXIT", "STOP"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Router'?", "options" => ["A device that stores files", "A device that directs data traffic between networks", "A type of cable", "A computer monitor"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Wi-Fi'?", "options" => ["Wired File", "Wireless Fidelity", "Wide Field", "Web Filter"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'DHCP'?", "options" => ["A type of cable", "Dynamic Host Configuration Protocol (assigns IP addresses)", "A security standard", "A web browser"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'DNS'?", "options" => ["Data Network System", "Domain Name System (translates names to IPs)", "Digital Node Server", "Direct Name Standard"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'ipconfig' used for?", "options" => ["Configuring a PC", "Displaying the network settings of a Windows computer", "Buying a router", "Updating a driver"], "ans" => 1, "xp" => 180],
+                ["q" => "What is an 'IP Conflict'?", "options" => ["Two people arguing", "When two devices on the same network are assigned the same IP", "A slow internet speed", "A broken cable"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Ethernet'?", "options" => ["Wireless internet", "A physical cable for wired network connections", "A type of satellite", "A web browser"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Bandwidth'?", "options" => ["The weight of the router", "The maximum rate of data transfer across a network", "The number of users", "The length of a cable"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Ping' measuring?", "options" => ["Download speed", "Latency (time for data to travel)", "Upload speed", "File size"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'SSID'?", "options" => ["A secret code", "The name of a Wi-Fi network", "The speed of the network", "A type of router"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'WPA3'?", "options" => ["A type of cable", "A modern Wi-Fi security standard", "A web browser", "A network speed test"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Modem'?", "options" => ["A type of PC", "A device that converts signal from ISP to digital data", "A Wi-Fi antenna", "A web browser"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'LAN'?", "options" => ["The whole internet", "Local Area Network (e.g. home/office)", "A type of server", "A website"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'WAN'?", "options" => ["Wide Area Network (e.g. the internet)", "A small home network", "A type of printer", "A security rule"], "ans" => 0, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Packet Loss'?", "options" => ["Losing your laptop", "When data units fail to reach their destination, causing lag", "Losing your password", "A large file"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Traceroute' used for?", "options" => ["Drawing a map", "Showing the path data takes through routers to reach a target", "Measuring temperature", "Finding a lost file"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'MAC Address'?", "options" => ["A secret code", "A unique physical identifier for a network interface", "A type of IP", "A web address"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Static IP'?", "options" => ["An IP that changes", "A manually assigned IP that stays the same", "A fast IP", "An invisible IP"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Port Forwarding'?", "options" => ["Moving a computer", "Allowing external devices to reach a specific service inside a network", "Speeding up the Wi-Fi", "A security standard"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Subnet Mask'?", "options" => ["A costume", "A number that defines the range of IP addresses in a network", "A network password", "A type of cable"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Latency'?", "options" => ["The weight of data", "The delay before a transfer of data begins", "The color of the wire", "The price of internet"], "ans" => 1, "xp" => 400],
+                ["q" => "What is a 'Firewall'?", "options" => ["A brick wall", "A security system that monitors and filters network traffic", "A cooling fan", "A type of battery"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $tech_course_id, "category_id" => 1,
+        "title" => "Map 184: Peripheral & Device Support", "desc" => "Troubleshoot printers, scanners, monitors, and external devices.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "If a printer is 'Offline', what is the first thing to check?", "options" => ["Ink levels", "Physical connection and power", "The paper type", "The font used"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Print Spooler'?", "options" => ["A type of paper", "A software service that manages the queue of print jobs", "A part of the ink cartridge", "A printer cable"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the primary benefit of HDMI over VGA?", "options" => ["It's cheaper", "It transmits both video and audio in high definition", "It's a shorter cable", "It's blue"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Driver'?", "options" => ["A car driver", "Software that allows the computer to communicate with a peripheral", "A type of hardware", "A screen cleaner"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Calibrating' a monitor?", "options" => ["Cleaning it", "Adjusting colors and brightness for accuracy", "Fixing a crack", "Buying a new one"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Plug and Play' (PnP)?", "options" => ["A game console", "Hardware that is automatically recognized and configured by the OS", "A type of battery", "A wired mouse"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Resolution'?", "options" => ["A promise", "The number of pixels on a screen (Width x Height)", "The size of the monitor", "The brightness"], "ans" => 1, "xp" => 180],
+                ["q" => "What does 'DPI' stand for in printing?", "options" => ["Data Per Inch", "Dots Per Inch", "Digital Picture Index", "Direct Print Item"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Ghosting' on a monitor?", "options" => ["A scary image", "When an image remains faintly on the screen after it should have disappeared", "A broken cable", "A virus"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Hot Swapping'?", "options" => ["Changing clothes", "Plugging or unplugging a device while the computer is running", "A broken USB", "A fast computer"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'OCR'?", "options" => ["Official Code Record", "Optical Character Recognition (scanning text)", "Online Card Reader", "Office Color Range"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Laser' printing technology?", "options" => ["Using real lasers to cut paper", "Using a laser and toner to create images on paper", "A very fast inkjet", "A type of 3D print"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'USB-C'?", "options" => ["A small battery", "A universal connector for power, data, and video", "A new Windows version", "A wireless protocol"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Bluetooth'?", "options" => ["A blue tooth", "Short-range wireless technology for connecting peripherals", "A type of internet", "A security standard"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Webcam'?", "options" => ["A spider's web", "A camera used for video calls over the internet", "A type of monitor", "A printer"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'External Storage'?", "options" => ["Storing a PC outside", "Devices like USB drives or external HDDs for extra space", "Cloud storage", "The PC's main RAM"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Multifunction Printer' (MFP)?", "options" => ["A printer with 10 colors", "A device that can print, scan, copy, and fax", "A very fast printer", "A wireless printer only"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Refilling' toner vs replacing?", "options" => ["They are the same", "Refilling is adding powder to an old cart; Replacing is using a new one", "Replacing is cheaper", "Refilling is faster"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Refresh Rate'?", "options" => ["How fast you drink water", "How many times per second the screen updates the image (Hz)", "The speed of the CPU", "The data transfer speed"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Projector'?", "options" => ["A type of work", "A device that beams a computer image onto a wall or screen", "A monitor", "A scanner"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Peripheral Conflict'?", "options" => ["Two mice fighting", "When two external devices try to use the same system resources", "A slow computer", "A broken port"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Firmware Update' for a printer?", "options" => ["A soft update", "Updating the internal software of the printer for fixes/features", "Cleaning the print head", "Adding more paper"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Scanner Resolution'?", "options" => ["The speed of scan", "The amount of detail the scanner can capture (measured in DPI)", "The weight of the scanner", "The color of the scan"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Docking Station'?", "options" => ["A place for boats", "A device that allows a laptop to connect to multiple peripherals easily", "A laptop charger only", "A network hub"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+
+    // CATEGORY 2: TROUBLESHOOTING & SERVICE (Maps 185-188)
+    [
+        "id" => ++$highest_id, "course_id" => $tech_course_id, "category_id" => 2,
+        "title" => "Map 185: Troubleshooting Methodology", "desc" => "Master the CompTIA 6-step troubleshooting process.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the FIRST step in the standard troubleshooting process?", "options" => ["Fix the problem", "Identify the problem", "Reboot the PC", "Call for help"], "ans" => 1, "xp" => 200],
+                ["q" => "What is the SECOND step?", "options" => ["Document the solution", "Establish a theory of probable cause", "Buy new parts", "Run a virus scan"], "ans" => 1, "xp" => 200],
+                ["q" => "What is the THIRD step?", "options" => ["Call the customer", "Test the theory to determine the cause", "Verify system functionality", "Establish a plan of action"], "ans" => 1, "xp" => 200],
+                ["q" => "What is the FOURTH step?", "options" => ["Testing a theory", "Establish a plan of action and implement the solution", "Asking for money", "Writing a report"], "ans" => 1, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is the FIFTH step?", "options" => ["Deleting old data", "Verify full system functionality and implement preventive measures", "Fixing one bug", "Starting a new project"], "ans" => 1, "xp" => 240],
+                ["q" => "What is the SIXTH and final step?", "options" => ["Getting a coffee", "Document findings, actions, and outcomes", "Rebooting one last time", "Closing the ticket"], "ans" => 1, "xp" => 240],
+                ["q" => "What does 'Identifying the Problem' involve?", "options" => ["Blaming the user", "Questioning the user and identifying changes to the computer", "Formatting the drive", "Checking the serial number"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'Probable Cause'?", "options" => ["A legal term", "The most likely reason why a system failed", "A computer virus", "A hardware part"], "ans" => 1, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Escalation'?", "options" => ["Walking up stairs", "Moving a problem to a more experienced technician or manager", "Hiring staff", "Buying a new PC"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'Intermittent Problem'?", "options" => ["A problem that never happens", "A problem that happens occasionally and is hard to reproduce", "A permanent hardware failure", "A software update"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'Reproducing the Error'?", "options" => ["Making a copy of a file", "Following the steps to make the error happen again deliberately", "Fixing a bug", "Upgrading hardware"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'Root Cause Analysis' (RCA)?", "options" => ["Checking plant roots", "A systematic process for identifying the origin of a problem", "Writing code", "Buying servers"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Preventive Maintenance'?", "options" => ["Fixing after a crash", "Regularly performing tasks to avoid future failures", "Hiring a security guard", "Deleting records"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Incident Management'?", "options" => ["Starting an accident", "The process of managing the lifecycle of all IT problems", "Working alone", "Hiding errors"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Troubleshooting'?", "options" => ["Shooting a gun", "Finding and resolving the cause of a problem in a system", "Coding a new feature", "Hiring a manager"], "ans" => 1, "xp" => 350],
+                ["q" => "What is the value of 'Documentation'?", "options" => ["To use more paper", "To provide a history of issues and solutions for future reference", "To look busy", "To increase the price of help"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Isolation' in troubleshooting?", "options" => ["Being lonely", "Separating components to find exactly which one is failing", "Turning off the PC", "A type of virus"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Symptom' vs 'Cause'?", "options" => ["They are the same", "Symptom is what the user sees; Cause is why it's happening", "Symptom is for hardware; Cause is for software", "Cause is always a virus"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Trial and Error'?", "options" => ["A formal methodology", "Trying different solutions until one works (less efficient)", "A type of computer code", "A hardware part"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Help Desk' software used for?", "options" => ["Writing letters", "Tracking tickets, communication, and solutions for customers", "Playing games", "Fixing hardware"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'SLA' (Service Level Agreement)?", "options" => ["A type of cable", "A contract specifying the time and quality of support expected", "A bank loan", "A secret password"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'User Error'?", "options" => ["A hardware failure", "When a problem is caused by the person using the computer", "A broken monitor", "A virus"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Diagnostic Software'?", "options" => ["A type of game", "Tools designed to test hardware and software components", "A social media site", "Hiring an expert"], "ans" => 1, "xp" => 500],
+                ["q" => "What is the most common first fix for many IT issues?", "options" => ["Buy a new PC", "Restart the device", "Reinstall Windows", "Call the ISP"], "ans" => 1, "xp" => 500]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $tech_course_id, "category_id" => 2,
+        "title" => "Map 186: Technical Customer Support", "desc" => "Master the soft skills: Empathy, Active Listening, and clear communication.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Active Listening'?", "options" => ["Hearing music", "Fully concentrating and responding to the customer", "Ignoring the speaker", "Talking over the client"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Empathy' in support?", "options" => ["Feeling sorry", "Understanding the customer's frustration and perspective", "Being very smart", "Talking loudly"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Rapport'?", "options" => ["A legal report", "A harmonious connection and mutual trust with a customer", "The end of a shift", "A bill"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Tone of Voice'?", "options" => ["How loud you are", "The attitude and emotion conveyed through speech", "The words you choose", "Your accent"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Jargon'?", "options" => ["A type of food", "Technical terms that customers may not understand", "Clear communication", "A foreign language"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Professionalism'?", "options" => ["Having a degree", "The conduct and qualities that characterize a profession", "Working long hours", "Earning high salary"], "ans" => 1, "xp" => 180],
+                ["q" => "How should you handle an angry customer?", "options" => ["Shout back", "Stay calm, listen, and focus on solving the problem", "Hang up", "Laugh"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Customer Centricity'?", "options" => ["Focusing on profit", "Putting the customer at the center of every decision", "Ignoring staff", "Working alone"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'De-escalation'?", "options" => ["Starting a fire", "Reducing the intensity of a conflict", "Buying time", "Winning an argument"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Feedback'?", "options" => ["A loud noise", "Information given about a service performance", "A payment", "A marketing flyer"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Clarity' in speech?", "options" => ["Using slang", "Speaking in a way that is easy to understand", "Whispering", "Using metaphors"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Patience'?", "options" => ["Being fast", "The capacity to accept trouble without getting angry", "Being smart", "Working alone"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Emotional Intelligence' (EQ)?", "options" => ["Having high IQ", "Ability to manage your own and others' emotions", "Being very emotional", "Crying with a customer"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Paraphrasing'?", "options" => ["Repeating exactly", "Restating the customer's point to check understanding", "Writing a poem", "Staying silent"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Ownership' of a problem?", "options" => ["Buying a company", "Taking personal responsibility for a solution", "Blaming the boss", "Doing nothing"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Consistency'?", "options" => ["Being different", "Applying rules the same way for everyone", "Being fast", "Knowing the name"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Self-Service' support?", "options" => ["Helping yourself to food", "Providing tools (FAQs, Portals) so users can solve their own issues", "Fixing the hardware yourself", "A type of bank"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Knowledge Base'?", "options" => ["A physical library", "A searchable collection of solutions and technical info", "A list of employee names", "A new computer"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Remote Support'?", "options" => ["Working from home", "Providing technical help via a remote network connection", "A type of radio", "Fixing a TV remote"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Ticketing System'?", "options" => ["A bus ticket", "Software to track and manage customer support requests", "A fine", "A prize"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'First Response Time'?", "options" => ["The end of a call", "The time it takes for a customer to get their first reply", "The speed of light", "A technical term"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Customer Satisfaction' (CSAT)?", "options" => ["A new computer", "A metric measuring how satisfied a user is with a service", "Total profit", "A marketing award"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Conflict Management'?", "options" => ["Starting a fight", "The process of limiting negative aspects of conflict", "Ignoring the problem", "Telling the boss"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the 'Golden Rule' of service?", "options" => ["The customer is always wrong", "Treat others as you would like to be treated", "Charge as much as possible", "Talk as fast as you can"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $tech_course_id, "category_id" => 2,
+        "title" => "Map 187: Security & Malware Defense", "desc" => "Remove viruses, secure passwords, and defend against phishing.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Malware'?", "options" => ["A good software", "Malicious software designed to harm or exploit systems", "A high-speed PC", "A type of hardware"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Antivirus'?", "options" => ["A type of virus", "Software used to prevent, detect, and remove malware", "A new computer", "A web browser"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Phishing'?", "options" => ["Catching a fish", "A scam where people try to steal personal info via fake links", "A software update", "A network tool"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Firewall'?", "options" => ["A brick wall", "A security system that monitors and filters network traffic", "A cooling fan", "A type of battery"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Ransomware'?", "options" => ["A software for banks", "Malware that locks your files and demands payment to unlock them", "A free program", "A type of monitor"], "ans" => 1, "xp" => 180],
+                ["q" => "What is '2FA'?", "options" => ["Two-Factor Authentication (a second layer of security)", "Two-Factor App", "Twice Fast Action", "Total File Access"], "ans" => 0, "xp" => 180],
+                ["q" => "What is a 'Strong Password'?", "options" => ["'password123'", "A unique mix of letters, numbers, and symbols", "'admin'", "'123456'"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Social Engineering'?", "options" => ["Building a city", "Psychological manipulation to trick people into giving info", "Fixing a PC", "Using social media"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Encryption'?", "options" => ["Deleting files", "Scrambling data so only authorized parties can read it", "Making a PC faster", "A type of monitor"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Spyware'?", "options" => ["A secret camera", "Software that secretly records your activity and info", "A type of game", "A hardware part"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'VPN'?", "options" => ["Virtual Private Network (secure internet tunnel)", "Very Powerful Network", "Visual Process Node", "Voice Point Name"], "ans" => 0, "xp" => 210],
+                ["q" => "What is 'Trojan Horse'?", "options" => ["A toy", "Malware disguised as a legitimate program", "A fast computer", "A type of monitor"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'DDoS' attack?", "options" => ["A fast download", "Overwhelming a server with traffic to crash it", "A type of software", "Deleting data"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Patch Management'?", "options" => ["Fixing a roof", "The process of keeping software updated with security fixes", "Buying a new PC", "Hiring a manager"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Zero-day' vulnerability?", "options" => ["A bug that is zero days old", "A security hole that is unknown to the software creator", "A very small bug", "A bug that happens at midnight"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Bio-metric' login?", "options" => ["Using a password", "Using physical traits (fingerprint, face) to log in", "A medical test", "A type of mouse"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Adware'?", "options" => ["Ads in a magazine", "Software that automatically displays unwanted advertisements", "A fast computer", "A security standard"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Incident Response'?", "options" => ["Answering a call", "The process of handling a security breach or attack", "A team meeting", "A type of code"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Access Control'?", "options" => ["Opening a door", "Restricting who can see or use specific resources", "A type of keyboard", "A network protocol"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Keylogging'?", "options" => ["Writing a diary", "Recording every keystroke made on a computer", "A fast computer", "A type of variable"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Data Breach'?", "options" => ["Losing your PC", "When sensitive or confidential data is stolen or exposed", "A fast download", "A type of tax"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'HTTPS'?", "options" => ["Hard Power", "The secure, encrypted version of HTTP", "A type of monitor", "A logic error"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Sandboxing'?", "options" => ["Playing in sand", "Running a suspicious program in a separate, isolated environment", "Building a house", "Deleting code"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the biggest security threat in most companies?", "options" => ["Broken hardware", "Human error and social engineering", "Slow internet", "Using old monitors"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $tech_course_id, "category_id" => 2,
+        "title" => "Map 188: Mobile & Remote Support", "desc" => "Troubleshoot tablets, smartphones, and remote desktop connections.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'RDP'?", "options" => ["Rapid Data Process", "Remote Desktop Protocol", "Radio Delivery Point", "Real Digital Part"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'MDM'?", "options" => ["Mobile Device Management (securing work phones)", "Multi Data Mode", "Management Delivery Method", "Moving Digital Media"], "ans" => 0, "xp" => 150],
+                ["q" => "What is 'Screen Mirroring'?", "options" => ["Looking in a mirror", "Displaying a mobile screen on a computer or TV", "A type of backup", "A broken monitor"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'SIM' card function?", "options" => ["To store photos", "To identify a user on a mobile network", "To charge the phone", "To speed up Wi-Fi"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'OS' for most iPhones?", "options" => ["Windows", "iOS", "Android", "Linux"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'OS' for most Samsung phones?", "options" => ["iOS", "Android", "macOS", "DOS"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Jailbreaking' or 'Rooting'?", "options" => ["Breaking a PC", "Removing software restrictions on a mobile device", "Updating an app", "A type of virus"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Airplane Mode'?", "options" => ["Making the phone fly", "Disabling all wireless signals (Wi-Fi, Bluetooth, Cell)", "A fast computer", "A type of game"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Tethering'?", "options" => ["Tying a knot", "Using a mobile phone's data as a Wi-Fi hotspot", "Charging a PC", "Fixing a phone"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Mobile App'?", "options" => ["A type of car", "Software specifically designed to run on a mobile device", "A list of users", "A marketing flyer"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Syncing' data?", "options" => ["Deleting it", "Ensuring data is the same across multiple devices (e.g. Cloud)", "Printing it", "Buying a new phone"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'NFC' used for?", "options" => ["National File Center", "Near Field Communication (e.g. tap to pay)", "Network Flash Code", "New Fast Computer"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Remote Wipe'?", "options" => ["Cleaning a PC from far away", "Deleting data from a lost or stolen device via a remote network", "A type of car wash", "Resetting a router"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'LTE'?", "options" => ["Lower Tier Engine", "Long Term Evolution (4G network)", "Local Time Entry", "Light Total Energy"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'GPS'?", "options" => ["General Power System", "Global Positioning System (location)", "Grid Point Signal", "Global Post Standard"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Bio-metric' security on phones?", "options" => ["Using a password", "Using a fingerprint or face ID to unlock", "A medical test", "A type of lens"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'App Permissions'?", "options" => ["Paying for an app", "Rules for what data an app can access (e.g. camera, location)", "The speed of the app", "A type of game"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'BYOD'?", "options" => ["Buy Your Own Data", "Bring Your Own Device (working with personal hardware)", "Build Your Own Database", "Better Yield On Delivery"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Cloud Storage'?", "options" => ["Storing a phone outside", "Saving files on remote servers accessed via the internet", "A physical hard drive", "A type of battery"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Mobile Hotspot'?", "options" => ["A hot phone", "A feature that lets other devices connect to a phone's internet", "A type of game", "A security standard"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Screen Resolution' on mobile?", "options" => ["The weight of the phone", "The number of pixels on the mobile display", "The brightness", "The size of the battery"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'OTA' update?", "options" => ["Official Tech Access", "Over-The-Air (wireless software update)", "Office Task Assignment", "Output Task Area"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Latency' in mobile networks?", "options" => ["The delay in data transfer", "The weight of the phone", "The color of the case", "The price of the phone"], "ans" => 0, "xp" => 400],
+                ["q" => "What is 'Data Roaming'?", "options" => ["Using the internet at home", "Using mobile data while on another provider's network (e.g. abroad)", "Hiding files", "Fixing a phone"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+
+    // CATEGORY 3: ADVANCED IT ADMIN & CAPSTONE (Maps 189-192)
+    [
+        "id" => ++$highest_id, "course_id" => $tech_course_id, "category_id" => 3,
+        "title" => "Map 189: Server & Directory Services", "desc" => "Manage Active Directory, user accounts, and server-side roles.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Active Directory' (AD)?", "options" => ["A list of websites", "A directory service for managing users and computers in a domain", "A type of storage", "A marketing plan"], "ans" => 1, "xp" => 200],
+                ["q" => "What is a 'Domain Controller'?", "options" => ["A person who owns a site", "A server that handles security authentication requests in a network", "A router", "A monitor"], "ans" => 1, "xp" => 200],
+                ["q" => "What is 'Group Policy' (GPO)?", "options" => ["A company policy on dress code", "A feature that controls the working environment of user/computer accounts", "A type of backup", "A software license"], "ans" => 1, "xp" => 200],
+                ["q" => "What is 'LDAP'?", "options" => ["A type of monitor", "Lightweight Directory Access Protocol (accessing directory services)", "A network cable", "A language"], "ans" => 1, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Server'?", "options" => ["A person who serves food", "A computer that provides data or services to other computers", "A high-speed mouse", "A screen"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'DHCP' role on a server?", "options" => ["Printing documents", "Automatically assigning IP addresses to clients", "Storing photos", "Managing emails"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'DNS' role on a server?", "options" => ["Measuring internet speed", "Translating domain names into IP addresses", "A security standard", "A virus"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'User Account'?", "options" => ["A bank account", "A record that defines a user and their permissions in a system", "A type of hardware", "A marketing flyer"], "ans" => 1, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Permissions' (Read/Write/Execute)?", "options" => ["A polite request", "Settings that define what a user can do with a file or folder", "The speed of the PC", "A type of monitor"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'File Sharing'?", "options" => ["Giving a computer away", "Making files accessible to other users over a network", "Deleting old data", "Fixing a bug"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'Print Server'?", "options" => ["A printer", "A server that manages all print requests in a large network", "A type of ink", "A paper folder"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'RAID' for servers?", "options" => ["A bug spray", "Redundant Array of Independent Disks (combining drives for safety/speed)", "A network protocol", "A security standard"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Backup and Recovery'?", "options" => ["A room for data", "The process of copying data to prevent loss and restoring it if needed", "Buying a new PC", "Deleting records"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'UPS' in a server room?", "options" => ["A shipping company", "Uninterruptible Power Supply (emergency battery backup)", "A fast computer", "A cooling system"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Virtual Machine' (VM)?", "options" => ["A real computer", "A software-based emulation of a physical computer system", "A type of variable", "A security rule"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'RDP' for servers?", "options" => ["A physical cable", "Remote Desktop Protocol (managing servers from a distance)", "A type of monitor", "A logic gate"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'SSH'?", "options" => ["A quiet sound", "Secure Shell (cryptographic network protocol for secure login)", "A high-speed HDD", "A monitor"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Log File'?", "options" => ["A piece of wood", "A record of everything that happens on a server", "A list of users", "A type of variable"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Server Rack'?", "options" => ["A shelf for books", "A standardized frame for mounting multiple server modules", "A type of power cable", "A logic error"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Uptime'?", "options" => ["The time you wake up", "The duration a server has been running without a restart", "The internet speed", "CPU clock speed"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Sudo' in Linux servers?", "options" => ["A game", "A program that allows users to run programs with root privileges", "A type of drive", "A backup tool"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Ping'?", "options" => ["A fast computer", "A tool to test if a host is reachable across an IP network", "A type of virus", "A hardware part"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'IP Address'?", "options" => ["Internal Page", "A unique numerical identifier for a device on a network", "A secret password", "A type of cable"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Administrator' role?", "options" => ["A junior clerk", "The user with full control and authority over the system", "A customer", "A marketing manager"], "ans" => 1, "xp" => 500]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $tech_course_id, "category_id" => 3,
+        "title" => "Map 190: ITIL & Service Management", "desc" => "Learn the professional framework for IT Service Delivery.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'ITIL'?", "options" => ["A type of computer", "Information Technology Infrastructure Library (best practices for IT)", "A network protocol", "A security tool"], "ans" => 1, "xp" => 200],
+                ["q" => "What is an 'Incident' in ITIL?", "options" => ["A planned update", "An unplanned interruption or reduction in quality of an IT service", "A team meeting", "Hiring staff"], "ans" => 1, "xp" => 200],
+                ["q" => "What is a 'Service Desk'?", "options" => ["A wooden desk", "The single point of contact between the service provider and users", "A department in a bank", "A logic gate"], "ans" => 1, "xp" => 200],
+                ["q" => "What is 'SLA'?", "options" => ["Service Level Agreement (agreed service standards)", "Super Low Average", "Standard Legal Action", "Secret Loyalty Award"], "ans" => 0, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Problem Management'?", "options" => ["Starting a fight", "The process of managing the lifecycle of all problems (root cause analysis)", "Ignoring errors", "Firing staff"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'Change Management'?", "options" => ["Changing clothes", "Ensuring standard methods are used for efficient handling of all IT changes", "Updating a logo", "A salary bonus"], "ans" => 1, "xp" => 240],
+                ["q" => "What is an 'Asset' in ITIL?", "options" => ["Debt", "Any component that contributes to the delivery of an IT service", "A list of employee names", "A marketing flyer"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'Config Management' (CMDB)?", "options" => ["A secret code", "Managing info about configuration items required to deliver an IT service", "Deleting data", "Hiding the price"], "ans" => 1, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Service Request'?", "options" => ["A polite request", "A request from a user for information, advice, or access to an IT service", "A bug report", "A broken monitor"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'Continuous Improvement'?", "options" => ["Staying the same", "The ongoing effort to improve IT services, processes, and products", "Hiring new staff", "Buying new software"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'Workaround'?", "options" => ["Walking in circles", "A temporary way to overcome a problem or incident", "A permanent fix", "A type of variable"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'Release Management'?", "options" => ["Letting people go", "Managing the planning, scheduling, and control of a build to the live environment", "A type of loop", "A hardware crash"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'KPI'?", "options" => ["Keep People Informed", "Key Performance Indicator", "Known Product Item", "Key Personal Interaction"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'User Experience' (UX)?", "options" => ["Playing a game", "The overall experience of a person using a product", "A type of software", "Working in a company"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Service Catalog'?", "options" => ["A shopping list", "A centralized database of information about active IT services", "A list of late employees", "A financial ledger"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Stakeholder'?", "options" => ["The person holding wood", "Anyone with an interest in the IT services provided", "Only the CEO", "A competitor"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Risk Management' in IT?", "options" => ["Taking as much risk as possible", "Identifying, assessing, and controlling threats to IT assets", "Buying insurance only", "Ignoring problems"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Availability'?", "options" => ["The number of PCs", "The ability of an IT service to perform its function when required", "The speed of the internet", "A security rule"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Capacity Management'?", "options" => ["The weight of a server", "Ensuring IT resources are right-sized to meet current and future needs", "The number of stairs", "A type of code"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Security Management'?", "options" => ["Hiring a guard", "Protecting the confidentiality, integrity, and availability of data", "Buying a new PC", "Cleaning the station"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Compliance'?", "options" => ["Being friendly", "Obeying laws, regulations, and organizational rules", "A promotion", "A marketing plan"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Audit'?", "options" => ["A large room", "An independent examination of IT systems to ensure accuracy and compliance", "A performance review", "A bank statement"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Utility' vs 'Warranty'?", "options" => ["They are the same", "Utility is 'fitness for purpose'; Warranty is 'fitness for use'", "Utility is price; Warranty is length", "Utility is for hardware"], "ans" => 1, "xp" => 500],
+                ["q" => "What is the ultimate goal of ITIL?", "options" => ["To use more paper", "To align IT services with the needs of the business", "To make more money", "To fire old staff"], "ans" => 1, "xp" => 500]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $tech_course_id, "category_id" => 3,
+        "title" => "Map 191: Adv. Diagnostics & Data Recovery", "desc" => "Recover deleted files, repair corrupted OS, and handle critical failures.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Data Recovery'?", "options" => ["Deleting old data", "The process of retrieving inaccessible or lost data from storage", "Buying a new PC", "Cleaning a disk"], "ans" => 1, "xp" => 200],
+                ["q" => "What is the first thing to do if a hard drive is clicking?", "options" => ["Keep using it", "Power off immediately and avoid using it (mechanical failure)", "Hit it with a hammer", "Pour water on it"], "ans" => 1, "xp" => 200],
+                ["q" => "What is 'File Fragmentation'?", "options" => ["Breaking a file", "When pieces of a file are stored in different locations on a disk", "A type of virus", "A secret password"], "ans" => 1, "xp" => 200],
+                ["q" => "What is 'Recycle Bin' / 'Trash'?", "options" => ["A final deletion", "A temporary storage for deleted files before permanent removal", "A folder for photos", "A virus scanner"], "ans" => 1, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'S.M.A.R.T.' analysis?", "options" => ["A math test", "A monitoring system that detects and reports on drive reliability", "A type of RAM", "A new computer brand"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'Disk Imaging'?", "options" => ["Taking a photo of a PC", "Creating an exact bit-for-bit copy of a storage drive", "Deleting records", "Fixing a phone"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'Formatting' a drive?", "options" => ["Making it pretty", "Preparing a drive for use by creating a file system (deletes data)", "Hiring an accountant", "Updating a driver"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'NTFS'?", "options" => ["National Tech File Standard", "A file system used by modern Windows", "A type of virus", "A high-speed network"], "ans" => 1, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'FAT32'?", "options" => ["An old computer", "An older file system with a 4GB file size limit", "A type of RAM", "A security rule"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'Partition Recovery'?", "options" => ["Building a wall", "Restoring a lost or deleted section of a hard drive", "Buying a new PC", "Cleaning the station"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'Head Crash'?", "options" => ["A headache", "A hard drive failure where the read/write head touches the platter", "A broken monitor", "A logic error"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'Bad Sector'?", "options" => ["A bad neighborhood", "A portion of a disk that is no longer reliable for storage", "A broken screen", "A type of virus"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Zero-filling' a drive?", "options" => ["Filling with nothing", "Overwriting all data on a drive with zeros to prevent recovery", "Buying a new PC", "Speeding up the internet"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Offsite Backup'?", "options" => ["A backup in the office", "Storing backup data in a different physical location or cloud", "A backup on paper", "A backup once a year"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Snapshot' in storage?", "options" => ["A photo", "The state of a system at a particular point in time", "A type of loop", "A hardware crash"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Encryption' and data recovery?", "options" => ["Encryption makes it easier", "Encryption makes data recovery much harder or impossible without keys", "They are identical", "Encryption is only for text"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Forensic Data Recovery'?", "options" => ["Studying fossils", "Retrieving data for legal investigations using specialized tools", "Working in a lab", "Deleting records"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Bit-for-Bit' copy?", "options" => ["A type of logic", "A perfect clone of a drive including deleted space", "A fast computer", "A type of variable"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Redundancy'?", "options" => ["Having too many staff", "Using extra components (like RAID) to prevent data loss if one fails", "A logic error", "Deleting data"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the most reliable way to prevent data loss?", "options" => ["Buying a new PC", "Maintaining regular, tested backups in multiple locations", "Using a password", "Hiring a guard"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Shadow Copy' (VSS)?", "options" => ["A secret copy", "A technology that allows taking manual or automatic backup copies/snapshots", "A type of drive", "A backup tool"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Logical' vs 'Physical' failure?", "options" => ["Logical is hardware; Physical is software", "Logical is software/data; Physical is hardware/parts", "They are identical", "Physical is only for monitors"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'SSD' wear leveling?", "options" => ["Cleaning a drive", "A technique to prolong the life of SSDs by distributing data writes evenly", "A new computer brand", "A type of font"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Cloud Backup'?", "options" => ["Backing up in the rain", "Automated backup of data to remote servers over the internet", "A physical hard drive", "A marketing flyer"], "ans" => 1, "xp" => 500]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $tech_course_id, "category_id" => 3,
+        "title" => "Map 192: Technical Support Capstone", "desc" => "The final exam. Prove your mastery across all support and IT admin disciplines.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "SCENARIO: A user reports their PC is slow and making clicking sounds. What do you do?", "options" => ["Run a disk cleanup", "Power off immediately and backup data from a different drive if possible", "Increase the RAM", "Restart the PC 10 times"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: You added new RAM and the PC won't boot. What is the FIRST thing to check?", "options" => ["Buy a new motherboard", "Ensure the RAM is properly seated and compatible", "Reinstall Windows", "Check the Wi-Fi router"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: A user cannot reach a website but can print to the network printer. What is the likely issue?", "options" => ["The internet cable is broken", "A DNS or ISP issue (local network is fine)", "The monitor is off", "A virus"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: You are in a loud office on a call with an angry user. What skill do you use?", "options" => ["Shout back", "Active listening and Empathy", "Hang up", "Laugh"], "ans" => 1, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "SCENARIO: A user wants to access their office PC from home. Which protocol do you use?", "options" => ["HTTP", "RDP", "FTP", "SMTP"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: You suspect a motherboard failure. What diagnostic tool is best?", "options" => ["A screwdriver", "POST Card or Motherboard speaker (beep codes)", "A new mouse", "A cleaning kit"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: You need to ensure a new staff member has the right folders. Which service do you use?", "options" => ["Excel", "Active Directory (AD)", "Word", "Paint"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: You find a suspicious .exe file in a startup folder. What is the first security step?", "options" => ["Run the file", "Isolate the PC and run a full antivirus scan", "Delete the file instantly", "Ignore it"], "ans" => 1, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "SCENARIO: A printer is printing 'gibberish'. What is the most common fix?", "options" => ["Adding more paper", "Updating or reinstalling the printer driver", "Buying a new printer", "Yelling at it"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: You need to move a large file to a colleague in another city. What is best?", "options" => ["Print it and post it", "Upload to a secure Cloud Storage link", "Text them the code", "Fly there"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: A user's screen is flickering. What is the first hardware check?", "options" => ["The mouse battery", "The video cable connection (HDMI/VGA)", "The keyboard", "The room temperature"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: A user forgot their password. What is the administrative process?", "options" => ["Ask for their old password", "Verify identity and reset via Active Directory", "Tell them to guess", "Format their PC"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "SCENARIO: A server room is getting too hot. What do you check?", "options" => ["The internet speed", "The HVAC / Air conditioning system", "The lighting", "The carpet"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: A user reports their laptop battery is bulging. What do you do?", "options" => ["Keep using it", "Power off, remove (if safe), and dispose of as hazardous waste immediately", "Press it down", "Tape it shut"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: A critical system must be restored in 4 hours. What is this time window called?", "options" => ["RPO", "RTO (Recovery Time Objective)", "SLA", "MTU"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: You have fixed a difficult bug. What is the final step?", "options" => ["Go home", "Document the findings and solution in the Knowledge Base", "Delete the file", "Ask for a bonus"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "MASTER FINAL: What is the primary focus of an effective Tech Support Specialist?", "options" => ["Being the fastest coder", "Systematic problem-solving, technical precision, and excellent customer empathy", "Buying the best gear", "Hiring more people"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: Why is the 6-step troubleshooting process used globally?", "options" => ["It's a secret", "It provides a logical, repeatable framework to find and fix any IT issue", "It makes the job longer", "It's for big cities only"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: What does 'Confidentiality, Integrity, and Availability' (CIA) mean?", "options" => ["A government agency", "The core pillars of information security", "Three types of hardware", "A marketing plan"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: What is the true goal of technical support?", "options" => ["To look smart", "To empower users and ensure organizational systems run reliably and securely", "To sell more hardware", "To fix computers forever"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "EXAM: How do Hardware, OS, and Networks interact?", "options" => ["They are separate", "The OS manages hardware and uses network protocols to communicate with other systems", "Hardware runs networks directly", "Networks manage the OS"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: Why is 'Root Cause Analysis' vital after a major system failure?", "options" => ["To penalize workers", "To identify the core failure and prevent it from ever happening again", "To satisfy insurance", "To close the ticket"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: What is the hallmark of a world-class IT department?", "options" => ["Being aggressive", "Strategic alignment, professional discipline, and a culture of continuous learning", "Having the most money", "Using the newest station"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: What is the core responsibility of tech support to their organization?", "options" => ["To drive a truck", "To provide a reliable and expert technical safety net for business continuity", "To write reports", "To hire staff"], "ans" => 1, "xp" => 600]
+            ]]
+        ]
+    ]
+];
+
+// ==========================================================
+// TELEPHONE ETIQUETTE CURRICULUM (Maps 193-204)
+// ==========================================================
+$tele_maps = [
+    // CATEGORY 1: THE PERFECT GREETING (Maps 193-196)
+    [
+        "id" => ++$highest_id, "course_id" => $tele_course_id, "category_id" => 1,
+        "title" => "Map 193: First Impressions & Greetings", "desc" => "Master the first 10 seconds of the call to set a professional tone.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the professional standard for answering an office phone?", "options" => ["'Hello, who is this?'", "Greeting, Company Name, Your Name, and an offer to help", "'Yeah, hold on a sec.'", "Just repeating the phone number"], "ans" => 1, "xp" => 150],
+                ["q" => "How many rings are generally considered acceptable before answering?", "options" => ["At least 10", "Between 1 and 3", "Exactly 5", "As many as it takes to finish your coffee"], "ans" => 1, "xp" => 150],
+                ["q" => "Why is it important to smile while talking on the phone?", "options" => ["It makes you look better to coworkers", "A smile is audible and makes your voice sound warmer and more helpful", "It prevents jaw pain", "It speeds up the conversation"], "ans" => 1, "xp" => 150],
+                ["q" => "What should you avoid doing while answering a call?", "options" => ["Sitting up straight", "Eating, chewing gum, or talking to others in the room", "Having a pen ready", "Looking at your computer screen"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "If you are answering for a specific department, what should you include?", "options" => ["The CEO's name", "The department name (e.g., 'Accounting Department, this is...')", "The room number", "The current time"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Vocal Presence'?", "options" => ["Using a megaphone", "The energy and confidence you project through your voice", "Speaking very quietly", "Using many slang words"], "ans" => 1, "xp" => 180],
+                ["q" => "What should you do if you answer a call but are still finishing a conversation with a coworker?", "options" => ["Keep talking to the coworker", "Wait until you are finished before answering, or excuse yourself and focus entirely on the caller", "Answer and tell the caller to wait while you finish", "Put the caller on speakerphone"], "ans" => 1, "xp" => 180],
+                ["q" => "Which greeting is most appropriate for a formal corporate environment?", "options" => ["'Hi there!'", "'Good morning, ABC Logistics, Sarah speaking, how may I assist you?'", "'Who's calling?'", "'ABC Logistics, what's the problem?'"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What does 'Answering with a Query' mean?", "options" => ["Asking the caller a riddle", "Ending your greeting with an open-ended offer like 'How can I help you today?'", "Questioning why they called", "Asking for their password immediately"], "ans" => 1, "xp" => 210],
+                ["q" => "How does your posture affect your phone voice?", "options" => ["It doesn't", "Sitting up straight helps with breath control and makes you sound more alert", "Slouching makes you sound more relaxed", "Standing up makes you sound angry"], "ans" => 1, "xp" => 210],
+                ["q" => "What is the best way to handle a caller who didn't catch your name?", "options" => ["Sigh loudly", "Repeat your name clearly and slowly", "Tell them it doesn't matter", "Speak faster"], "ans" => 1, "xp" => 210],
+                ["q" => "Why should you avoid using a 'Generic' greeting like just 'Hello'?", "options" => ["It's too long", "It lacks professionalism and doesn't confirm the caller reached the right place", "It costs more money", "It's illegal"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "If you have a heavy accent or a difficult name, what should you do?", "options" => ["Don't say your name", "Enunciate clearly and consider a slightly slower pace", "Change your name", "Speak very loudly"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Audible Readiness'?", "options" => ["Being ready to shout", "Sounding prepared and attentive the moment the call is connected", "Having a loud ringtone", "Drinking water while talking"], "ans" => 1, "xp" => 250],
+                ["q" => "Which of these is a 'Gatekeeper' greeting?", "options" => ["'What's up?'", "'Welcome to X-Corp, please hold.'", "'Good afternoon, X-Corp, how may I direct your call?'", "Silent breathing"], "ans" => 2, "xp" => 250],
+                ["q" => "What should you do if the caller is immediately aggressive?", "options" => ["Hang up", "Maintain a calm, professional greeting to avoid escalating the situation", "Yell back", "Laugh"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the psychological impact of a clear greeting?", "options" => ["It scares people", "It immediately establishes trust and professional competence", "It makes people hang up", "It has no impact"], "ans" => 1, "xp" => 300],
+                ["q" => "Should you use your surname in a greeting?", "options" => ["Always", "Depends on company culture; often just a first name is more approachable", "Never", "Only if you are the CEO"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Mirroring' in a greeting?", "options" => ["Looking in a mirror", "Subtly matching the caller's energy level if they are professional and direct", "Copying their accent", "Repeating every word they say"], "ans" => 1, "xp" => 300],
+                ["q" => "What is the best way to handle a multi-line switchboard greeting?", "options" => ["Panicked shouting", "A calm, consistent script used for every line", "Letting them all ring", "Answering one and hanging up the others"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Standardization' of greetings?", "options" => ["Being unique every time", "Ensuring every staff member answers the phone with the same professional format", "Answering in different languages", "Changing the greeting weekly"], "ans" => 1, "xp" => 400],
+                ["q" => "How does 'Enunciation' differ from 'Volume'?", "options" => ["They are the same", "Enunciation is the clarity of words; Volume is the loudness", "Volume is more important", "Enunciation is only for singers"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the 'Receptionist's Aura'?", "options" => ["A physical glow", "The professional and welcoming atmosphere created through vocal tone", "A type of perfume", "A uniform"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the ultimate goal of the first 10 seconds of a call?", "options" => ["To finish the call", "To make the caller feel valued, heard, and confident in the business", "To get a credit card number", "To sound like a robot"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $tele_course_id, "category_id" => 1,
+        "title" => "Map 194: Active Listening on the Phone", "desc" => "Since you can't see them, you must hear everything. Mastering verbal cues.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Active Listening'?", "options" => ["Listening while running", "Fully concentrating on what is being said and providing verbal feedback", "Waiting for your turn to speak", "Ignoring the speaker"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Verbal Nod'?", "options" => ["Nodding your head", "Short affirmations like 'I see', 'Yes', or 'Certainly' to show you are listening", "Talking over the caller", "A loud sneeze"], "ans" => 1, "xp" => 150],
+                ["q" => "Why is note-taking important while listening?", "options" => ["To practice handwriting", "To ensure accuracy and prevent the caller from having to repeat themselves", "To look busy", "It isn't important"], "ans" => 1, "xp" => 150],
+                ["q" => "What should you do if the caller is talking too fast?", "options" => ["Tell them to shut up", "Politely ask them to slow down so you can capture all the details correctly", "Hang up", "Guess what they said"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Paraphrasing'?", "options" => ["Repeating word-for-word", "Summarizing what the caller said in your own words to confirm understanding", "Speaking in a different language", "Deleting their message"], "ans" => 1, "xp" => 180],
+                ["q" => "How can you detect the caller's mood without seeing them?", "options" => ["By their name", "By their tone, pitch, and speed of speech", "By the time of day", "By their phone number"], "ans" => 1, "xp" => 180],
+                ["q" => "What does 'Empathy' sound like on the phone?", "options" => ["'That's too bad.'", "'I can understand why that would be frustrating for you.'", "'It's not my problem.'", "Silence"], "ans" => 1, "xp" => 180],
+                ["q" => "What is the danger of 'Interrupting'?", "options" => ["It saves time", "It makes the caller feel disrespected and frustrated", "It makes you look smart", "It increases call volume"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Listening for the Unsaid'?", "options" => ["Reading minds", "Paying attention to hesitations, sighs, or changes in tone", "Ignoring the words", "Listening to background music"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Clarification'?", "options" => ["Telling them they are wrong", "Asking questions to ensure you have the correct information (e.g., 'Just to be sure, you meant...')", "Cleaning the phone", "Waiting for help"], "ans" => 1, "xp" => 210],
+                ["q" => "Which of these shows you are NOT listening?", "options" => ["Paraphrasing", "Typing loudly or having side conversations while the caller speaks", "Giving verbal nods", "Asking relevant questions"], "ans" => 1, "xp" => 210],
+                ["q" => "How do you handle a caller who is wandering off-topic?", "options" => ["Hang up", "Gently steer them back with a focused question", "Let them talk for an hour", "Ignore them"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is the 'Three-Second Rule'?", "options" => ["Eating food off the floor", "Waiting 3 seconds after the caller finishes to ensure they are truly done speaking", "Hanging up after 3 seconds", "Answering after 3 rings"], "ans" => 1, "xp" => 250],
+                ["q" => "What is an 'Open-Ended' question?", "options" => ["A question with a 'Yes/No' answer", "A question that encourages the caller to provide more detail (e.g., 'Can you describe...')", "A question that never ends", "A rhetorical question"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Reflective Listening'?", "options" => ["Looking in a mirror", "Repeating the emotional content of the message (e.g., 'You sound very concerned about this...')", "Repeating every word", "Thinking about your own life"], "ans" => 1, "xp" => 250],
+                ["q" => "Why is 'Validation' important?", "options" => ["To check a ticket", "To show the caller that you recognize and respect their feelings or situation", "To prove they are wrong", "To get a bonus"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Cognitive Dissonance' in listening?", "options" => ["Hearing two sounds", "When you stop listening because the caller's view conflicts with your own", "A broken phone", "Listening to music"], "ans" => 1, "xp" => 300],
+                ["q" => "How can you minimize 'Internal Noise'?", "options" => ["Turning off a fan", "Focusing on the current call and putting aside personal thoughts or prior stress", "Talking louder", "Unplugging the phone"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Analytical Listening'?", "options" => ["Listening for errors", "Listening to evaluate the facts and data provided by the caller", "Listening for gossip", "Listening for tone only"], "ans" => 1, "xp" => 300],
+                ["q" => "What should you do if you missed a piece of information?", "options" => ["Guess", "Politely apologize and ask them to repeat that specific point", "Ignore it", "Blame the connection"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Synthesizing' in listening?", "options" => ["Using a robot voice", "Combining all the information the caller gave into a clear, actionable summary", "Deleting the data", "Creating a new problem"], "ans" => 1, "xp" => 400],
+                ["q" => "How do you handle a 'High-Speed' caller?", "options" => ["Talk faster than them", "Use frequent verbal nods to confirm you're with them, and ask them to pause for notes if needed", "Hang up", "Yell"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Selective Perception'?", "options" => ["Hearing everything", "Only hearing what you want to hear or expect to hear", "A type of vision", "Listening to two people"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the result of effective active listening?", "options" => ["Losing money", "Fewer errors, faster resolutions, and higher customer trust", "Longer calls", "A headache"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $tele_course_id, "category_id" => 1,
+        "title" => "Map 195: Vocal Quality & Tone", "desc" => "It's not just what you say, but how you say it. Mastering pitch, rate, and volume.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Pitch' in vocal quality?", "options" => ["How loud you are", "The highness or lowness of your voice", "How fast you talk", "The words you use"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Inflection'?", "options" => ["An infection", "Changing the pitch of your voice to avoid sounding like a robot", "Speaking very slowly", "Using slang"], "ans" => 1, "xp" => 150],
+                ["q" => "What does a 'Monotone' voice communicate?", "options" => ["Excitement", "Boredom, lack of interest, and unhelpfulness", "Professionalism", "High energy"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the ideal 'Rate' of speech for professional calls?", "options" => ["Very fast to save time", "A moderate, clear pace that is easy to follow", "Very slow like a child", "As loud as possible"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "How does 'Volume' impact tone?", "options" => ["Louder is always better", "Appropriate volume shows confidence; too loud is aggressive; too quiet is timid", "It doesn't matter", "Volume is for music only"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Enunciation'?", "options" => ["Loudness", "Pronouncing each word clearly and distinctly", "The speed of talking", "Using big words"], "ans" => 1, "xp" => 180],
+                ["q" => "What should you do with your voice if a caller is elderly or has a bad connection?", "options" => ["Shout", "Speak slightly slower and more distinctly, without being patronizing", "Hang up", "Use a higher pitch"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Vocal Warmth'?", "options" => ["A hot drink", "A friendly and approachable quality in the voice", "A loud scream", "A robot voice"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Articulation'?", "options" => ["Having a fast pulse", "The clarity of individual speech sounds", "The length of a call", "The pitch of a bell"], "ans" => 1, "xp" => 210],
+                ["q" => "How does dehydration affect your vocal quality?", "options" => ["Makes it better", "Causes a dry, scratchy, or 'clicky' voice", "Makes you sound younger", "No effect"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Pacing'?", "options" => ["Running", "Managing the speed of the conversation to match the caller's comfort", "Timing a call", "Answering the phone"], "ans" => 1, "xp" => 210],
+                ["q" => "What does a 'High Pitch' often communicate in an emergency?", "options" => ["Calmness", "Anxiety, panic, or lack of control", "Authority", "Sleepiness"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Vocal Resonance'?", "options" => ["A loud echo", "The richness and depth of a voice", "A type of microphone", "A broken line"], "ans" => 1, "xp" => 250],
+                ["q" => "Why should you avoid 'Up-talking' (rising pitch at the end of every sentence)?", "options" => ["It makes you sound like you are asking a question and lacks authority", "It's too loud", "It's too quiet", "It's illegal"], "ans" => 0, "xp" => 250],
+                ["q" => "What is the benefit of a 'Deep' tone in customer support?", "options" => ["It's harder to hear", "It often conveys authority and calmness", "It's faster", "It's funnier"], "ans" => 1, "xp" => 250],
+                ["q" => "How can you improve your enunciation?", "options" => ["Chewing gum", "Practicing tongue twisters and being mindful of ending consonants", "Talking faster", "Whispering"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Vocal Fry'?", "options" => ["Cooking food", "A low, raspy, creaky sound at the end of sentences (should be avoided)", "A fast speech", "A loud shout"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Projecting' your voice?", "options" => ["Hiding it", "Using your diaphragm to ensure your voice is clear and heard without shouting", "A movie screen", "A type of chart"], "ans" => 1, "xp" => 300],
+                ["q" => "What is the 'Smile in the Voice' technique?", "options" => ["Laughing at the caller", "Smiling while you talk to naturally raise your soft palate and brighten the tone", "Closing your eyes", "Using emojis"], "ans" => 1, "xp" => 300],
+                ["q" => "How does breathing affect tone?", "options" => ["It doesn't", "Deep breathing provides a steady air supply for a calm, controlled voice", "Short breaths make you sound smart", "Blinking is more important"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Vocal Mirroring'?", "options" => ["Looking in a mirror", "Adjusting your rate and volume slightly to align with the caller's style", "Repeating their insults", "Singing their words"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Nasality'?", "options" => ["A clear voice", "Speaking through the nose, which can sound whiny or unpleasant", "A type of medicine", "A loud shout"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the 'Authority' tone?", "options" => ["Shouting", "A low-pitched, steady, and deliberate voice", "Laughing", "Whispering"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the ultimate goal of vocal control?", "options" => ["To win a singing contest", "To sound professional, trustworthy, and helpful to every caller", "To talk as little as possible", "To hide your real identity"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $tele_course_id, "category_id" => 1,
+        "title" => "Map 196: Effective Message Taking", "desc" => "Ensure no information is lost. Accuracy and professional follow-up.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the most important rule in message taking?", "options" => ["Speed", "Accuracy", "Length", "Handwriting style"], "ans" => 1, "xp" => 150],
+                ["q" => "Which detail is NOT essential in a message?", "options" => ["Caller's name", "Caller's home address (unless relevant)", "Reason for the call", "Caller's phone number"], "ans" => 1, "xp" => 150],
+                ["q" => "What should you do after writing down a phone number?", "options" => ["Hang up", "Read it back to the caller to verify accuracy", "Wait for them to call back", "Delete it"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Message Pad' or digital equivalent used for?", "options" => ["Drawing", "Ensuring messages are recorded in a standardized, organized way", "Folding paper", "Calculating prices"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "How should you record the time of the call?", "options" => ["Guess", "Record the exact time and date the call was received", "Use 'Morning' or 'Afternoon' only", "Don't record it"], "ans" => 1, "xp" => 180],
+                ["q" => "What is the 'Urgency' level of a message?", "options" => ["A secret", "Indicating if a call requires immediate attention or can wait", "The volume of the caller", "The length of the call"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Phonetic Spelling'?", "options" => ["A foreign language", "Spelling out difficult names using a standard code (Alpha, Bravo) to avoid errors", "Using emojis", "Writing in cursive"], "ans" => 1, "xp" => 180],
+                ["q" => "What should you do if a caller refuses to leave a message?", "options" => ["Force them", "Politely tell them you will let the colleague know they called", "Hang up", "Argue with them"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "How quickly should messages be delivered to the recipient?", "options" => ["Once a week", "As soon as reasonably possible", "Only when they ask", "Next month"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Confidentiality' in message taking?", "options" => ["Telling everyone the message", "Ensuring private information in the message is only shared with the intended recipient", "Ignoring the message", "Writing it in a large font"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Legibility'?", "options" => ["How fast you type", "How easy it is to read your handwriting (for physical messages)", "The color of the ink", "The weight of the paper"], "ans" => 1, "xp" => 210],
+                ["q" => "What is the danger of 'Assuming' details?", "options" => ["It saves time", "It leads to errors and unprofessional follow-ups", "It makes you look smart", "No danger"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Electronic Messaging' (e.g. Email/Teams)?", "options" => ["A phone call", "Using digital tools to deliver messages instantly", "A paper memo", "A fax"], "ans" => 1, "xp" => 250],
+                ["q" => "What should you include in the 'Action' part of a message?", "options" => ["A joke", "What the caller wants the recipient to DO (e.g., 'Please call back')", "The recipient's salary", "A weather report"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Double-Checking'?", "options" => ["Doing twice the work", "Verifying all details (name, number, reason) before ending the call", "Asking for a bonus", "Rebooting the PC"], "ans" => 1, "xp" => 250],
+                ["q" => "How should you handle a message for an executive who is away for a week?", "options" => ["Delete it", "Follow agreed procedures (e.g., email the message or route to a deputy)", "Wait until they return to tell them", "Tell the caller to go away"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Message Logging'?", "options" => ["Throwing wood", "Maintaining a central record of all incoming messages for tracking and audit", "Hiring a manager", "Selling data"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Follow-through'?", "options" => ["Ending a call", "Ensuring the message was received and acted upon", "Doing nothing", "Taking another call"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Professional Discretion' in messages?", "options" => ["Sharing info", "Not including sensitive or personal details in a public message area", "Ignoring the call", "Talking to media"], "ans" => 1, "xp" => 300],
+                ["q" => "How do you handle a caller who wants to leave a 'Very Long' message?", "options" => ["Hang up", "Summarize the key points and ask if the summary is correct", "Type every single word", "Sigh loudly"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Verification' in message taking?", "options" => ["Lying", "Reading back the information to the caller to ensure 100% accuracy", "A bank loan", "A secret password"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Escalation' of a message?", "options" => ["Walking up stairs", "Marking a message as urgent or critical for immediate attention", "Hiring a manager", "Buying a new PC"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Traceability'?", "options" => ["Drawing", "The ability to see who took a message, when, and who it was for", "Fast typing", "Using a mouse"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the ultimate goal of effective message taking?", "options" => ["To finish work", "To ensure professional and accurate communication flow within the organization", "To save paper", "To sound busy"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+
+    // CATEGORY 2: HANDLING THE CALL FLOW (Maps 197-200)
+    [
+        "id" => ++$highest_id, "course_id" => $tele_course_id, "category_id" => 2,
+        "title" => "Map 197: Putting Callers on Hold", "desc" => "Manage wait times with respect. Permission, updates, and alternatives.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the first thing you should do before putting a caller on hold?", "options" => ["Press the button", "Ask for permission and provide a reason", "Mute the phone", "Say nothing"], "ans" => 1, "xp" => 150],
+                ["q" => "How long should you wait before checking back with a caller on hold?", "options" => ["10 minutes", "Every 30 to 45 seconds", "1 hour", "Once a day"], "ans" => 1, "xp" => 150],
+                ["q" => "What should you say when you return to a caller on hold?", "options" => ["'I'm back.'", "'Thank you for holding.'", "'What did you want?'", "'Still here?'"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Hold Music' or 'Silence' preference?", "options" => ["Music is always better", "Music or helpful info is better than dead silence (which sounds like a disconnect)", "Silence is better", "Turn off the phone"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What should you offer if the hold time will be very long?", "options" => ["To tell them a joke", "The option to leave a message or receive a callback", "To play louder music", "Nothing"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Dead Air'?", "options" => ["A fresh breeze", "Complete silence on the line which makes the caller think they were cut off", "A type of radio", "A broken phone"], "ans" => 1, "xp" => 180],
+                ["q" => "Why should you never use the 'Mute' button instead of 'Hold'?", "options" => ["Mute is faster", "The caller can still hear background office noise or your side conversations", "Hold costs more", "Mute is for music only"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Hold Etiquette'?", "options" => ["Holding a box", "Respecting the caller's time and keeping them informed while they wait", "Hanging up", "Answering 10 calls at once"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Queue Management'?", "options" => ["Waiting in line", "Managing multiple callers on hold effectively", "Deleting calls", "Fixing a phone"], "ans" => 1, "xp" => 210],
+                ["q" => "Should you apologize for a long hold time?", "options" => ["No, it's not your fault", "Yes, a sincere apology shows respect for the caller's time", "Only if they complain", "Only if it is a VIP"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Callback' service?", "options" => ["A type of game", "Promising to call the customer back within a certain timeframe to avoid holding", "Calling them to yell", "Hanging up"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'IVR' (Interactive Voice Response)?", "options" => ["A robot person", "An automated menu system (e.g., 'Press 1 for Sales')", "A type of radio", "A fast computer"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Wait Time'?", "options" => ["The time you start work", "The duration a caller spends on hold before being helped", "The length of a call", "The time to reach the office"], "ans" => 1, "xp" => 250],
+                ["q" => "How do you handle a caller who refuses to go on hold?", "options" => ["Hang up", "Listen and try to resolve immediately, or offer an immediate callback", "Argue with them", "Force them"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Comfort Messaging'?", "options" => ["Giving a pillow", "Automated messages that play while on hold (e.g., 'Your call is important...')", "A secret text", "A type of sales"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Hold Time' monitoring?", "options" => ["Checking a watch", "Measuring how long people wait to ensure it meets company standards (SLA)", "Hiring a guard", "Buying a new PC"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Abandoned Call' rate?", "options" => ["Losing a PC", "The percentage of callers who hang up while on hold", "The speed of sales", "The number of new customers"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Service Level'?", "options" => ["Height of a desk", "Performance standard (e.g. 80% of calls answered in 20 seconds)", "A type of floor", "The price of help"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Proactive' hold management?", "options" => ["Waiting for a shout", "Updating the caller frequently before they get frustrated", "Ignoring the phone", "Talking to coworkers"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Warm' hold vs 'Cold' hold?", "options" => ["Temperature", "Warm hold is when you explain why; Cold is just pressing the button", "There is no difference", "Cold hold is better"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Active' hold?", "options" => ["Doing exercise", "When a technician works on the problem while the user stays on the line", "Hanging up", "Ignoring the call"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'System Capacity'?", "options" => ["The weight of a PC", "The maximum number of callers your phone system can hold at once", "The size of a monitor", "The price of the phone"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Customer Fatigue'?", "options" => ["Being sleepy", "The frustration and loss of trust caused by excessive hold times", "Winning a game", "Buying a new phone"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the ultimate rule of holding?", "options" => ["Don't do it", "Only use it when necessary and always respect the caller's time", "Hold for 10 minutes always", "Use the loudest music"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $tele_course_id, "category_id" => 2,
+        "title" => "Map 198: Transferring Calls Professionally", "desc" => "Ensure the caller reaches the right person without frustration.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the first step in transferring a call?", "options" => ["Press transfer", "Explain to the caller who you are transferring them to and why", "Mute the phone", "Ask for their credit card"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Warm Transfer'?", "options" => ["Transferring in summer", "Speaking to the colleague first to introduce the caller and the situation", "Transferring and hanging up", "Asking a robot to help"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Cold Transfer'?", "options" => ["Transferring in winter", "Sending the caller directly to an extension without an introduction", "Refusing to transfer", "Hanging up"], "ans" => 1, "xp" => 150],
+                ["q" => "What should you provide to the caller BEFORE transferring?", "options" => ["A joke", "The direct extension or name of the person you are transferring them to", "The office address", "A salary slip"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "Why is a Warm Transfer usually better?", "options" => ["It's faster", "The caller doesn't have to repeat their information to the next person", "It's cheaper", "It's louder"], "ans" => 1, "xp" => 180],
+                ["q" => "What should you do if the colleague you are transferring to does not answer?", "options" => ["Hang up", "Return to the caller, explain, and offer to take a message or try another person", "Leave the caller on hold forever", "Yell into the phone"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Internal Etiquette' during a transfer?", "options" => ["Being rude to coworkers", "Treating your colleagues with the same professional respect as the external caller", "Giving secrets away", "Ignoring the phone"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Blind' transfer?", "options" => ["Closing your eyes", "Another name for a Cold Transfer", "A type of virus", "A broken phone"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Routing'?", "options" => ["Drawing a map", "The process of directing a call to the correct person or department", "A type of radio", "A station alarm"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Call Bouncing'?", "options" => ["A bouncy ball", "When a caller is transferred multiple times to different people without a resolution", "Fixing a phone", "Buying new gear"], "ans" => 1, "xp" => 210],
+                ["q" => "How can you prevent call bouncing?", "options" => ["Hang up", "Take ownership, verify the correct department, and ensure the recipient is available", "Ask the caller to guess", "Transfer randomly"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Screening' a call for a colleague?", "options" => ["Watching TV", "Asking the caller's identity and purpose before deciding to transfer", "Blocking all calls", "Recording the call"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Attended' transfer?", "options" => ["A transfer with a doctor", "Another name for a Warm Transfer", "A transfer in a crowd", "A type of tax"], "ans" => 1, "xp" => 250],
+                ["q" => "What should you do if the caller is very frustrated about being transferred again?", "options" => ["Argue", "Empathize, take their details, and personally ensure the next person solves it", "Hang up", "Laugh"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Extension' awareness?", "options" => ["A long cable", "Knowing the internal numbers of your team to ensure fast transfers", "A type of hair", "A new computer"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Direct Dial'?", "options" => ["Drawing a line", "A phone number that goes straight to an individual without a receptionist", "A secret code", "A type of battery"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Conference' calling?", "options" => ["A large meeting", "Adding a third person to a two-way call to resolve an issue together", "A type of radio", "Hiring a new manager"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Call Parking'?", "options" => ["Parking a car", "Placing a call on a special 'hold' that can be picked up from any phone in the office", "Hanging up", "A type of game"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'PBX'?", "options" => ["Private Branch Exchange (internal phone network)", "Public Box Exchange", "Power Battery X", "Professional Business X"], "ans" => 0, "xp" => 300],
+                ["q" => "What is 'Intercom'?", "options" => ["A type of internet", "Internal communication system for short voice messages between rooms", "A secret password", "A type of lens"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Redirecting' a call?", "options" => ["Changing the direction", "Sending a call to a different number (e.g. mobile) automatically", "Hanging up", "A type of virus"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'User Experience' (UX) in call flow?", "options" => ["Playing a game", "How easy and pleasant it is for the caller to reach the right person", "A type of software", "Working alone"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the result of a bad transfer?", "options" => ["Losing money", "Frustrated customers, bad reputation, and lost business", "Winning a prize", "A faster computer"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the ultimate goal of call transferring?", "options" => ["To get rid of the caller", "To connect the caller to the right expert as smoothly as possible", "To sound smart", "To talk to coworkers"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $tele_course_id, "category_id" => 2,
+        "title" => "Map 199: Dealing with Angry Callers", "desc" => "De-escalate tension and turn a crisis into a positive experience.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the first thing to do with an angry caller?", "options" => ["Shout back", "Listen calmly and let them vent their frustration", "Hang up", "Laugh at them"], "ans" => 1, "xp" => 150],
+                ["q" => "Why do customers usually get angry on the phone?", "options" => ["They are bad people", "They feel ignored, frustrated, or treated unfairly", "They like to fight", "They have too much money"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'De-escalation'?", "options" => ["Starting a fire", "Reducing the intensity of a conflict", "Buying more time", "Winning an argument"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Ventilating'?", "options" => ["Opening a window", "Allowing a customer to express their anger fully without interruption", "Taking a break", "Changing the subject"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Active Listening' in conflict?", "options" => ["Nodding without listening", "Fully engaging and confirming you understand the issue", "Talking while they talk", "Ignoring the client"], "ans" => 1, "xp" => 180],
+                ["q" => "Which phrase is helpful for de-escalation?", "options" => ["'Calm down!'", "'I understand why you are frustrated.'", "'It's not my fault.'", "'You are wrong.'"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Vocal Control' in conflict?", "options" => ["Shouting louder", "Keeping a calm, steady, and lower-pitched voice to soothe the caller", "Staring aggressively", "Looking at your watch"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Patience'?", "options" => ["Being fast", "The capacity to accept trouble without getting angry", "Being smart", "Working alone"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Objectivity'?", "options" => ["Being emotional", "Basing your response on facts rather than personal feelings", "Bolding text", "Hiding the truth"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Assertiveness'?", "options" => ["Being a bully", "Standing your ground respectfully and clearly", "Being weak", "Giving in to everything"], "ans" => 1, "xp" => 210],
+                ["q" => "How should you handle an abusive caller who is swearing?", "options" => ["Swear back", "Respectfully set a boundary and end the call if they continue after a warning", "Cry", "Do nothing"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Empathy' on the phone?", "options" => ["Feeling sorry", "Understanding and validating the customer's perspective", "Agreeing with a lie", "Being loud"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Reframing'?", "options" => ["Changing a photo", "Restating a negative problem in a neutral or positive way to find a solution", "Deleting a file", "Asking a question"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Mirroring' emotions?", "options" => ["Being angry too", "Usually a bad idea; you should stay calm if they are angry", "Copying a smile", "Hiding your face"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Problem Ownership'?", "options" => ["Buying a company", "Taking personal responsibility for seeing a solution through", "Blaming the boss", "Doing nothing"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Consistency'?", "options" => ["Being different", "Applying rules and service standards the same way for everyone", "Being fast", "Knowing the name"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Boundary Setting'?", "options" => ["Building a wall", "Establishing clear limits on what behavior is acceptable on the phone", "Hiring a guard", "Ignoring the rules"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Negotiation'?", "options" => ["Fighting", "A discussion aimed at reaching a mutually acceptable agreement", "A command", "A secret"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Escalation'?", "options" => ["A fire", "Moving a frustrated caller to a manager for authority", "Walking up stairs", "Ignoring a call"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Resolution'?", "options" => ["A new year goal", "The action of solving a problem or dispute to the caller's satisfaction", "A promise", "A refund"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Internalization'?", "options" => ["Taking things personally", "When you let a caller's anger affect your self-worth (should be avoided)", "Hiding your thoughts", "Fixing a PC"], "ans" => 0, "xp" => 400],
+                ["q" => "What is 'Debriefing'?", "options" => ["Changing clothes", "Discussing a difficult call with a supervisor to process and learn", "Sending a bill", "Taking a break"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the 'Service Recovery' paradox?", "options" => ["Losing money", "When a caller is MORE loyal after a problem is fixed well than if no problem happened", "A secret", "A type of sales"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the ultimate rule of handling anger?", "options" => ["Win the argument", "Stay professional, solve the problem, and don't take it personally", "Be the loudest", "Hang up instantly"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $tele_course_id, "category_id" => 2,
+        "title" => "Map 200: Outbound Calling Mastery", "desc" => "Professional cold calling, follow-ups, and managing rejection.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is an 'Outbound Call'?", "options" => ["Answering the phone", "Initiating a call from the business to a customer or partner", "A personal call", "A wrong number"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Cold Calling'?", "options" => ["Calling in winter", "Calling a potential customer who has had no prior contact with you", "Calling a friend", "A technical support call"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Lead'?", "options" => ["A type of metal", "A person or organization that has shown interest in your business", "A manager", "A final sale"], "ans" => 1, "xp" => 150],
+                ["q" => "What is an 'Elevator Pitch'?", "options" => ["A ride in an elevator", "A short, persuasive speech used to spark interest in what your business does", "A 50-page document", "A movie script"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Rejection' management?", "options" => ["Crying", "The ability to handle a 'No' professionally and move to the next call", "Arguing with people", "Giving up"], "ans" => 1, "xp" => 180],
+                ["q" => "Why should you use a 'Script'?", "options" => ["To sound like a robot", "To ensure consistent delivery of key information and value points", "To avoid listening", "To save battery"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Warm Call'?", "options" => ["A call in summer", "Calling someone who has had prior contact or indicated interest", "A type of bank loan", "Selling at a market"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'POPIA' compliance in outbound calling (SA)?", "options" => ["A type of food", "Ensuring you have permission to use personal data and respect 'Opt-out' requests", "Talking fast", "Using a new phone"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Call Qualification'?", "options" => ["Getting a degree", "Determining if the person you called is a good fit for your product or service", "Hiring staff", "Selling products"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Gatekeeper'?", "options" => ["A security guard", "A person (like a receptionist) who screens calls for a decision-maker", "A type of router", "A station alarm"], "ans" => 1, "xp" => 210],
+                ["q" => "How do you 'bypass' a gatekeeper professionally?", "options" => ["Lie", "Build rapport, be polite, and clearly state the value of your call", "Yell at them", "Call at midnight"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Handling Objections'?", "options" => ["Arguing", "Addressing customer concerns that prevent them from moving forward", "Ignoring the client", "Crying"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Call to Action' (CTA)?", "options" => ["A phone call", "A clear instruction on what the caller should do next (e.g., 'Book a demo')", "The title of a page", "A thank you"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Follow-up'?", "options" => ["Ending a call", "Contacting a lead again to move them further through the sales process", "Doing nothing", "A type of tax"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'CRM' in outbound sales?", "options" => ["Company Record Mode", "Customer Relationship Management (software to track calls)", "Common Resource Model", "Corporate Room Manager"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Active Listening' in sales?", "options" => ["Nodding", "Fully focusing on what is being said to understand the lead's needs", "Talking over them", "Ignoring them"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Value-Based Selling'?", "options" => ["Selling for cheap", "Focusing on the benefits and outcomes for the customer, not just features", "Selling expensive items", "Giving things for free"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Sales Velocity'?", "options" => ["The speed of a car", "How quickly leads move through your funnel and generate revenue", "The volume of a voice", "A type of tax"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Rapport'?", "options" => ["A legal report", "A harmonious connection and mutual trust built with the lead", "The end of a shift", "A bill"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Closing'?", "options" => ["Locking the office", "Asking for and securing a commitment or purchase", "Ending a meeting", "Sending an email"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Sales Ethics'?", "options" => ["Math", "Acting with honesty and integrity throughout the sales process", "Selling at any cost", "Avoiding the law"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Nurturing' a lead?", "options" => ["Feeding them", "Building a relationship over time until they are ready to buy", "Hiring a new manager", "Moving offices"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Referral' sales?", "options" => ["A mistake", "When a lead is recommended to you by a current customer", "A type of insurance", "Winning a prize"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the ultimate goal of outbound calling?", "options" => ["To annoy people", "To build valuable business relationships and drive revenue", "To talk as much as possible", "To use the phone"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+
+    // CATEGORY 3: SPECIALIZED SYSTEMS & CAPSTONE (Maps 201-204)
+    [
+        "id" => ++$highest_id, "course_id" => $tele_course_id, "category_id" => 3,
+        "title" => "Map 201: Cell Phone & Voicemail Etiquette", "desc" => "Manage modern mobile boundaries and professional voicemail boxes.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a professional Voicemail Greeting?", "options" => ["'Hello, leave a message.'", "Name, Company, and when they can expect a return call", "'I'm busy, call later.'", "Just a long beep"], "ans" => 1, "xp" => 150],
+                ["q" => "How often should you check your work voicemail?", "options" => ["Once a week", "At least two or three times a day", "Only when reminded", "Never"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Mobile Privacy'?", "options" => ["Sharing everything", "Not discussing sensitive work info on a cell phone in public places", "A secret password", "A broken phone"], "ans" => 1, "xp" => 150],
+                ["q" => "Should you answer a business call while in a restaurant or public bathroom?", "options" => ["Yes, always be available", "No, it is unprofessional and noisy; let it go to voicemail", "Only if it is the boss", "Only if you shout"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Speakerphone' etiquette in an office?", "options" => ["Use it for all calls", "Only use it in a private room or with permission from all parties", "Use it to listen to music", "It doesn't matter"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Texting' for business etiquette?", "options" => ["Use slang and emojis always", "Use professional language and only if agreed upon by the client/manager", "Text at midnight", "Text instead of calling always"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Vacation' voicemail?", "options" => ["A song about the beach", "A greeting that states you are away, your return date, and an emergency contact", "A silent message", "A joke"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Ringtone' etiquette?", "options" => ["Use a loud song", "Keep it on silent or a professional, low-volume tone in the office", "Use a siren sound", "No etiquette exists"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Bluetooth' headset etiquette?", "options" => ["Wear it all day everywhere", "Remove it when not on a call to show you are present and attentive to others", "Use it to listen to radio", "It's a fashion statement"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Phubbing'?", "options" => ["Fixing a phone", "Ignoring the person in front of you to look at your phone (Phone Snubbing)", "Sending spam", "Deleting photos"], "ans" => 1, "xp" => 210],
+                ["q" => "How should you record a message for someone else's voicemail?", "options" => ["Mumble and hang up", "Speak clearly, leave your name, number, and a brief reason for calling", "Speak for 10 minutes", "Scream"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Call Screening'?", "options" => ["Watching TV", "Using a service or person to filter incoming calls", "A type of battery", "A network tool"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Roaming' etiquette?", "options" => ["Walking around", "Being mindful of high costs when calling or receiving while abroad", "Hiding files", "Fixing a phone"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Instant Messaging' (e.g. WhatsApp) for work?", "options" => ["A personal diary", "A tool for quick, professional updates and coordination", "A place for gossip", "A type of game"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Syncing' contacts?", "options" => ["Deleting them", "Ensuring your work contacts are accessible across all business devices", "Printing them", "Buying a new phone"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'NFC' used for on phones?", "options" => ["National File Center", "Near Field Communication (e.g. tap to pay)", "Network Flash Code", "New Fast Computer"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'App Permissions' safety?", "options" => ["Paying for an app", "Reviewing what data an app can access on your work phone", "The speed of the app", "A type of game"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'BYOD'?", "options" => ["Buy Your Own Data", "Bring Your Own Device (using personal phones for work)", "Build Your Own Database", "Better Yield On Delivery"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Remote Wipe'?", "options" => ["Cleaning a PC", "The ability to delete all data on a lost work phone from a distance", "A car wash", "Resetting a router"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'LTE'?", "options" => ["Lower Tier Engine", "Long Term Evolution (4G mobile network)", "Local Time Entry", "Light Total Energy"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'VoIP'?", "options" => ["Voice over IP (calls over the internet)", "Visual Office Image Part", "Very Old IP", "Voice of Industrial Power"], "ans" => 0, "xp" => 400],
+                ["q" => "What is 'Mobile Security'?", "options" => ["A physical guard", "Using passwords and encryption to protect work data on a phone", "A screen protector", "A phone case"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Data Roaming' costs?", "options" => ["Using internet at home", "High fees incurred when using data on another provider's network", "Hiding files", "Fixing a phone"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the ultimate goal of mobile etiquette?", "options" => ["To look cool", "To stay reachable and professional without intruding on others or risking security", "To talk as much as possible", "To use the latest apps"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $tele_course_id, "category_id" => 3,
+        "title" => "Map 202: Personal vs. Professional Boundaries", "desc" => "Keep the workspace professional. Privacy, personal calls, and focus.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the rule for personal calls at work?", "options" => ["Talk for an hour at your desk", "Keep them brief, infrequent, and preferably in a private area during breaks", "Never take a personal call ever", "Use the company's main line for family"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Professionalism'?", "options" => ["Having a degree", "The conduct and qualities that characterize a professional person", "Working long hours", "Earning a high salary"], "ans" => 1, "xp" => 150],
+                ["q" => "Is it okay to gossip about coworkers on the phone?", "options" => ["Yes, if you're quiet", "No, it is unprofessional and can damage relationships and reputations", "Only with your boss", "Only after 5 PM"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Confidentiality' in an office?", "options" => ["Telling everyone secrets", "Protecting sensitive company, client, and employee information", "Hiding your salary", "Ignoring the rules"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "Should you answer a business call with 'What's up?'", "options" => ["Yes, it's friendly", "No, it is too casual and unprofessional", "Only for coworkers", "Only on Fridays"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Work-Life Balance'?", "options" => ["Working and sleeping", "The equilibrium between professional and personal life", "Working 24 hours", "Being unemployed"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Emotional Intelligence' (EQ)?", "options" => ["Being smart", "The ability to manage your own and others' emotions effectively", "Being very emotional", "Crying at work"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Integrity'?", "options" => ["Being smart", "The quality of being honest and having strong moral principles", "Knowing the rules", "Following orders"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Accountability'?", "options" => ["Doing math", "Taking responsibility for one's actions and decisions", "Blaming others", "Working long hours"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Reliability'?", "options" => ["Being fast", "Consistently performing well and being trustworthy", "Having a new car", "Being friendly"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Discretion'?", "options" => ["Being loud", "Behaving or speaking in such a way as to avoid causing offense or revealing private info", "Working in secret", "Choosing your own hours"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Adaptability'?", "options" => ["Staying the same", "The ability to adjust to new conditions and changes", "Being stubborn", "Moving to a new city"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Time Management'?", "options" => ["Watching a clock", "Organizing and planning how to divide your time between activities", "Buying a watch", "Running fast"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Organization'?", "options" => ["A company", "The ability to stay focused on different tasks and manage time/space well", "Hiring people", "Cleaning the floor"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Civility'?", "options" => ["Living in a city", "Polite and courteous behavior in the workplace", "Talking loudly", "Following the law"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Initiative'?", "options" => ["Waiting for orders", "The ability to assess and initiate things independently", "Starting a new company", "Taking a break"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Diplomacy'?", "options" => ["International politics", "The art of dealing with people in a sensitive and effective way", "Being a manager", "Ignoring problems"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Personal Branding'?", "options" => ["Marking cattle", "How you present yourself to others in the professional world", "Having a logo", "Wearing a name tag"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Emotional Resilience'?", "options" => ["Being sad", "The ability to recover quickly from difficulties or stress", "Having a lot of power", "Working alone"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Collaboration'?", "options" => ["Competing", "Working with others to produce or create something", "Hiring employees", "Taking orders"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Servant Leadership'?", "options" => ["Being a servant", "A philosophy where the main goal is to serve others", "Being a boss", "Working for free"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Burnout'?", "options" => ["A fire in the office", "Physical or mental collapse caused by overwork or stress", "Running out of coffee", "Quitting your job"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Mentorship'?", "options" => ["Teaching a class", "A relationship where a more experienced person guides a less experienced one", "Paying for a tutor", "Hiring a new staff"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Professional Etiquette'?", "options" => ["Furniture", "The code of behavior that delineates expectations for social behavior in a workplace", "The salary", "The company rules"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $tele_course_id, "category_id" => 3,
+        "title" => "Map 203: Internal Communication Standards", "desc" => "Manage intercoms, Team chats, and inter-departmental transfers.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Internal Communication'?", "options" => ["Talking to yourself", "The exchange of information within an organization", "Talking to customers", "A radio broadcast"], "ans" => 1, "xp" => 150],
+                ["q" => "What is an 'Intercom'?", "options" => ["The internet", "A system for short voice messages between rooms/extensions", "A secret password", "A type of printer"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Slack' or 'Teams' primarily used for?", "options" => ["Playing games", "Professional instant messaging and team collaboration", "Watching movies", "Buying groceries"], "ans" => 1, "xp" => 150],
+                ["q" => "Why are internal communication standards important?", "options" => ["To make more work", "To ensure consistency, clarity, and professionalism throughout the company", "To save battery", "They aren't important"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Lateral Communication'?", "options" => ["Communication between different levels", "Communication between people at the same level in the organization", "Talking to yourself", "A phone call"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Upward Communication'?", "options" => ["Talking to your coworkers", "Flow of information from subordinates to managers", "Talking to customers", "Communication between two companies"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Downward Communication'?", "options" => ["Talking to your boss", "Flow of information from managers to subordinates", "Talking to external vendors", "Gossiping"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Business Memo'?", "options" => ["A type of book", "A short document used for internal communication", "An advertisement", "A legal contract"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Jargon'?", "options" => ["Proper grammar", "Specialized terms that may be confusing to people outside a specific department", "A foreign language", "Clear writing"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Active Listening' internally?", "options" => ["Ignoring coworkers", "Fully engaging with your colleagues to ensure you understand their needs", "Talking over your boss", "Waiting to speak"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Professionalism' with colleagues?", "options" => ["Being rude", "Treating your coworkers with the same respect as a client", "Giving away company secrets", "Being lazy"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Feedback' internally?", "options" => ["A loud noise", "Constructive information given to help improve performance or processes", "A type of payment", "An advertisement"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Conflict Management'?", "options" => ["Starting a fight", "The process of resolving disagreements in a productive way", "Ignoring the problem", "Firing people"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Transparency'?", "options" => ["A glass window", "Being open and honest about company updates and decisions", "Hiding the truth", "A type of software"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Collaboration'?", "options" => ["Competing", "Working together with other departments to achieve a common goal", "Working alone", "Hiring staff"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Company Culture'?", "options" => ["The office art", "The shared values and vision that define the working environment", "The dress code only", "The salary levels"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Crisis Communication'?", "options" => ["Talking during a fire", "Managing information during a major negative event affecting the company", "Calling an ambulance", "A fast meeting"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Onboarding' communication?", "options" => ["Getting on a boat", "The process of introducing new employees to the company's communication tools and standards", "Firing a person", "A type of tax"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Inter-departmental' coordination?", "options" => ["Working alone", "Ensuring different teams (e.g. Sales and IT) talk effectively", "Buying new furniture", "Selling products"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Digital Etiquette' internally?", "options" => ["Buying a new PC", "Rules for professional behavior in company chats and emails", "Social media marketing", "Fixing a phone"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Accountability'?", "options" => ["Doing math", "Taking responsibility for your tasks and deadlines within the team", "Blaming others", "Working alone"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Mentorship'?", "options" => ["Teaching a class", "A relationship where a more experienced staff member guides a newer one", "Paying for a tutor", "Hiring staff"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Recognition'?", "options" => ["Being famous", "Acknowledging and praising the hard work of your colleagues", "A type of tax", "A bank statement"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the result of great internal communication?", "options" => ["Losing money", "Improved morale, efficiency, and a unified company vision", "Slower work", "More meetings"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $tele_course_id, "category_id" => 3,
+        "title" => "Map 204: Final Capstone: Professional Switchboard", "desc" => "The ultimate challenge. Manage a full day of high-pressure calls and prove your mastery.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "SCENARIO: An angry caller is shouting and swearing. What is your FIRST response?", "options" => ["Shout back to show authority", "Remain calm, wait for them to finish, and use a de-escalating tone", "Hang up instantly without a word", "Transfer them to an empty extension"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: You need to transfer a call to a manager who is currently on another call. What is the procedure?", "options" => ["Transfer them anyway", "Advise the caller they are busy, offer to take a message or a callback", "Keep them on hold for 30 minutes", "Tell them to try calling tomorrow"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: You are taking a message for an urgent legal matter. What must you double-check?", "options" => ["The font used in your notes", "The spelling of names and the exact phone number", "The caller's favorite color", "The weather at the caller's location"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: You answer the phone but the caller remains silent. What do you do?", "options" => ["Wait 10 minutes", "Greeting again, check if they can hear you, then explain you'll hang up if there's no response", "Blow a whistle into the phone", "Scream 'Hello!'"], "ans" => 1, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "SCENARIO: You have 3 lines ringing at once. What is the priority?", "options" => ["Panic and run away", "Answer each briefly, ask for permission to hold, and prioritize based on urgency", "Answer the first one and ignore the others", "Let them all go to voicemail"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: A caller asks for 'the boss' but won't say why. What is your gatekeeper response?", "options" => ["'None of your business.'", "'I apologize, but policy requires a brief purpose of the call before I can connect you.'", "'Sure, hold on.'", "Hang up"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: You notice you sound tired and flat on the phone. What technique do you use?", "options" => ["Drink 5 coffees", "Sit up straight and force a smile while you talk to brighten the tone", "Stop talking for an hour", "Whisper"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: You accidentally disconnected a VIP client. What is the immediate action?", "options" => ["Wait for them to call back", "Call them back immediately, apologize for the technical error, and continue", "Pretend it wasn't you", "Hide under the desk"], "ans" => 1, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "SCENARIO: You need to verify a very difficult surname. What tool do you use?", "options" => ["A dictionary", "The Phonetic Alphabet (e.g. 'Is that S for Sierra?')", "Guessing", "Asking them to spell it in another language"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: You are putting a caller on hold for the third time. What is the professional move?", "options" => ["Just press hold", "Apologize for the delay and ask if they would prefer a callback instead", "Tell them they are annoying", "Give them a discount"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: An executive is in a confidential meeting and receives an urgent personal call. What do you do?", "options" => ["Burst into the room", "Follow the agreed-upon emergency interruption protocol (e.g. a discrete note or text)", "Tell the caller to wait an hour", "Ignore the call"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: You are taking a message but ran out of paper. What do you do?", "options" => ["Tell them to wait 5 minutes while you find some", "Use a digital tool or ask them to hold briefly while you grab a pad", "Try to memorize it", "Forget it"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "SCENARIO: You are in a loud open-plan office. How do you ensure the caller hears you clearly?", "options" => ["Shout", "Use a noise-canceling headset and keep your voice at a controlled, steady volume", "Cover your mouth with your hand", "Turn off all the lights"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: You want to improve your department's phone metrics. What do you measure?", "options" => ["The number of words per call", "Average Answer Time and Abandoned Call Rate", "The color of the phones", "How many people are smiling"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: A caller mentions they are very happy with your help. What is the professional sign-off?", "options" => ["'Yeah, I know.'", "'Thank you, I'm glad I could help. Thank you for calling [Company], have a great day!'", "'Bye bye!'", "'Can I have a tip?'"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: You suspect your phone system is dropping calls. Who do you notify?", "options" => ["The cafeteria", "The IT or Telecommunications support team with specific examples of the fault", "Your friends", "No one"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "MASTER FINAL: What is the primary focus of an effective Telephone Professional?", "options" => ["Talking as much as possible", "Accuracy, empathy, and professional representation of the organizational brand", "Answering the phone with a joke", "Finishing every call in under 10 seconds"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: Why is 'Consistency' the hallmark of great etiquette?", "options" => ["It's easier to do", "It ensures every caller receives the same high standard of service, regardless of who answers", "It makes you look like a robot", "It is required by the government"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: What does 'POPIA' compliance mean for a receptionist?", "options" => ["Buying lunch", "Safeguarding personal info and not sharing details with unauthorized callers", "A new computer", "Talking fast"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: What is the ultimate goal of mastering telephone etiquette?", "options" => ["To get a certificate", "To bridge the digital gap and create human connection through professional excellence", "To work in a call center only", "To use the newest phone"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "EXAM: How do Greetings, Listening, and Tone interact?", "options" => ["They are separate", "They combine to form the caller's total experience and perception of the company", "They only interact during training", "They don't interact"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: Why is 'De-escalation' a vital survival skill in office admin?", "options" => ["To win a fight", "To protect the brand and resolve issues before they become legal or physical threats", "To save the battery", "It is easier than listening"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: What is the true goal of Telephone Etiquette skills?", "options" => ["To get a job", "To provide a professional, expert safety net for organizational communication", "To win a prize", "To hire friends"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: What is the core responsibility of a phone professional to their team?", "options" => ["To perform surgery", "To be the reliable face and voice that ensures the organization sounds as good as it works", "To write reports", "To hire staff"], "ans" => 1, "xp" => 600]
+            ]]
+        ]
+    ]
+];
+
+// ==========================================================
+// WEB DESIGNING CURRICULUM (Maps 205-216)
+// ==========================================================
+$web_maps = [
+    // CATEGORY 1: FRONT-END FOUNDATIONS (Maps 205-208)
+    [
+        "id" => ++$highest_id, "course_id" => $web_course_id, "category_id" => 1,
+        "title" => "Map 205: HTML Structure & Semantics", "desc" => "Learn the skeleton of the web. Tags, elements, and meaningful markup.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What does HTML stand for?", "options" => ["Hyperlink Text Markup Language", "HyperText Markup Language", "Home Tool Markup Language", "High Tech Modern Language"], "ans" => 1, "xp" => 150],
+                ["q" => "Which tag is used to define the largest heading in HTML?", "options" => ["<head>", "<h6>", "<h1>", "<header>"], "ans" => 2, "xp" => 150],
+                ["q" => "What is the correct tag for creating a line break?", "options" => ["<lb>", "<break>", "<br>", "<hr>"], "ans" => 2, "xp" => 150],
+                ["q" => "Which element contains all the visible content of an HTML document?", "options" => ["<head>", "<body>", "<html>", "<main>"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is the correct HTML for creating a hyperlink?", "options" => ["<a>http://google.com</a>", "<a href='http://google.com'>Google</a>", "<link src='http://google.com'>", "<a>Google</a>"], "ans" => 1, "xp" => 180],
+                ["q" => "Which character is used to indicate an end tag?", "options" => ["^", "*", "<", "/"], "ans" => 3, "xp" => 180],
+                ["q" => "How do you create an unordered list in HTML?", "options" => ["<ul>", "<ol>", "<list>", "<li>"], "ans" => 0, "xp" => 180],
+                ["q" => "Which attribute is used to provide alternative text for an image?", "options" => ["title", "alt", "src", "longdesc"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the purpose of the <!DOCTYPE html> declaration?", "options" => ["To link a CSS file", "To tell the browser that the document is HTML5", "To create a title for the page", "To include a script"], "ans" => 1, "xp" => 210],
+                ["q" => "Which HTML5 element is used to define the footer for a document or section?", "options" => ["<bottom>", "<section>", "<footer>", "<end>"], "ans" => 2, "xp" => 210],
+                ["q" => "What tag is used to define a standard cell in an HTML table?", "options" => ["<th>", "<td>", "<tr>", "<cell>"], "ans" => 1, "xp" => 210],
+                ["q" => "Which tag is used to define an input field where the user can enter data?", "options" => ["<input>", "<text>", "<enter>", "<form>"], "ans" => 0, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Semantic HTML'?", "options" => ["HTML that uses many colors", "HTML that uses tags to describe their meaning (e.g. <article>, <nav>)", "HTML written in different languages", "HTML that only works on mobile"], "ans" => 1, "xp" => 250],
+                ["q" => "Which element is used to group navigation links?", "options" => ["<links>", "<nav>", "<menu>", "<ul>"], "ans" => 1, "xp" => 250],
+                ["q" => "What is the correct HTML for making a checkbox?", "options" => ["<check>", "<input type='check'>", "<input type='checkbox'>", "<checkbox>"], "ans" => 2, "xp" => 250],
+                ["q" => "Which tag is used to embed a YouTube video on a page?", "options" => ["<video>", "<embed>", "<iframe>", "<media>"], "ans" => 2, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What does the <meta charset='UTF-8'> tag do?", "options" => ["Sets the font size", "Defines the character encoding for the document", "Links a JavaScript file", "Sets the page height"], "ans" => 1, "xp" => 300],
+                ["q" => "Which HTML element is used to specify a header for a document or section?", "options" => ["<top>", "<header>", "<head>", "<section>"], "ans" => 1, "xp" => 300],
+                ["q" => "How do you create an email link?", "options" => ["<a href='mail:test@test.com'>", "<a href='mailto:test@test.com'>", "<mail>test@test.com</mail>", "<a email='test@test.com'>"], "ans" => 1, "xp" => 300],
+                ["q" => "Which attribute is used to make an input field mandatory?", "options" => ["needed", "required", "validate", "strict"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'void element' in HTML?", "options" => ["An element with no content (e.g. <img>, <br>)", "An element that is empty", "A deleted element", "A script tag"], "ans" => 0, "xp" => 400],
+                ["q" => "What is the purpose of the <label> tag?", "options" => ["To title a page", "To provide a caption for a form element, improving accessibility", "To group div tags", "To bold text"], "ans" => 1, "xp" => 400],
+                ["q" => "Which HTML5 tag is used for drawing graphics via scripting (usually JavaScript)?", "options" => ["<draw>", "<canvas>", "<paint>", "<svg>"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the 'Global Attribute' used to uniquely identify an element on a page?", "options" => ["class", "id", "name", "tag"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $web_course_id, "category_id" => 1,
+        "title" => "Map 206: CSS Fundamentals", "desc" => "Styling the web. Colors, fonts, margins, and selectors.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What does CSS stand for?", "options" => ["Colorful Style Sheets", "Cascading Style Sheets", "Computer Style Sheets", "Creative Style Sheets"], "ans" => 1, "xp" => 150],
+                ["q" => "Which HTML attribute is used to define inline styles?", "options" => ["styles", "font", "style", "class"], "ans" => 2, "xp" => 150],
+                ["q" => "Which is the correct CSS syntax to change the background color?", "options" => ["{background-color: yellow;}", "body:color=yellow", "body {background-color: yellow;}", "all.yellow {bg: yellow}"], "ans" => 2, "xp" => 150],
+                ["q" => "Which property is used to change the text color of an element?", "options" => ["text-color", "fgcolor", "color", "font-color"], "ans" => 2, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "How do you select an element with a specific 'id' in CSS?", "options" => [".id", "#id", "*id", "id="], "ans" => 1, "xp" => 180],
+                ["q" => "How do you select elements with a specific 'class'?", "options" => ["#class", ".class", "*class", "class."], "ans" => 1, "xp" => 180],
+                ["q" => "Which property is used to change the font of an element?", "options" => ["font-weight", "font-style", "font-family", "text-font"], "ans" => 2, "xp" => 180],
+                ["q" => "How do you make text bold in CSS?", "options" => ["font:bold;", "style:bold;", "font-weight:bold;", "text-decoration:bold;"], "ans" => 2, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "Which property is used to add space INSIDE an element's border?", "options" => ["margin", "padding", "spacing", "border-width"], "ans" => 1, "xp" => 210],
+                ["q" => "Which property is used to add space OUTSIDE an element's border?", "options" => ["padding", "margin", "border-spacing", "indent"], "ans" => 1, "xp" => 210],
+                ["q" => "How do you add a comment in a CSS file?", "options" => ["// comment", "/* comment */", "' comment", "<!-- comment -->"], "ans" => 1, "xp" => 210],
+                ["q" => "Which property is used to center text?", "options" => ["text-align: center;", "align: center;", "horizontal-align: center;", "text-center: true;"], "ans" => 0, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is the default value of the 'position' property?", "options" => ["relative", "fixed", "static", "absolute"], "ans" => 2, "xp" => 250],
+                ["q" => "How do you make a list not display bullet points?", "options" => ["list-style-type: none;", "bullet: hide;", "text-decoration: none;", "list: no-bullets;"], "ans" => 0, "xp" => 250],
+                ["q" => "Which property is used to change the left margin of an element?", "options" => ["padding-left", "margin-left", "indent-left", "spacing-left"], "ans" => 1, "xp" => 250],
+                ["q" => "How do you select all <p> elements inside a <div>?", "options" => ["div.p", "div p", "div + p", "div > p only"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What does 'External CSS' mean?", "options" => ["Style tags in the head", "A separate .css file linked to the HTML", "Styles written on the outside of the PC", "JavaScript styling"], "ans" => 1, "xp" => 300],
+                ["q" => "Which property controls the text size?", "options" => ["font-style", "text-size", "font-size", "size"], "ans" => 2, "xp" => 300],
+                ["q" => "What is the 'Cascade' in CSS?", "options" => ["A waterfall", "The order of priority for styles (Inline > ID > Class > Tag)", "A type of font", "A broken CSS file"], "ans" => 1, "xp" => 300],
+                ["q" => "How do you make each word in a text start with a capital letter?", "options" => ["text-style: capitalize;", "text-transform: capitalize;", "font-transform: capitalize;", "text-decoration: capitalize;"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "Which property is used to change the transparency of an element?", "options" => ["filter", "opacity", "visibility", "alpha"], "ans" => 1, "xp" => 400],
+                ["q" => "What is a 'CSS Selector'?", "options" => ["The person choosing the colors", "The part of the CSS rule that points to the HTML element you want to style", "A dropdown menu", "A type of browser"], "ans" => 1, "xp" => 400],
+                ["q" => "Which property is used to set the stack order of an element?", "options" => ["x-index", "y-index", "z-index", "order"], "ans" => 2, "xp" => 400],
+                ["q" => "What does 'box-sizing: border-box;' do?", "options" => ["Makes the border thicker", "Includes padding and border in the element's total width and height", "Hides the box", "Forces the box to be square"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $web_course_id, "category_id" => 1,
+        "title" => "Map 207: Layout & The Box Model", "desc" => "Master Flexbox, Grid, and the geometry of web elements.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "In the CSS Box Model, which layer is outermost?", "options" => ["Border", "Padding", "Margin", "Content"], "ans" => 2, "xp" => 150],
+                ["q" => "Which display property value is used to create a one-dimensional layout system?", "options" => ["block", "grid", "flex", "inline"], "ans" => 2, "xp" => 150],
+                ["q" => "What is the primary purpose of CSS Grid?", "options" => ["To make text bold", "To create two-dimensional layouts (rows and columns)", "To add shadows", "To link pages"], "ans" => 1, "xp" => 150],
+                ["q" => "Which property defines the space between grid rows and columns?", "options" => ["padding", "grid-gap (or gap)", "margin", "spacing"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "In Flexbox, which property aligns items along the MAIN axis?", "options" => ["align-items", "justify-content", "flex-direction", "align-self"], "ans" => 1, "xp" => 180],
+                ["q" => "In Flexbox, which property aligns items along the CROSS axis?", "options" => ["justify-content", "align-items", "flex-wrap", "order"], "ans" => 1, "xp" => 180],
+                ["q" => "What does 'flex-direction: column;' do?", "options" => ["Stacks items horizontally", "Stacks items vertically", "Hides all items", "Spaces items evenly"], "ans" => 1, "xp" => 180],
+                ["q" => "Which property allows flex items to wrap to a new line if there is no space?", "options" => ["flex-wrap", "line-break", "word-wrap", "overflow"], "ans" => 0, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Float' in CSS layout?", "options" => ["A boat", "An old property used to push elements to the left or right", "A type of decimal", "A hover effect"], "ans" => 1, "xp" => 210],
+                ["q" => "How do you stop elements from wrapping around a floated element?", "options" => ["stop: both;", "clear: both;", "float: none;", "overflow: hidden;"], "ans" => 1, "xp" => 210],
+                ["q" => "What does 'display: inline-block;' do?", "options" => ["Makes the element invisible", "Allows setting width/height while keeping the element on the same line", "Forces the element to be a square", "Centers the element"], "ans" => 1, "xp" => 210],
+                ["q" => "Which Grid property is used to define the size of columns?", "options" => ["grid-column-size", "grid-template-columns", "column-width", "grid-layout"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is the 'fr' unit in CSS Grid?", "options" => ["Frame", "Fraction (representing a portion of available space)", "Frequency", "Front"], "ans" => 1, "xp" => 250],
+                ["q" => "Which property is used to position an element relative to its normal position?", "options" => ["position: absolute;", "position: relative;", "position: fixed;", "position: sticky;"], "ans" => 1, "xp" => 250],
+                ["q" => "Which position value keeps an element visible in the same spot even when scrolling?", "options" => ["static", "relative", "fixed", "absolute"], "ans" => 2, "xp" => 250],
+                ["q" => "What is 'z-index'?", "options" => ["The horizontal position", "The vertical position", "The depth/layering order of overlapping elements", "The zoom level"], "ans" => 2, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Overflow: hidden;' used for?", "options" => ["To show more content", "To clip content that is too large for its container", "To hide the whole page", "To delete text"], "ans" => 1, "xp" => 300],
+                ["q" => "Which Grid property allows an element to span across multiple columns?", "options" => ["grid-span", "grid-column", "column-merge", "span-all"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Flex-grow'?", "options" => ["Making the font larger", "The ability of a flex item to grow if there is extra space", "Adding more items", "The speed of transition"], "ans" => 1, "xp" => 300],
+                ["q" => "What is the difference between 'visibility: hidden;' and 'display: none;'?", "options" => ["None", "display: none; removes the element from layout; visibility: hidden; keeps the space empty", "visibility is faster", "display is only for mobile"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Container' in web design?", "options" => ["A metal shipping box", "A div or section that wraps content to control its maximum width/alignment", "A type of server", "A database table"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Auto-fill' in CSS Grid?", "options" => ["Automatically typing text", "Automatically creating as many grid tracks as will fit in the container", "Filling colors automatically", "A form feature"], "ans" => 1, "xp" => 400],
+                ["q" => "What does 'align-self' do in Flexbox?", "options" => ["Aligns the whole container", "Overrides the align-items value for a specific individual item", "Centers the text", "Makes the item larger"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the core philosophy of 'Fluid Layouts'?", "options" => ["Using pixels always", "Using percentages or relative units so the layout scales with screen size", "Using many images", "Using bright colors"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $web_course_id, "category_id" => 1,
+        "title" => "Map 208: Visual Design Principles", "desc" => "Color theory, typography, hierarchy, and whitespace.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "Which color model is used primarily for digital screens?", "options" => ["CMYK", "RGB", "RYB", "Pantone"], "ans" => 1, "xp" => 150],
+                ["q" => "What are 'Complementary' colors?", "options" => ["Colors that are next to each other", "Colors that are opposite each other on the color wheel", "Colors that look the same", "Black and white only"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Whitespace' (Negative Space)?", "options" => ["The white parts of a photo", "The empty space between elements that helps them breathe", "A mistake in design", "The background color"], "ans" => 1, "xp" => 150],
+                ["q" => "Which font type has small 'feet' or strokes at the ends of characters?", "options" => ["Sans-Serif", "Serif", "Monospace", "Display"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Visual Hierarchy'?", "options" => ["The order of managers in a company", "Arranging elements to guide the viewer's eye in order of importance", "A type of font style", "The size of a website"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Sans-Serif' font?", "options" => ["A font with feet", "A font without small strokes/feet at the ends (e.g. Arial)", "A handwritten font", "A type of code"], "ans" => 1, "xp" => 180],
+                ["q" => "What does 'Kerning' refer to?", "options" => ["The space between lines", "The space between individual characters", "The thickness of a font", "The height of a page"], "ans" => 1, "xp" => 180],
+                ["q" => "What does 'Leading' (Line Height) refer to?", "options" => ["The size of the first letter", "The vertical space between lines of text", "The first word in a paragraph", "The title of a page"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the 'Rule of Thirds'?", "options" => ["Dividing an image into a 3x3 grid to place key elements", "Using only three colors", "Writing three paragraphs", "Using three different fonts"], "ans" => 0, "xp" => 210],
+                ["q" => "What is 'Contrast' in design?", "options" => ["Using the same colors", "The difference between two elements (e.g. dark text on light background)", "A type of monitor", "The speed of a site"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Emphasis' used for?", "options" => ["To hide content", "To make certain elements stand out more than others", "To add whitespace", "To calculate font size"], "ans" => 1, "xp" => 210],
+                ["q" => "What is an 'Analogous' color scheme?", "options" => ["Colors that are opposite", "Colors that are next to each other on the color wheel", "Colors used in old TVs", "Primary colors only"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Typography'?", "options" => ["The study of types of people", "The art and technique of arranging type to make language readable and appealing", "Taking photos of paper", "Writing in code"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Color Psychology'?", "options" => ["The price of paint", "The study of how colors affect human mood and behavior", "Mixing colors randomly", "Coloring books"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Balance' in design?", "options" => ["Staying on one foot", "The distribution of visual weight (Symmetrical or Asymmetrical)", "The bank account balance", "Using only one font size"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Repetition' used for?", "options" => ["To annoy users", "To create consistency and unity across a design", "To make a page longer", "To fill empty space"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Monochromatic' color scheme?", "options" => ["Using all colors", "Using different shades and tints of a single color", "Using black and white only", "Using primary colors only"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Proximity' in design?", "options" => ["Being far away", "Grouping related elements together to show a relationship", "The speed of a click", "The size of a logo"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Saturation'?", "options" => ["The brightness", "The intensity or purity of a color", "The file format", "The font weight"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Value' in color theory?", "options" => ["The price", "The lightness or darkness of a color", "The quality of the design", "The name of the color"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Alignment'?", "options" => ["A random arrangement", "The placement of elements in a straight line or grid for organization", "A type of code", "Hiring a new designer"], "ans" => 1, "xp" => 400],
+                ["q" => "What is a 'Mood Board'?", "options" => ["A board for emotions", "A collection of images, colors, and fonts used to establish a project's visual direction", "A list of tasks", "A progress chart"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'F-Pattern' in web design?", "options" => ["A type of error", "A common reading pattern where users scan horizontally first, then down", "A coding style", "A logo shape"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the ultimate goal of Visual Design?", "options" => ["To look pretty only", "To communicate information effectively and provide a positive user experience", "To use every color", "To follow every trend"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+
+    // CATEGORY 2: RESPONSIVE & USER-CENTRIC DESIGN (Maps 209-212)
+    [
+        "id" => ++$highest_id, "course_id" => $web_course_id, "category_id" => 2,
+        "title" => "Map 209: Responsive Web Design", "desc" => "Master Media Queries, viewports, and fluid layouts for all devices.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Responsive Web Design'?", "options" => ["A fast loading website", "Designing sites that automatically adjust to any screen size (mobile, tablet, desktop)", "A site with a contact form", "A site with a video"], "ans" => 1, "xp" => 150],
+                ["q" => "Which CSS tool is used to apply styles based on screen width?", "options" => ["@import", "@media queries", "@font-face", "@keyframes"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the 'Viewport' meta tag used for?", "options" => ["Adding a title", "Controlling the layout on mobile browsers", "Linking a script", "Saving a file"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Mobile-First' design?", "options" => ["Designing for desktop then shrinking", "Designing for the smallest screens first then scaling up", "Buying a new phone", "Building apps only"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Breakpoint'?", "options" => ["A broken link", "The specific width where the website layout changes to fit the screen", "A coffee break", "The end of a code line"], "ans" => 1, "xp" => 180],
+                ["q" => "What unit is best for a fluid layout width?", "options" => ["px (pixels)", "% (percentage)", "cm (centimeters)", "pt (points)"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Fluid Imagery'?", "options" => ["Images of water", "Images that scale automatically to fit their containers using max-width: 100%", "Moving images", "High resolution photos"], "ans" => 1, "xp" => 180],
+                ["q" => "Which device is usually the priority in modern web development?", "options" => ["Desktop", "Mobile", "Tablet", "Television"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What does 'Desktop-First' (Graceful Degradation) mean?", "options" => ["Starting with mobile", "Designing for desktop and adding code to hide/change things for mobile", "Hating mobile users", "Buying a server"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Progressive Enhancement'?", "options" => ["Making things worse", "Building core functionality first, then adding advanced features for capable browsers", "Deleting old code", "Upgrading RAM"], "ans" => 1, "xp" => 210],
+                ["q" => "How do you hide an element only on mobile using a media query?", "options" => ["display: invisible;", "display: none; within the specific breakpoint", "delete: true;", "opacity: 0;"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Orientation' query?", "options" => ["A map", "Detecting if the device is in Portrait or Landscape mode", "The speed of the wind", "The user's location"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Device Pixel Ratio' (DPR)?", "options" => ["The screen size", "The ratio of physical pixels to logical pixels (important for Retina screens)", "The color range", "The battery life"], "ans" => 1, "xp" => 250],
+                ["q" => "Why are SVG images good for responsive design?", "options" => ["They are colorful", "They are vector-based and can scale to any size without losing quality", "They are tiny files", "They are easy to draw"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Hamburger Menu' used for?", "options" => ["A food delivery site", "A compact navigation menu used on mobile screens", "A type of game", "An advertisement"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Touch Target' size?", "options" => ["The size of a mouse", "The physical size of a button (needs to be large enough for a thumb to click)", "The brightness", "The phone weight"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Adaptive' vs 'Responsive' design?", "options" => ["They are the same", "Responsive is fluid; Adaptive uses fixed layouts that snap to specific sizes", "Adaptive is for animals", "Responsive is for TV"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Relative Typography'?", "options" => ["Using pixels", "Using units like 'em' or 'rem' so text scales based on base settings", "Using bold text", "Hiring a writer"], "ans" => 1, "xp" => 300],
+                ["q" => "What is the CSS property 'min-width' used for in media queries?", "options" => ["To set the smallest screen", "To target devices with a width equal to or greater than the value", "To hide the screen", "To increase font"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Reflow'?", "options" => ["A water leak", "The process of the browser recalculating positions of elements when the window is resized", "A type of loop", "A design trend"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Cumulative Layout Shift' (CLS)?", "options" => ["A broken site", "A metric that measures how much elements move unexpectedly during page load", "A type of font", "A new CSS version"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Flexbox' role in RWD?", "options" => ["Styling text", "Creating flexible rows/columns that adjust without media queries", "Making images clear", "Fixing bugs"], "ans" => 1, "xp" => 400],
+                ["q" => "What is a 'Grid Container'?", "options" => ["A metal box", "An element with display: grid; that manages its children's positions", "A database", "A type of server"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the ultimate goal of RWD?", "options" => ["To use more code", "To provide the best viewing experience on every device with one single codebase", "To make money", "To follow a boss"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $web_course_id, "category_id" => 2,
+        "title" => "Map 210: User Experience (UX) Principles", "desc" => "Understand the user. Research, empathy, wireframes, and usability.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'UX'?", "options" => ["User Interaction", "User Experience (how a user feels and interacts with a site)", "Unit Execution", "Universal Exchange"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the primary goal of UX Design?", "options" => ["To look pretty", "To make a product useful, easy to use, and delightful for the user", "To make money only", "To write code"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'User Persona'?", "options" => ["A fake ID", "A semi-fictional character representing a target user group", "The designer's real personality", "A type of advertisement"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Usability'?", "options" => ["How heavy a site is", "The ease with which a user can achieve their goals on a site", "The number of pages", "The price of the site"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Wireframe'?", "options" => ["A 3D model", "A low-fidelity visual skeleton of a webpage without design details", "A piece of code", "A hardware component"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Information Architecture' (IA)?", "options" => ["Building a server", "Organizing and labeling content so users can find information easily", "A database system", "A type of computer"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'User Journey Map'?", "options" => ["A vacation map", "A visualization of the steps a user takes to complete a task", "A list of managers", "A progress chart"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Empathy' in UX?", "options" => ["Feeling sorry", "Understanding the user's needs, frustrations, and motivations", "Being smart", "Talking loudly"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'A/B Testing'?", "options" => ["A school test", "Comparing two versions of a design to see which performs better with users", "A logic gate", "A hardware test"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'User Research'?", "options" => ["Watching movies", "Gathering data about user behaviors and needs through interviews and surveys", "Reading a textbook", "Asking a friend"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Accessibility'?", "options" => ["Free Wi-Fi", "Designing so that people with all abilities can use the site", "A login screen", "A fast computer"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Call to Action' (CTA)?", "options" => ["A phone call", "A prompt that tells the user to perform a specific action (e.g. 'Sign Up')", "The title of a page", "A thank you"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Pain Point'?", "options" => ["A physical injury", "A specific problem that a user encounters during their experience", "The cost of a site", "A design color"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Protopying'?", "options" => ["Final launch", "Creating a preliminary version of a product to test a concept", "Mass manufacturing", "Advertising"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Usability Testing'?", "options" => ["Testing the durability", "Observing real users attempting to complete tasks with your product", "A code review", "A safety inspection"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Intuitive Design'?", "options" => ["Design by instinct", "A design that a user can understand without instructions", "Complex design", "A type of coding"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Iterative Design'?", "options" => ["Doing it once", "A process of designing, testing, and refining a product repeatedly based on feedback", "A legal process", "A type of accounting"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Affordance'?", "options" => ["The price of a PC", "A visual cue that tells a user how an object can be used (e.g. a button looks clickable)", "A logic gate", "A type of variable"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Friction' in UX?", "options" => ["Rubbing hands", "Anything that prevents a user from accomplishing their goal or slows them down", "A type of energy", "A moving element"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Heuristic Evaluation'?", "options" => ["A lucky guess", "Reviewing a design against a set of established usability principles", "A math test", "A type of code"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'User-Centered Design' (UCD)?", "options" => ["Designing for the boss", "A process that focuses on the users and their needs at every stage of design", "Designing for computers", "A type of graphic design"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Card Sorting'?", "options" => ["A magic trick", "A research technique to help design the information architecture (IA) of a site", "Sorting files", "Playing games"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Micro-interaction'?", "options" => ["A small conversation", "Small visual responses when a user performs a task (e.g. a button changes color when clicked)", "A fast download", "A type of mouse"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the difference between UI and UX?", "options" => ["None", "UI is how it looks; UX is how it works and feels", "UI is for mobile; UX is for desktop", "UX is only for experts"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $web_course_id, "category_id" => 2,
+        "title" => "Map 211: Images, SVG & Media Optimization", "desc" => "Master asset management. Scaling, compression, and modern file formats.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What does SVG stand for?", "options" => ["Standard Vector Graphic", "Scalable Vector Graphics", "Simple Video Gear", "System Visual Grid"], "ans" => 1, "xp" => 150],
+                ["q" => "Which format is best for high-quality photos on the web?", "options" => ["JPG", "GIF", "SVG", "TXT"], "ans" => 0, "xp" => 150],
+                ["q" => "Which image format support transparency and is best for logos?", "options" => ["JPG", "PNG", "BMP", "TIFF"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Image Compression'?", "options" => ["Making an image larger", "Reducing the file size of an image to speed up page loading", "Changing the image color", "Adding a frame"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Favicon'?", "options" => ["A favorite icon", "The small icon displayed in the browser tab next to the page title", "A large background image", "A type of button"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Lazy Loading'?", "options" => ["Hiding images", "Delaying the loading of images until the user scrolls to them", "A slow computer", "Deleting data"], "ans" => 1, "xp" => 180],
+                ["q" => "Which format is a modern, superior replacement for JPG and PNG on the web?", "options" => ["TIFF", "WebP", "GIF", "ICO"], "ans" => 1, "xp" => 180],
+                ["q" => "What is the main advantage of SVG over Raster images (JPG/PNG)?", "options" => ["More colors", "They stay sharp at any size (scalable)", "Smaller files always", "Easy to take photos"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is an 'Image Sprite'?", "options" => ["A ghost image", "Combining multiple images into one file to reduce server requests", "A type of animation", "A colorful image"], "ans" => 1, "xp" => 210],
+                ["q" => "What does 'DPI' mean in image resolution?", "options" => ["Data Per Inch", "Dots Per Inch", "Digital Picture Index", "Direct Print Item"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Lossy' compression?", "options" => ["No data loss", "Compression that removes some data to significantly reduce file size (e.g. JPG)", "A type of software", "A high speed disk"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Lossless' compression?", "options" => ["Removing all data", "Compression that reduces file size without losing any data/quality (e.g. PNG)", "A bad compression", "A video format"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "Which tag is used to embed a native video file in HTML5?", "options" => ["<embed>", "<video>", "<movie>", "<media>"], "ans" => 1, "xp" => 250],
+                ["q" => "What is the 'poster' attribute in a <video> tag?", "options" => ["A shipping label", "An image that shows before the video starts playing", "A legal notice", "The video title"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Aspect Ratio'?", "options" => ["The file size", "The proportional relationship between an image's width and height (e.g. 16:9)", "The brightness", "The frame rate"], "ans" => 1, "xp" => 250],
+                ["q" => "Which tool can be used to optimize images before uploading them?", "options" => ["Notepad", "TinyPNG / Photoshop", "Calculator", "Chrome"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Responsive Images' (srcset)?", "options" => ["Stretching one image", "Serving different image files based on the user's screen size", "Images that talk", "A type of code"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Base64' image encoding?", "options" => ["A secret code", "Converting an image into a text string to embed it directly in HTML/CSS", "A large file", "A type of monitor"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Alt Text' importance for media?", "options" => ["To look good", "Provides a description for screen readers and search engines", "To save space", "To hide the image"], "ans" => 1, "xp" => 300],
+                ["q" => "Which video format is the most universally supported on the web?", "options" => ["AVI", "MP4", "WMV", "FLV"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Bitrate' in video?", "options" => ["The price of a video", "The amount of data processed per second in a video", "The number of colors", "The length of the clip"], "ans" => 1, "xp" => 400],
+                ["q" => "What is a 'Codec'?", "options" => ["A type of computer code", "A device or program that compresses and decompresses digital media", "A video player", "A screen cleaner"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Retina' display optimization?", "options" => ["Cleaning the screen", "Using double-resolution images to look sharp on high-DPI screens", "A health check", "Hiring a designer"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the result of using unoptimized, giant images?", "options" => ["Higher ranking", "Extremely slow page loading and poor user experience", "Better color", "Winning an award"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $web_course_id, "category_id" => 2,
+        "title" => "Map 212: Web Forms & Interactivity", "desc" => "Create usable forms, handle inputs, and learn the basics of interactive elements.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "Which HTML tag is used to create a form?", "options" => ["<enter>", "<form>", "<input>", "<select>"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the purpose of the <label> tag?", "options" => ["To bold text", "To describe a form input and improve accessibility", "To group items", "To link pages"], "ans" => 1, "xp" => 150],
+                ["q" => "Which input type is used for passwords?", "options" => ["<input type='text'>", "<input type='secret'>", "<input type='password'>", "<input type='hide'>"], "ans" => 2, "xp" => 150],
+                ["q" => "Which tag is used to create a dropdown list?", "options" => ["<list>", "<select>", "<dropdown>", "<menu>"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is the 'Placeholder' attribute used for?", "options" => ["To hold a place in line", "To provide a hint/example inside an input before a user types", "To save data", "To hide the field"], "ans" => 1, "xp" => 180],
+                ["q" => "Which input type allows selecting ONLY ONE option from a set?", "options" => ["Checkbox", "Radio", "Text", "Button"], "ans" => 1, "xp" => 180],
+                ["q" => "Which input type allows selecting MULTIPLE options from a set?", "options" => ["Radio", "Checkbox", "Submit", "Hidden"], "ans" => 1, "xp" => 180],
+                ["q" => "What does the 'required' attribute do?", "options" => ["Makes the field look pretty", "Prevents form submission if the field is empty", "Asks for a password", "Links to a database"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Form Validation'?", "options" => ["Saying thank you", "Checking if the data entered is in the correct format (e.g. valid email)", "Printing the form", "Selling data"], "ans" => 1, "xp" => 210],
+                ["q" => "What does the 'action' attribute in a <form> tag specify?", "options" => ["What the user does", "Where to send the form data after submission", "The button color", "The font style"], "ans" => 1, "xp" => 210],
+                ["q" => "What does the 'method' attribute (GET vs POST) specify?", "options" => ["The type of input", "How the data is sent to the server", "The order of fields", "The user's age"], "ans" => 1, "xp" => 210],
+                ["q" => "Which tag is used for a large multi-line text input?", "options" => ["<input type='big'>", "<textarea>", "<box>", "<text>"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Submit' button?", "options" => ["A button that clears the form", "A button that sends the form data to the server", "A button that closes the tab", "A type of link"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'JavaScript' used for in forms?", "options" => ["To change the font only", "To provide real-time feedback and interactivity", "To store data locally only", "To build hardware"], "ans" => 1, "xp" => 250],
+                ["q" => "What is an 'Event Listener' in JavaScript?", "options" => ["Someone listening to music", "A function that waits for a user action (e.g. a click) and then runs code", "A broken monitor", "A type of variable"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Client-side' validation?", "options" => ["Validation done by the boss", "Validation performed in the user's browser before data reaches the server", "Validation done by a bank", "Hiring a tester"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Modal' (or Pop-up)?", "options" => ["A type of car", "A small window that appears on top of the main page content", "A broken link", "A deleted file"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Tooltip'?", "options" => ["A tool for gardening", "A small box of info that appears when hovering over an element", "A broken mouse", "A new computer brand"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'DOM Manipulation'?", "options" => ["Breaking a PC", "Using JavaScript to change the HTML/CSS of a page dynamically", "Deleting records", "Fixing a phone"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'AJAX'?", "options" => ["A cleaning product", "Asynchronous JavaScript and XML (updating parts of a page without a full reload)", "A programming language", "A type of monitor"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Micro-copy' in forms?", "options" => ["A tiny font", "Brief instructional text that helps users through a process", "A small file copy", "A copyright notice"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Autocompletion'?", "options" => ["Fixing errors automatically", "Suggestions provided by the browser based on previous entries", "A type of robot", "Buying a new PC"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Honeypot' in forms?", "options" => ["A pot of honey", "A hidden field used to catch and block spam bots", "A design trend", "A type of virus"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the biggest rule of form design?", "options" => ["Make it as long as possible", "Keep it as short and simple as possible to increase completion rates", "Use every color", "Ask for personal secrets"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+
+    // CATEGORY 3: ADVANCED TOPICS & CAPSTONE (Maps 213-216)
+    [
+        "id" => ++$highest_id, "course_id" => $web_course_id, "category_id" => 3,
+        "title" => "Map 213: Web Performance & SEO", "desc" => "Speed up your site and rank higher on Google.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What does 'SEO' stand for?", "options" => ["System Error Option", "Search Engine Optimization", "Secure Entry Office", "Small Engine Output"], "ans" => 1, "xp" => 200],
+                ["q" => "What is the primary goal of SEO?", "options" => ["To make a site faster", "To increase a website's visibility and ranking in search engine results", "To delete old data", "To buy ads"], "ans" => 1, "xp" => 200],
+                ["q" => "Which meta tag describes the page content for search results?", "options" => ["Keywords", "Description", "Author", "Viewport"], "ans" => 1, "xp" => 200],
+                ["q" => "What is 'Page Load Time'?", "options" => ["The time it takes to type", "How long it takes for a webpage to fully display in a browser", "The duration of a visit", "The speed of the CPU"], "ans" => 1, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What are 'Core Web Vitals'?", "options" => ["Heart rate monitors", "Google metrics that measure page speed, responsiveness, and visual stability", "A type of code", "A new computer brand"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'Minification' of code?", "options" => ["Making it worse", "Removing unnecessary characters (like spaces) from code to reduce file size", "Writing in tiny font", "Deleting features"], "ans" => 1, "xp" => 240],
+                ["q" => "What is a 'CDN'?", "options" => ["Central Data Network", "Content Delivery Network (servers distributed globally to deliver content faster)", "Computer Digital Node", "Common Delivery Method"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'Caching'?", "options" => ["Getting money", "Storing copies of files temporarily so they can be accessed faster next time", "Deleting files", "Fixing a phone"], "ans" => 1, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Backlink'?", "options" => ["A broken link", "A link from another website pointing to your site (improves authority)", "A link to your own homepage", "A type of virus"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'Keyword Research'?", "options" => ["Studying the dictionary", "Identifying the words and phrases people use in search engines", "Writing code", "Finding passwords"], "ans" => 1, "xp" => 280],
+                ["q" => "What is an 'XML Sitemap'?", "options" => ["A map of the world", "A file that lists all pages of a website to help search engines crawl it", "A type of image", "A financial ledger"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'Organic Traffic'?", "options" => ["Traffic from farms", "Visitors who find your site via unpaid search results", "Paid advertisements", "Hiring people to visit"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Alt Text' importance for SEO?", "options" => ["To look pretty", "It helps search engines understand what is in an image", "To save memory", "To hide images"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Mobile-Friendly' ranking?", "options" => ["Buying a phone", "Google giving higher priority to sites that work well on mobile devices", "A type of tax", "Hiring a mobile team"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Gzip' compression?", "options" => ["A broken zip", "A way to compress files on the server before sending them to the browser", "A type of font", "A security standard"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'HTTP/2'?", "options" => ["A second website", "An updated version of the web protocol that significantly improves speed", "A type of monitor", "A logic error"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Lighthouse' tool?", "options" => ["A real building", "An automated tool by Google for improving the quality of web pages", "A flashlight", "A type of server"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'RankBrain'?", "options" => ["Being smart", "A component of Google's core algorithm that uses machine learning to process results", "A type of CPU", "A sports score"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Internal Linking'?", "options" => ["Hiding links", "Hyperlinks that point to other pages on the same website", "Deleting links", "Buying external links"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Bounce Rate'?", "options" => ["A bouncy ball", "The percentage of visitors who leave a site after viewing only one page", "The speed of sales", "The number of new users"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Schema Markup'?", "options" => ["A drawing", "Code that helps search engines provide more informative results (Rich Snippets)", "A type of variable", "A database name"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Canonical Tag'?", "options" => ["A type of law", "A tag used to tell search engines which version of a URL is the master one", "A broken link", "A type of font"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Render-blocking' resource?", "options" => ["A fast script", "Scripts or styles that prevent a page from displaying until they are loaded", "A type of hardware", "A security rule"], "ans" => 1, "xp" => 500],
+                ["q" => "What is the ultimate goal of SEO and Performance?", "options" => ["To use more paper", "To provide a fast, high-quality experience that is easy for humans and engines to find", "To make more work", "To sound busy"], "ans" => 1, "xp" => 500]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $web_course_id, "category_id" => 3,
+        "title" => "Map 214: Hosting, Domains & Publishing", "desc" => "Launch your site. FTP, DNS, SSL, and server management.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Domain Name'?", "options" => ["A person's name", "The address people type to find your site (e.g. google.com)", "A computer hardware", "A type of email"], "ans" => 1, "xp" => 200],
+                ["q" => "What is 'Web Hosting'?", "options" => ["Having guests", "Renting space on a server where your website's files are stored", "Buying a monitor", "Fixing a phone"], "ans" => 1, "xp" => 200],
+                ["q" => "What does 'DNS' stand for?", "options" => ["Digital Node Server", "Domain Name System", "Data Network Service", "Direct Name Standard"], "ans" => 1, "xp" => 200],
+                ["q" => "What is the purpose of DNS?", "options" => ["To speed up PCs", "To translate domain names into IP addresses that computers understand", "To send emails", "To store photos"], "ans" => 1, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'FTP'?", "options" => ["File Transfer Protocol (used to upload files to a server)", "Fast Transfer Part", "Final Total Process", "Fixed Task Point"], "ans" => 0, "xp" => 240],
+                ["q" => "What is an 'SSL Certificate'?", "options" => ["A degree", "A digital certificate that provides authentication and enables encrypted (HTTPS) connections", "A bank statement", "A marketing award"], "ans" => 1, "xp" => 240],
+                ["q" => "What does 'HTTPS' indicate?", "options" => ["A faster site", "A secure, encrypted connection to a website", "A site with many images", "A broken link"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'Shared Hosting'?", "options" => ["Giving a PC away", "When multiple websites share the same server resources", "Buying your own server", "Hosting on a mobile phone"], "ans" => 1, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'VPS' hosting?", "options" => ["Very Poor Speed", "Virtual Private Server (simulating a dedicated server in a shared environment)", "Visual Process System", "Video Path Service"], "ans" => 1, "xp" => 280],
+                ["q" => "What is a 'Dedicated Server'?", "options" => ["A server that works hard", "A server used entirely by one single customer/website", "A cloud server", "A type of monitor"], "ans" => 1, "xp" => 280],
+                ["q" => "What is an 'IP Address'?", "options" => ["A house address", "A unique numerical identifier for a device on the internet", "A secret password", "A type of cable"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'Propogation' in DNS?", "options" => ["Growing plants", "The time it takes for DNS changes to spread across the whole internet", "Deleting a domain", "Hiring a manager"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'cPanel'?", "options" => ["A screen panel", "A popular control panel used to manage web hosting settings", "A type of code", "A computer repair tool"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Bandwidth' in hosting?", "options" => ["The weight of the cable", "The amount of data that can be transferred to/from your site", "The number of pages", "The font size"], "ans" => 1, "xp" => 350],
+                ["q" => "What is a 'TLD' (Top-Level Domain)?", "options" => ["The first word", "The last part of a domain name (e.g. .com, .org, .za)", "A secret code", "A type of hosting"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'WHOIS'?", "options" => ["A person's name", "A service used to look up the ownership information of a domain", "A type of browser", "A security standard"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Subdomain'?", "options" => ["A hidden domain", "An additional part to your main domain (e.g. blog.yoursite.com)", "A type of virus", "A broken link"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Site Backup' importance?", "options" => ["To use space", "To ensure you can restore your site if it is hacked or crashes", "To look professional", "To sound busy"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Uptime' in hosting?", "options" => ["Clock time", "The percentage of time a server remains running and accessible", "CPU speed", "A security standard"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Malware Scanning' in hosting?", "options" => ["Fixing hardware", "Automatically checking your site's files for malicious code", "Counting pages", "Deleting data"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Nameserver'?", "options" => ["A list of staff", "A server that helps point your domain to the correct host", "A printer", "A type of database"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'File Permissions' on a server?", "options" => ["A polite request", "Settings (e.g. 755) that control who can read/write to your site's files", "The speed of the PC", "A font style"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Email Hosting'?", "options" => ["Sending spam", "A service that manages your professional @yoursite.com email addresses", "Writing a letter", "Calling a client"], "ans" => 1, "xp" => 500],
+                ["q" => "What is the ultimate goal of hosting and domain management?", "options" => ["To look smart", "To keep your website safe, fast, and accessible to the world 24/7", "To sound busy", "To make more code"], "ans" => 1, "xp" => 500]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $web_course_id, "category_id" => 3,
+        "title" => "Map 215: Content Management Systems", "desc" => "Master WordPress and the tools for scalable content delivery.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What does CMS stand for?", "options" => ["Computer Main System", "Content Management System", "Common Media Service", "Corporate Management Standard"], "ans" => 1, "xp" => 200],
+                ["q" => "Which is the most popular CMS in the world?", "options" => ["Wix", "WordPress", "Joomla", "Drupal"], "ans" => 1, "xp" => 200],
+                ["q" => "What is the main advantage of a CMS?", "options" => ["It's free", "It allows non-technical users to create and manage web content easily", "It uses no electricity", "It's a hardware part"], "ans" => 1, "xp" => 200],
+                ["q" => "What is a 'Theme' in WordPress?", "options" => ["A song", "A collection of files that determine the visual design of the site", "A type of post", "A plugin"], "ans" => 1, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Plugin'?", "options" => ["A power cable", "A software component that adds specific new features to a CMS site", "A type of user", "A broken link"], "ans" => 1, "xp" => 240],
+                ["q" => "What is the 'Dashboard' in a CMS?", "options" => ["The part of a car", "The back-end admin area where you manage content and settings", "A type of keyboard", "A login screen"], "ans" => 1, "xp" => 240],
+                ["q" => "What is a 'Post' vs a 'Page'?", "options" => ["None", "Posts are chronological/blog entries; Pages are static (e.g. 'About Us')", "Posts are only for mobile", "Pages are for news"], "ans" => 1, "xp" => 240],
+                ["q" => "What is 'Open Source' in CMS context?", "options" => ["No security", "Software where the source code is free to use and modify by anyone", "Hiring a designer", "A type of database"], "ans" => 1, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Widget'?", "options" => ["A small tool", "Small blocks that perform specific functions in sidebars or footers", "A type of font", "A broken monitor"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'Database' role in a CMS?", "options" => ["Printing documents", "Storing all the site's text, user info, and configuration settings", "Speeding up Wi-Fi", "Managing emails"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'Shortcode' in WordPress?", "options" => ["A secret password", "Small bits of code [like this] that add complex features easily to pages", "A broken link", "A type of user"], "ans" => 1, "xp" => 280],
+                ["q" => "What is 'Media Library'?", "options" => ["A building for books", "The central area where all uploaded images, videos, and PDFs are stored", "A list of users", "A marketing flyer"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Gutenberg' in WordPress?", "options" => ["A German city", "The modern block-based editor used for creating pages", "A type of server", "A security standard"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'SEO Plugin' (e.g. Yoast)?", "options" => ["A game", "Tools that help you optimize your CMS content for search engines", "Fixing hardware", "Buying ads"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'User Role' (e.g. Admin, Editor)?", "options" => ["Acting", "Settings that define what an individual user can do on the site", "A type of font", "The speed of the site"], "ans" => 1, "xp" => 350],
+                ["q" => "What is 'Auto-update' in CMS?", "options" => ["Hiring a manager", "When the CMS automatically installs new versions for security and features", "Sounding an alarm", "Deleting records"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'WooCommerce'?", "options" => ["A type of car", "A popular plugin used to turn a WordPress site into an E-commerce store", "A ghost", "A fast computer"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Slug' in a URL?", "options" => ["A garden pest", "The specific user-friendly part of the URL (e.g. /about-us)", "A broken link", "A type of font"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Permalinks'?", "options" => ["Forever links", "The permanent URLs to your individual pages and posts", "A type of backup", "A secret code"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'CMS Security'?", "options" => ["Hiring a guard", "Protecting your site through strong passwords, updates, and security plugins", "Fixing a phone", "Buying a new PC"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Site Migration'?", "options" => ["Moving to a new building", "Moving a website from one hosting provider or domain to another", "Deleting the code", "Hiring a new staff"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Child Theme'?", "options" => ["A theme for kids", "A sub-theme that inherits functionality from a parent theme, used for safe customization", "A small logo", "A broken theme"], "ans" => 1, "xp" => 500],
+                ["q" => "What is 'Caching Plugin'?", "options" => ["Saving money", "A tool that speeds up your site by serving static versions of pages", "A type of virus", "Hiding content"], "ans" => 1, "xp" => 500],
+                ["q" => "What is the ultimate goal of mastering a CMS?", "options" => ["To sound busy", "To build and maintain powerful, professional websites efficiently without coding everything by hand", "To use every plugin", "To make money"], "ans" => 1, "xp" => 500]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $web_course_id, "category_id" => 3,
+        "title" => "Map 216: Final Web Design Capstone", "desc" => "The ultimate challenge. Integrate code, design, UX, and SEO to launch a world-class site.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "SCENARIO: A client's site looks great on desktop but is broken on mobile. What is the fix?", "options" => ["Buy a better monitor", "Implement Responsive Design using media queries and fluid units", "Delete the mobile version", "Use larger images"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: A page takes 10 seconds to load because of huge images. What is the first priority?", "options" => ["Write more code", "Image Optimization and Compression (e.g. WebP/Lossy)", "Change the background color", "Add more text"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: You need to ensure blind users can understand your images. What do you use?", "options" => ["Better colors", "Alt Text attributes on all images", "A louder speaker", "High contrast"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: You want to ensure your brand name appears at the top of Google. What is this field called?", "options" => ["IT Support", "Search Engine Optimization (SEO)", "Hardware Repair", "Data Entry"], "ans" => 1, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "SCENARIO: You need to create a layout with columns and rows that adjust automatically. What is best?", "options" => ["Standard Divs", "CSS Grid", "Many line breaks", "Floating images"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: You want to hide secret passwords in a form. Which input type do you use?", "options" => ["type='text'", "type='password'", "type='secret'", "type='hide'"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: A user wants to manage their own blog without learning code. What do you install?", "options" => ["A compiler", "A Content Management System (CMS) like WordPress", "A database server only", "A text editor"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: You need to connect your domain name to your host. What do you update?", "options" => ["The font", "The DNS Nameservers", "The background image", "The email password"], "ans" => 1, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "SCENARIO: You want a button to change color when a user hovers over it. What is this called?", "options" => ["A virus", "A CSS Pseudo-class (:hover)", "A broken link", "A JavaScript error"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: Your site is being hacked. What is the most basic security step?", "options" => ["Shutting down", "Keeping the CMS, themes, and plugins updated", "Using only one color", "Deleting the homepage"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: You are comparing two designs for a 'Buy' button to see which gets more clicks. What is this?", "options" => ["A school test", "A/B Testing (UX research)", "A logic gate", "An advertisement"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: You need to define the 'logic' of your site (e.g. what happens after payment). What is this part?", "options" => ["Front-end", "Back-end", "The logo", "The monitor"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "SCENARIO: You want to use a custom font that isn't on the user's PC. What do you use?", "options" => ["A drawing of letters", "Google Fonts or @font-face", "Asking them to install it", "Bolding the text"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: You are planning the site structure with a visual skeleton. What is this?", "options" => ["A final site", "A Wireframe", "A database", "A logo"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: You want to use an image that stays sharp when zoomed in. What format is best?", "options" => ["JPG", "SVG (Vector)", "PNG", "GIF"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: A client wants a professional email (name@brand.com). What service is needed?", "options" => ["Social media", "Email Hosting", "A new computer", "A cell phone"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "MASTER FINAL: What is the primary focus of an effective Web Designer?", "options" => ["Making everything pretty only", "Balancing aesthetics, usability, technical performance, and business goals", "Writing code as fast as possible", "Buying the best hardware"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: Why is the mobile experience the current global priority?", "options" => ["It's not", "Because more than 50% of global web traffic is on mobile devices", "Because mobile screens are prettier", "Because mobile apps are free"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: What does 'Accessibility' truly mean for the web?", "options" => ["Free internet for all", "Ensuring that the web is usable by everyone, regardless of hardware, software, language, location, or ability", "Having a fast PC", "Using large fonts only"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: What is the hallmark of a world-class website?", "options" => ["Being aggressive", "Consistency, speed, ease of use, and a clear path to value for the user", "Having the most images", "Using the newest station"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "EXAM: How do HTML, CSS, and JavaScript interact?", "options" => ["They are separate", "HTML provides structure, CSS provides style, and JavaScript provides interactivity", "Hardware runs them", "Networks manage them"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: Why is 'SEO' a continuous process rather than a one-time task?", "options" => ["To see the time", "Because search algorithms and competitors are constantly changing", "To win a prize", "To look busy"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: What is the true goal of the Web Designing journey?", "options" => ["Getting a job", "To create reliable, accessible, and high-value digital homes for ideas and businesses", "Winning an award", "Hiring friends"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: What is the core responsibility of a designer to their user?", "options" => ["To fix printers", "To provide a clear, safe, and efficient digital experience that respects their time and privacy", "To write reports", "To hire staff"], "ans" => 1, "xp" => 600]
+            ]]
+        ]
+    ]
+];
+
+// Combine everything
+$final_data = array_merge($cleaned_data, $new_maps, $inter_maps, $advanced_maps, $biz_maps, $comm_maps, $cs_maps, $entrep_maps, $fin_maps, $fire_maps, $gm_maps, $fa_maps, $nvc_maps, $ohs_maps, $oa_maps, $sd_maps, $tech_maps, $tele_maps, $web_maps);
 
 set_config('journey_data', json_encode($final_data), 'local_sisizathu');
 
