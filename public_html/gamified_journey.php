@@ -23,6 +23,7 @@ $map_counts = [];
 $latest_maps_per_course = [];
 if (is_array($journey_data)) {
     foreach ($journey_data as $map) {
+        if (!is_array($map) || !isset($map['course_id'])) continue; // Skip corrupt data
         $cid = $map['course_id'];
         if (!isset($map_counts[$cid])) $map_counts[$cid] = 0;
         $map_counts[$cid]++;
@@ -712,7 +713,7 @@ echo $OUTPUT->header();
         const container = document.getElementById('map-list-container');
         container.innerHTML = '';
         
-        let courseMaps = allMapsData.filter(m => m.course_id == activeAdminCourseId && (m.category_id == catId || (!m.category_id && catId == 1)));
+        let courseMaps = allMapsData.filter(m => m && m.course_id == activeAdminCourseId && (m.category_id == catId || (!m.category_id && catId == 1)));
         courseMaps.sort((a,b) => a.id - b.id);
 
         if (courseMaps.length === 0) {

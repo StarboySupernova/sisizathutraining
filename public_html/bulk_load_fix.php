@@ -11,26 +11,38 @@ global $DB;
 $basic_course = $DB->get_record_select('course', "fullname LIKE '%Basic Computer Skills%'", null, 'id');
 $inter_course = $DB->get_record_select('course', "fullname LIKE '%Intermediate Computer Skills%'", null, 'id');
 $advanced_course = $DB->get_record_select('course', "fullname LIKE '%Advanced Computer Skills%'", null, 'id');
+$biz_course = $DB->get_record_select('course', "fullname LIKE '%Business Administration%'", null, 'id');
+$comm_course = $DB->get_record_select('course', "fullname LIKE '%Communication Studies and Language%'", null, 'id');
+$cs_course = $DB->get_record_select('course', "fullname LIKE '%Customer Service%'", null, 'id');
 
 $target_course_id = $basic_course ? $basic_course->id : 15; 
 $wrong_course_id = $inter_course ? $inter_course->id : 18;
-$advanced_course_id = $advanced_course ? $advanced_course->id : 21; // Fallback ID
-
+$advanced_course_id = $advanced_course ? $advanced_course->id : 21;
+$biz_course_id = $biz_course ? $biz_course->id : 24;
+$comm_course_id = $comm_course ? $comm_course->id : 27; 
+$cs_course_id = $cs_course ? $cs_course->id : 30; // Fallback ID
 // 1. Fetch current data and REMOVE maps from the wrong course
 $current_data_json = get_config('local_sisizathu', 'journey_data') ?: '[]';
 $current_data = json_decode($current_data_json, true);
 $cleaned_data = [];
 $highest_id = 0;
 
-if ($map['course_id'] != $wrong_course_id && $map['course_id'] != $target_course_id && $map['course_id'] != $advanced_course_id) {
-    $cleaned_data[] = $map; 
-}
+if (is_array($current_data)) {
+    foreach ($current_data as $map) {
+        // Safeguard to scrub out the corrupt null entry currently in your database
+        if (!is_array($map) || !isset($map['course_id'])) {
+            continue; 
+        }
 
-foreach ($current_data as $map) {
-    if ($map['course_id'] != $wrong_course_id && $map['course_id'] != $target_course_id) {
-        $cleaned_data[] = $map; // Keep maps belonging to other unrelated courses
+        // Keep only maps that DO NOT belong to the three courses we are updating
+        if ($map['course_id'] != $wrong_course_id && $map['course_id'] != $target_course_id && $map['course_id'] != $advanced_course_id && $map['course_id'] != $biz_course_id && $map['course_id'] != $comm_course_id && $map['course_id'] != $cs_course_id) {
+            $cleaned_data[] = $map; 
+        }
+        
+        if ($map['id'] > $highest_id) {
+            $highest_id = $map['id'];
+        }
     }
-    if ($map['id'] > $highest_id) $highest_id = $map['id'];
 }
 
 // 2. Build the 12 requested Maps for Basic Computer Skills
@@ -1582,8 +1594,1553 @@ $advanced_maps = [
     ]
 ];
 
+// ==========================================================
+// BUSINESS ADMINISTRATION CURRICULUM (Maps 37-48)
+// ==========================================================
+$biz_maps = [
+    // CATEGORY 1: OFFICE OPERATIONS (Maps 37-40)
+    [
+        "id" => ++$highest_id, "course_id" => $biz_course_id, "category_id" => 1,
+        "title" => "Map 37: Principles of Business Admin", "desc" => "Fundamentals of organizational structure and administrative roles.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the primary role of Business Administration?", "options" => ["To perform repairs", "To plan, organize, and oversee business operations", "To only manage social media", "To manufacture goods manually"], "ans" => 1, "xp" => 150],
+                ["q" => "Which organizational structure has a clear chain of command from top to bottom?", "options" => ["Flat", "Hierarchical", "Circular", "Networked"], "ans" => 1, "xp" => 150],
+                ["q" => "What does 'SME' stand for in business?", "options" => ["System Management Entry", "Small to Medium Enterprise", "Sales Marketing Engine", "Strategic Modern Enterprise"], "ans" => 1, "xp" => 150],
+                ["q" => "Which department is responsible for managing employee payroll and benefits?", "options" => ["Marketing", "Human Resources", "Logistics", "IT"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Stakeholder'?", "options" => ["A person who owns the land", "Anyone affected by or interested in the business (owners, employees, customers)", "Only the CEO", "A type of office equipment"], "ans" => 1, "xp" => 180],
+                ["q" => "What is the purpose of a Mission Statement?", "options" => ["To list all employees", "To define the company's core purpose and focus", "To show the annual profit", "To advertise a specific product"], "ans" => 1, "xp" => 180],
+                ["q" => "In a 'Flat' organizational structure, what is usually missing?", "options" => ["Employees", "Middle management layers", "A CEO", "Office space"], "ans" => 1, "xp" => 180],
+                ["q" => "Which term describes the internal rules that guide a company's actions?", "options" => ["Marketing", "Policies and Procedures", "Social Media", "Logistics"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Front-office' work?", "options" => ["Cleaning the building", "Customer-facing tasks like sales and reception", "Accounting and payroll", "Server maintenance"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Back-office' work?", "options" => ["Working in the garden", "Administrative support tasks that don't involve direct customer contact", "Selling products", "Reception duties"], "ans" => 1, "xp" => 210],
+                ["q" => "What is an 'Executive Assistant'?", "options" => ["A junior manager", "A professional who supports high-level managers with complex admin tasks", "A person who fixes computers", "A temporary office clerk"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Corporate Culture'?", "options" => ["The art on the walls", "The shared values, beliefs, and behaviors within a company", "The company's bank account", "The dress code only"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Outsourcing'?", "options" => ["Working outside the office", "Hiring an external party to perform services or create goods", "Selling office equipment", "Hiring more managers"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Scalability' in a business model?", "options" => ["How heavy the products are", "The ability to handle growth without being hindered by structure or resources", "The number of stairs in the building", "The color of the logo"], "ans" => 1, "xp" => 250],
+                ["q" => "What does 'ROI' stand for?", "options" => ["Rate of Interest", "Return on Investment", "Regional Office Index", "Regular Office Income"], "ans" => 1, "xp" => 250],
+                ["q" => "Which document outlines the long-term goals and steps to achieve them?", "options" => ["Business Plan", "Receipt", "Time sheet", "Payroll log"], "ans" => 0, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Change Management'?", "options" => ["Counting petty cash", "The process of transitioning individuals or teams to a desired future state", "Changing the office layout", "Updating the software"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Operations Management'?", "options" => ["Fixing machinery", "Designing and controlling the process of production and business operations", "Managing the cleaning staff", "Hiring new employees"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'SWOT' analysis used for?", "options" => ["Accounting", "Evaluating Strengths, Weaknesses, Opportunities, and Threats", "Cleaning the office", "Organizing files"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Workflow'?", "options" => ["The speed of the internet", "The sequence of industrial, administrative, or other processes through which a piece of work passes", "Working in a gym", "The office air conditioning"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Strategic Planning'?", "options" => ["Daily task listing", "Setting long-term goals and determining the best approach to achieve them", "Planning an office party", "Creating a weekly schedule"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Standard Operating Procedure' (SOP)?", "options" => ["A type of software", "Established step-by-step instructions for routine activities", "The company's legal name", "The layout of the office"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'KPI'?", "options" => ["Keep People Informed", "Key Performance Indicator", "Known Product Item", "Key Personal Interaction"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the 'Board of Directors'?", "options" => ["The people who work at the front desk", "A group of individuals elected to represent shareholders and oversee the company", "A list of managers", "A type of office furniture"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $biz_course_id, "category_id" => 1,
+        "title" => "Map 38: Office Procedures & Etiquette", "desc" => "Master the protocols of a professional working environment.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the professional way to answer an office telephone?", "options" => ["'Hello?'", "'What do you want?'", "Identify yourself and the company/department", "Just stay silent until they speak"], "ans" => 2, "xp" => 150],
+                ["q" => "What is 'Punctuality'?", "options" => ["Correct grammar", "Being on time", "Being good at math", "Wearing a suit"], "ans" => 1, "xp" => 150],
+                ["q" => "What should you do if you are running late for a meeting?", "options" => ["Sneak in and say nothing", "Notify the organizer as soon as possible", "Don't go at all", "Wait until the next day to apologize"], "ans" => 1, "xp" => 150],
+                ["q" => "Which term describes a professional's outward appearance and behavior?", "options" => ["Professionalism", "Friendliness", "Casualness", "Complexity"], "ans" => 0, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Office Etiquette'?", "options" => ["The office furniture", "The unwritten rules of social behavior in a workplace", "The company's profit margin", "The software used for emails"], "ans" => 1, "xp" => 180],
+                ["q" => "How should you handle confidential information overheard in the office?", "options" => ["Tell your coworkers", "Keep it strictly private", "Post it on social media", "Tell your family"], "ans" => 1, "xp" => 180],
+                ["q" => "What is the purpose of an 'Agenda'?", "options" => ["To take notes", "To outline the topics to be discussed in a meeting", "To list attendees", "To record the time"], "ans" => 1, "xp" => 180],
+                ["q" => "What does 'RSVP' mean on an invitation?", "options" => ["Please reply", "Bring food", "Wear a suit", "Don't come late"], "ans" => 0, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What are 'Meeting Minutes'?", "options" => ["The duration of the meeting", "The written record of what was discussed and decided", "A list of people who were late", "The time the meeting ended"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Quorum'?", "options" => ["A type of meeting room", "The minimum number of members required to make a meeting's proceedings valid", "A long meeting", "A vote taken in secret"], "ans" => 1, "xp" => 210],
+                ["q" => "Which term describes the process of managing multiple tasks at once?", "options" => ["Multitasking", "Prioritizing", "Delegating", "Procrastinating"], "ans" => 0, "xp" => 210],
+                ["q" => "What is 'Time Management'?", "options" => ["Watching the clock", "Organizing and planning how to divide your time between specific activities", "Buying a new watch", "Being fast at typing"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Active Listening'?", "options" => ["Hearing music", "Fully concentrating on, understanding, and responding to what is being said", "Nodding without listening", "Interrupting with your own ideas"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Conflict Resolution'?", "options" => ["Starting a fight", "The process of finding a peaceful solution to a disagreement", "Ignoring the problem", "Telling the boss"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Constructive Criticism'?", "options" => ["Complaining about work", "Feedback intended to help someone improve", "Insulting someone's work", "Saying only positive things"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Networking' in a professional sense?", "options" => ["Connecting computers", "Building and maintaining professional relationships", "Using social media only", "Handing out flyers"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Accountability'?", "options" => ["Doing math", "The obligation of an individual to account for their activities and accept responsibility", "Blaming others", "Working long hours"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Diplomacy' in the workplace?", "options" => ["International politics", "The art of dealing with people in a sensitive and effective way", "Being very loud", "Avoiding everyone"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Discretion'?", "options" => ["Being very fast", "The quality of behaving or speaking in such a way as to avoid causing offense or revealing private information", "Working in secret", "Choosing your own hours"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Mentorship'?", "options" => ["Teaching a class", "A relationship in which a more experienced person guides a less experienced one", "Paying for a tutor", "Hiring a new manager"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Emotional Intelligence' (EQ)?", "options" => ["Being smart", "The capacity to be aware of, control, and express one's emotions, and to handle interpersonal relationships judiciously", "Being very emotional", "Crying at work"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Synergy' in a team?", "options" => ["Working alone", "The interaction or cooperation of two or more agents to produce a combined effect greater than the sum of their separate effects", "A type of software", "Competing with coworkers"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Cross-training'?", "options" => ["Training for a race", "Training an employee to do different parts of the organization's work", "Working in two companies", "Training outside"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Burnout'?", "options" => ["A fire in the office", "Physical or mental collapse caused by overwork or stress", "Running out of coffee", "Quitting your job"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $biz_course_id, "category_id" => 1,
+        "title" => "Map 39: Business Communication", "desc" => "Advanced writing, professional emails, and internal reporting.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Business Memo' used for?", "options" => ["External advertising", "Internal communication within an organization", "Personal messages", "Legal contracts"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the 'Tone' of a professional email?", "options" => ["Loud and aggressive", "Casual and slang-filled", "Professional, clear, and polite", "Secretive"], "ans" => 2, "xp" => 150],
+                ["q" => "Which part of a business letter contains the sender's address and date?", "options" => ["Salutation", "Letterhead / Heading", "Body", "Closing"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Salutation'?", "options" => ["A type of goodbye", "The greeting at the beginning of a letter (e.g., 'Dear Mr. Smith')", "The signature", "The main point of the letter"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What does 'Concise' mean in writing?", "options" => ["Very long and detailed", "Brief but comprehensive", "Poorly written", "Written in a different language"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Proofreading'?", "options" => ["Reading for fun", "Reading a text to find and correct errors", "Printing a document", "Writing the first draft"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Jargon'?", "options" => ["A type of container", "Special words or expressions used by a particular profession that are difficult for others to understand", "A foreign language", "Clear communication"], "ans" => 1, "xp" => 180],
+                ["q" => "What is an 'Internal Report'?", "options" => ["A news article", "A document prepared for use within a company (e.g., sales update)", "An advertisement", "A letter to a client"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the purpose of a 'Executive Summary'?", "options" => ["To list all employees", "A short section of a document that summarizes the whole report for quick reading", "A list of expenses", "The title page"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Non-verbal Communication'?", "options" => ["Silence", "Communication without words (body language, eye contact, tone of voice)", "Writing an email", "Reading a report"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Paraphrasing'?", "options" => ["Copying exactly", "Rewording something written or spoken by someone else", "Deleting text", "Translating"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Visual Communication'?", "options" => ["Talking face to face", "Using graphs, charts, and images to convey information", "Reading a book", "Listening to a podcast"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Press Release'?", "options" => ["A private letter", "An official statement sent to the media to provide information", "A type of social media post", "A company meeting"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Upward Communication'?", "options" => ["Talking to your coworkers", "Flow of information from subordinates to higher levels (managers/executives)", "Talking to customers", "Communication between two companies"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Downward Communication'?", "options" => ["Talking to your boss", "Flow of information from higher levels to subordinates", "Talking to external vendors", "Gossiping"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Lateral Communication'?", "options" => ["Communication between different levels", "Communication between people at the same level in the organization", "Talking to yourself", "A phone call"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Communication Noise'?", "options" => ["Loud music", "Anything that interferes with the transmission or understanding of a message", "Talking too much", "A broken microphone"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Feedback Loop'?", "options" => ["A round table", "The process in which the receiver's response is sent back to the sender", "A type of echo", "Ignoring a message"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Persuasive Writing'?", "options" => ["Writing a story", "Writing intended to convince the reader to take a specific action or adopt a viewpoint", "Writing instructions", "Writing a report"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Crisis Communication'?", "options" => ["Talking during a fire", "Managing communication during a major negative event affecting the company", "Calling an ambulance", "A fast meeting"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Direct Communication' style?", "options" => ["Being rude", "Stating the main point clearly and immediately", "Talking through a third party", "Using hints"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Indirect Communication' style?", "options" => ["Never speaking", "Delivering the main point gradually or using subtle hints", "Using a megaphone", "Writing a letter"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Intercultural Communication'?", "options" => ["Talking to computers", "Communication between people from different cultural backgrounds", "Learning a new language", "Traveling for business"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Semantic Barrier'?", "options" => ["A physical wall", "Misunderstanding caused by different meanings assigned to words", "A loud noise", "A broken internet"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $biz_course_id, "category_id" => 1,
+        "title" => "Map 40: Record Keeping & Filing", "desc" => "Master the physical and digital organization of critical business data.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Record Keeping'?", "options" => ["Writing a diary", "The systematic procedure of maintaining accurate logs of business transactions and activities", "Saving photos on a phone", "Memory alone"], "ans" => 1, "xp" => 150],
+                ["q" => "Which filing system organizes records by the letters of the alphabet?", "options" => ["Numeric", "Geographic", "Alphabetic", "Chronological"], "ans" => 2, "xp" => 150],
+                ["q" => "Which filing system organizes records by date?", "options" => ["Alphabetic", "Chronological", "Subject", "Numeric"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Database' in digital record keeping?", "options" => ["A folder on the desktop", "A structured collection of data stored electronically", "A paper notebook", "A type of printer"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Archiving'?", "options" => ["Deleting files", "Moving inactive records to long-term storage", "Sharing files online", "Printing documents"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Records Retention Schedule'?", "options" => ["A calendar for meetings", "A policy stating how long different types of records must be kept before being destroyed", "A list of employee names", "A daily task list"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Indexing' a file?", "options" => ["Putting it in a box", "Assigning a unique identifier or name to a record for easy retrieval", "Counting the pages", "Stapling papers"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Centralized Filing'?", "options" => ["Keeping files on every desk", "Storing all company records in one single location", "Using a cloud server", "Deleting old records"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Decentralized Filing'?", "options" => ["Losing all files", "Storing records at the point of use in different departments", "Storing files on the moon", "One giant file room"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Cross-Reference' in filing?", "options" => ["A mistake in the file", "A notation showing that a record is filed under a different name or category", "Deleting two files", "Copying a file"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Vital Records'?", "options" => ["Medical records only", "Records essential to the operation of the business (e.g., contracts, titles)", "Records about the office lunch", "Old newspapers"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Data Entry'?", "options" => ["Entering a building", "The act of inputting information into a computer system", "Writing on paper", "Sending an email"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Disaster Recovery' for records?", "options" => ["Buying new paper", "A plan to protect and restore records in case of fire, flood, or theft", "Ignoring the problem", "Starting a new business"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Shredding' used for?", "options" => ["Making confetti", "Safely destroying sensitive or confidential documents", "Organizing papers", "Recycling for profit"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Metadata' in digital filing?", "options" => ["The actual file content", "Data about the file (author, date created, size)", "A virus", "A type of software"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Cloud Storage'?", "options" => ["Storing papers in the sky", "Saving data on remote servers accessed via the internet", "A physical hard drive", "A type of filing cabinet"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Version Control'?", "options" => ["Checking the time", "Managing multiple revisions of the same document to ensure the latest is used", "Naming a file 'final2'", "Deleting old files"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Access Control' for records?", "options" => ["Opening a door", "Restricting who can view or edit specific records based on their role", "A type of password", "Keeping files in a safe"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Audit Trail'?", "options" => ["A walk in the woods", "A step-by-step record of the history of a transaction or file access", "A list of managers", "A backup system"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Data Integrity'?", "options" => ["Being honest at work", "Ensuring that data remains accurate, complete, and consistent over time", "A type of encryption", "Having a lot of data"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'EDMS'?", "options" => ["Electronic Document Management System", "Every Document Must Stay", "Extra Digital Management Service", "Efficient Data Marketing System"], "ans" => 0, "xp" => 400],
+                ["q" => "What is 'Optical Character Recognition' (OCR)?", "options" => ["A type of eye test", "Technology that converts images of text into machine-readable text", "A way to take photos", "A printer setting"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Encryption' in record keeping?", "options" => ["Writing in secret", "The process of converting data into a code to prevent unauthorized access", "Deleting data", "A type of password"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Redundancy' in data storage?", "options" => ["Having too many employees", "Storing multiple copies of the same data in different locations for safety", "Deleting redundant files", "A slow computer"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+
+    // CATEGORY 2: HUMAN RESOURCES & OPERATIONS (Maps 41-44)
+    [
+        "id" => ++$highest_id, "course_id" => $biz_course_id, "category_id" => 2,
+        "title" => "Map 41: Basic HR Principles", "desc" => "Recruitment, contracts, and employee management.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Human Resources' (HR)?", "options" => ["A type of machinery", "The department that manages employees and company culture", "A list of customers", "A financial report"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Recruitment'?", "options" => ["Firing people", "The process of finding and hiring new employees", "Training staff", "Paying payroll"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Job Description'?", "options" => ["The name of a company", "A document outlining the tasks, duties, and responsibilities of a role", "A list of former employees", "A performance review"], "ans" => 1, "xp" => 150],
+                ["q" => "What is an 'Employment Contract'?", "options" => ["A promise", "A legal agreement between an employer and an employee", "A type of insurance", "A daily schedule"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Onboarding'?", "options" => ["Getting on a boat", "The process of integrating a new employee into the company", "Firing a person", "Giving a promotion"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Employee Engagement'?", "options" => ["A wedding", "The level of commitment and passion an employee has for their work", "Being very busy", "Telling people what to do"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Performance Review'?", "options" => ["Watching a movie", "A formal assessment of an employee's work over a period of time", "A salary increase", "A team meeting"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Payroll'?", "options" => ["Rolling a ball", "The total amount of money a company pays its employees", "A type of tax", "A bank account"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Workplace Diversity'?", "options" => ["Having many offices", "Hiring people of different backgrounds, genders, and ethnicities", "Changing your job often", "Having many different products"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Conflict of Interest'?", "options" => ["Disliking your job", "A situation where a person's private interests could influence their professional duties", "Two people fighting", "A broken contract"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Sexual Harassment'?", "options" => ["A type of romance", "Unwelcome conduct of a sexual nature in the workplace", "Being friendly", "A disagreement"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Work-Life Balance'?", "options" => ["Working and sleeping", "The equilibrium between a person's work and personal life", "Working 24 hours", "Being unemployed"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Labor Law'?", "options" => ["Rules for manual labor", "The body of law that mediates the relationship between workers and employers", "Rules for gardening", "A type of contract"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Succession Planning'?", "options" => ["Planning a party", "Identifying and developing new leaders who can replace old ones", "Saving money", "Hiring a new intern"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Employee Turnover'?", "options" => ["A type of pastry", "The rate at which employees leave a company and are replaced by new ones", "Promoting people", "Changing office hours"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Company Policy'?", "options" => ["A government law", "The set of rules and principles that govern how a company operates", "A marketing strategy", "An insurance plan"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Fringe Benefits'?", "options" => ["Haircuts for staff", "Extra benefits provided to employees (e.g., health insurance, car allowance)", "Working from home", "A salary bonus"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Disciplinary Action'?", "options" => ["Exercise at work", "Corrective action taken by an employer in response to employee misconduct", "A promotion", "A training session"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Grievance Procedure'?", "options" => ["A funeral", "A formal process for employees to raise concerns or complaints", "Quitting your job", "A marketing plan"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Wrongful Termination'?", "options" => ["A broken computer", "Firing an employee for illegal reasons or in breach of contract", "Quitting without notice", "A layoff"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Human Capital'?", "options" => ["Money owned by humans", "The skills, knowledge, and experience possessed by an individual or population", "The company's office building", "A list of employees"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Collective Bargaining'?", "options" => ["Shopping in bulk", "Negotiation between an employer and a group of employees (usually a union)", "Selling products", "A team meeting"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Organizational Behavior'?", "options" => ["How people act in public", "The study of how people interact within groups and organizations", "A type of psychology only", "Company rules"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Upskilling'?", "options" => ["Moving to a higher floor", "Learning new skills to keep up with changes in the workplace", "A salary increase", "Hiring a new manager"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $biz_course_id, "category_id" => 2,
+        "title" => "Map 42: Finance & Budgeting", "desc" => "Invoices, basic accounting, and managing office expenses.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Budget'?", "options" => ["A type of bank account", "An estimate of income and expenditure for a set period", "A pile of cash", "A list of employees"], "ans" => 1, "xp" => 150],
+                ["q" => "What is an 'Invoice'?", "options" => ["A receipt", "A document sent by a seller to a buyer requesting payment for goods or services", "A bank statement", "A marketing flyer"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Revenue'?", "options" => ["Profit", "The total amount of money received from sales before expenses are deducted", "Spending money", "A type of tax"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Expense'?", "options" => ["Money received", "Money spent or cost incurred in an organization's efforts to generate revenue", "A type of income", "A bank deposit"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Net Profit'?", "options" => ["Total sales", "The amount of money left after all expenses and taxes are paid", "The amount of money in the bank", "Total revenue"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Gross Profit'?", "options" => ["Profit after tax", "Revenue minus the cost of goods sold", "Total revenue", "The salary of the CEO"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Balance Sheet'?", "options" => ["A sheet for balancing books", "A financial statement that reports a company's assets, liabilities, and shareholders' equity", "A list of daily sales", "An expense report"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Liability'?", "options" => ["An asset", "Something a person or company owes, usually a sum of money", "A type of income", "A company car"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Cash Flow'?", "options" => ["Money in a river", "The total amount of money being transferred into and out of a business", "Total profit", "A bank loan"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Accounts Receivable'?", "options" => ["Money you owe", "Money owed to a company by its customers", "The company's bank account", "Payroll"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Accounts Payable'?", "options" => ["Money customers owe you", "Money a company owes to its suppliers", "Total revenue", "Petty cash"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Petty Cash'?", "options" => ["Money for pets", "A small amount of cash on hand for minor office expenses", "The CEO's bonus", "Total profit"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Depreciation'?", "options" => ["Gaining value", "The reduction in the value of an asset over time", "A type of tax", "Saving money"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Audit' in finance?", "options" => ["A large room", "An official inspection of an individual's or organization's accounts", "Spending money", "A type of loan"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Equity'?", "options" => ["Equality at work", "The value of the shares issued by a company", "A type of debt", "A bank statement"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Fiscal Year'?", "options" => ["A calendar year", "A one-year period used for financial reporting and budgeting", "A leap year", "A very busy year"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Break-even Point'?", "options" => ["Breaking a bone", "The point at which total cost and total revenue are equal", "Making a lot of money", "Losing all your money"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Overhead'?", "options" => ["The ceiling", "Ongoing business expenses not directly attributed to creating a product or service", "The salary of the boss", "A type of tax"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Capital'?", "options" => ["A city", "Wealth in the form of money or other assets owned by a person or organization", "The company name", "A type of font"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Inventory'?", "options" => ["A discovery", "A complete list of items such as property, goods in stock, or the contents of a building", "A type of tax", "The company's bank account"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Ledge' in accounting?", "options" => ["A shelf", "A book or computer file for recording and totaling economic transactions", "The edge of a building", "A type of office chair"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Fixed Cost'?", "options" => ["A cost that changes", "A cost that does not change with an increase or decrease in the amount of goods or services produced", "A repair cost", "A salary bonus"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Variable Cost'?", "options" => ["A cost that stays the same", "A corporate expense that changes in proportion to production output", "A type of tax", "The cost of office rent"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Liquidity'?", "options" => ["Being a liquid", "The availability of liquid assets (cash) to a market or company", "Being very fast", "Working underwater"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $biz_course_id, "category_id" => 2,
+        "title" => "Map 43: Meeting & Event Coordination", "desc" => "Plan, host, and follow up on professional company events.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the first step in planning a business meeting?", "options" => ["Order lunch", "Define the objective/purpose of the meeting", "Invite everyone you know", "Book the largest room"], "ans" => 1, "xp" => 150],
+                ["q" => "What is an 'Attendee List'?", "options" => ["A list of items to buy", "A list of people who are invited to or present at an event", "A marketing flyer", "A payroll log"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Venue'?", "options" => ["A type of car", "The place where an event or meeting is held", "A guest speaker", "A type of food"], "ans" => 1, "xp" => 150],
+                ["q" => "What is an 'Itinerary'?", "options" => ["A list of names", "A planned route or journey; a schedule of events", "A receipt", "A map of the office"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Catering'?", "options" => ["Fixing computers", "Providing food and drink at a meeting or event", "Cleaning the venue", "Designing invitations"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'AV' (Audio-Visual) equipment?", "options" => ["A type of car", "Microphones, projectors, and screens used for presentations", "Office chairs", "Computers for the staff"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Webinar'?", "options" => ["A spider's web", "A seminar conducted over the internet", "A physical meeting", "A type of email"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Breakout Session'?", "options" => ["A prison break", "A small group discussion or workshop within a larger conference", "A coffee break", "The end of the meeting"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Logistics' in event planning?", "options" => ["Logic puzzles", "The detailed coordination of a complex operation involving many people, facilities, or supplies", "Writing the agenda", "Designing the logo"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Keynote Speaker'?", "options" => ["A person who fixes keys", "The main speaker at a conference who sets the central theme", "A person who takes notes", "A junior employee"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Budgeting' for an event?", "options" => ["Naming the event", "Allocating financial resources to cover the costs of the event", "Inviting guests", "Choosing the food"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Follow-up' after a meeting?", "options" => ["Chasing someone", "Actions taken after a meeting to ensure decisions are implemented", "The next meeting", "A thank you note only"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Lead Time'?", "options" => ["The time spent leading", "The time between the start and completion of a production process or project", "The duration of a meeting", "A type of clock"], "ans" => 1, "xp" => 250],
+                ["q" => "What is an 'Event Brief'?", "options" => ["A short meeting", "A document outlining all the details and requirements for an event", "A pair of glasses", "A list of attendees"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Risk Assessment' for an event?", "options" => ["Counting money", "Identifying potential problems that could occur and planning how to handle them", "A type of insurance", "The cost of the venue"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Contingency Plan'?", "options" => ["A plan for a party", "A backup plan in case the primary plan fails", "A list of guests", "The main agenda"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Vendor Management'?", "options" => ["Managing a shop", "The process of managing relationships with third-party suppliers", "Hiring new employees", "Designing products"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Stakeholder Communication'?", "options" => ["Talking to coworkers only", "Keeping all interested parties informed about the event's progress", "An internal memo", "A secret meeting"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Post-event Evaluation'?", "options" => ["A party after the event", "Reviewing the success of the event and identifying areas for improvement", "Paying the bills", "Cleaning the venue"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Registration'?", "options" => ["A type of car", "The process by which people sign up to attend an event", "The list of employees", "A marketing flyer"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Hybrid Event'?", "options" => ["An event with two names", "An event that combines a physical location with a virtual component", "A car show", "A very fast meeting"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Engagement' during an event?", "options" => ["A wedding", "The level of participation and interest shown by the attendees", "The duration of the event", "The number of speakers"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Sponsorship'?", "options" => ["A type of friendship", "Financial support given by an organization for an event, often in exchange for advertising", "A loan", "A free ticket"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Branding' of an event?", "options" => ["Marking cattle", "Creating a unique image and theme for the event", "Designing invitations only", "The name of the venue"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $biz_course_id, "category_id" => 2,
+        "title" => "Map 44: CRM & Customer Service", "desc" => "Manage client relations and professional support systems.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What does 'CRM' stand for?", "options" => ["Company Relationship Management", "Customer Relationship Management", "Common Resource Management", "Corporate Record Marketing"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the primary goal of Customer Service?", "options" => ["To make money only", "To ensure customer satisfaction and build loyalty", "To ignore complaints", "To sell as much as possible once"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Client'?", "options" => ["A coworker", "A person or organization using the services of another", "A competitor", "A manager"], "ans" => 1, "xp" => 150],
+                ["q" => "Which tool is commonly used to track customer interactions?", "options" => ["A notebook", "CRM Software", "A calendar", "A calculator"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Customer Loyalty'?", "options" => ["Liking a company", "The likelihood that a customer will continue to buy from a business", "Buying things for free", "A type of discount"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Customer Retention'?", "options" => ["Firing a customer", "The ability of a company to keep its customers over time", "Searching for new customers", "Ignoring old customers"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Empathy' in customer service?", "options" => ["Being smart", "The ability to understand and share the feelings of the customer", "Feeling sorry for someone", "Being very loud"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Complaint'?", "options" => ["A type of praise", "An expression of dissatisfaction with a product or service", "A suggestion", "A thank you note"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Upselling'?", "options" => ["Selling things on a hill", "Encouraging a customer to purchase a more expensive or premium version of a product", "Selling things for free", "Ignoring a customer"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Cross-selling'?", "options" => ["Selling to angry customers", "Selling related or complementary products to a customer", "Selling to a competitor", "Selling in a different language"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Customer Journey'?", "options" => ["A trip the customer takes", "The complete sum of experiences that customers go through when interacting with your company", "A marketing flyer", "A list of customers"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Feedback'?", "options" => ["A loud noise", "Information about reactions to a product or service, used as a basis for improvement", "A type of payment", "An advertisement"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Ticket' in customer support?", "options" => ["A bus ticket", "A record of a customer request or issue in a support system", "A fine", "A prize"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'SLA' in customer service?", "options" => ["Service Level Agreement (e.g., promising a reply in 24 hours)", "Super Low Average", "Standard Legal Action", "Secret Loyalty Award"], "ans" => 0, "xp" => 250],
+                ["q" => "What is 'Churn Rate'?", "options" => ["Making butter", "The rate at which customers stop doing business with an entity", "The speed of sales", "The number of new customers"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Touchpoint'?", "options" => ["A place to touch the wall", "Any point of interaction between a customer and a business", "A type of computer", "A fingerprint"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Personalization' in CRM?", "options" => ["Talking to yourself", "Tailoring a service or product to accommodate specific individuals", "Hiring new staff", "Changing the company logo"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Automation' in CRM?", "options" => ["A type of car", "Using software to perform repetitive tasks (like sending follow-up emails)", "Fixing machinery", "A new marketing plan"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Lead' in sales?", "options" => ["A type of metal", "A person or organization that has shown interest in a product or service", "A manager", "A final sale"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Conversion'?", "options" => ["Changing religion", "The point at which a lead becomes a paying customer", "A type of translation", "A salary increase"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'NPS' (Net Promoter Score)?", "options" => ["A type of tax", "A metric used to measure customer loyalty and satisfaction", "A bank statement", "A marketing award"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'User Experience' (UX)?", "options" => ["Playing a game", "The overall experience of a person using a product, especially in terms of how easy or pleasing it is to use", "A type of software", "Working in a company"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Proactive' customer service?", "options" => ["Acting after a complaint", "Anticipating customer needs and addressing them before they become problems", "Ignoring the customer", "Waiting for instructions"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Customer Advocacy'?", "options" => ["Suing a company", "When customers are so satisfied they actively promote your brand to others", "A type of marketing", "A legal team"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+
+    // CATEGORY 3: STRATEGY & MANAGEMENT (Maps 45-48)
+    [
+        "id" => ++$highest_id, "course_id" => $biz_course_id, "category_id" => 3,
+        "title" => "Map 45: Business Ethics & Compliance", "desc" => "Professional integrity, data privacy, and corporate laws.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Business Ethics'?", "options" => ["Doing math at work", "The study of proper business policies and practices regarding potentially controversial issues", "The company's rules on dress code", "A type of accounting"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Compliance' in business?", "options" => ["Being friendly", "The act of obeying relevant laws, regulations, and rules", "A promotion", "A marketing plan"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Whistleblower'?", "options" => ["A person who plays sports", "An employee who reports organizational misconduct to the public or higher authority", "A manager", "A security guard"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Transparency'?", "options" => ["A clear window", "Operating in such a way that it is easy for others to see what actions are performed", "A type of software", "Hiding the truth"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Conflict of Interest'?", "options" => ["Disliking your job", "A situation where a person's private interests could influence their professional duties", "Two people fighting", "A broken contract"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Corporate Social Responsibility' (CSR)?", "options" => ["Working on the weekend", "A business model where companies make a concerted effort to operate in ways that enhance society", "Paying taxes", "A marketing strategy"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Insider Trading'?", "options" => ["Trading in the office", "The illegal practice of trading on the stock exchange to one's own advantage through having access to confidential information", "Selling products", "A team meeting"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Data Privacy'?", "options" => ["A secret password", "The protection of personal information from unauthorized access or use", "A type of firewall", "A cloud storage service"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'POPIA' in South Africa?", "options" => ["A type of food", "Protection of Personal Information Act", "Public Office Performance Interaction Act", "Private Organization Professional Integrity Act"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Anti-Money Laundering' (AML)?", "options" => ["Cleaning money with soap", "A set of laws, regulations, and procedures intended to prevent criminals from disguising illegally obtained funds", "Saving money", "A bank account"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Bribery'?", "options" => ["Giving a gift", "Dishonestly persuading someone to act in one's favor by a gift of money or other inducement", "A salary increase", "A marketing plan"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Code of Conduct'?", "options" => ["A type of computer code", "A set of rules outlining the social norms, religious rules and responsibilities of an individual or organization", "A daily schedule", "A software license"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Intellectual Property' (IP)?", "options" => ["Owning a house", "A category of property that includes intangible creations of the human intellect", "A fast computer", "A smart person"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Copyright'?", "options" => ["The right to copy anything", "A legal right that grants the creator of an original work exclusive rights to its use and distribution", "A brand name", "A type of patent"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Trademark'?", "options" => ["A trade with a mark", "A recognizable sign, design, or expression which identifies products or services of a particular source", "A patent", "A legal contract"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Patent'?", "options" => ["A type of leather", "A government authority or license conferring a right or title for a set period", "A brand name", "A type of insurance"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Fiduciary Duty'?", "options" => ["A type of tax", "A legal obligation of one party to act in the best interest of another", "A duty to work hard", "A salary bonus"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Anti-trust' law?", "options" => ["Not trusting anyone", "Legislation used to prevent a business from becoming a monopoly", "A type of insurance", "A banking rule"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Discrimination' in the workplace?", "options" => ["Hiring the best person", "Unjust or prejudicial treatment of different categories of people", "A promotion", "A training session"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Sustainability' in business?", "options" => ["Working forever", "Meeting the needs of the present without compromising the ability of future generations to meet theirs", "Saving money", "A type of marketing"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Equality' vs 'Equity'?", "options" => ["They are the same", "Equality is giving everyone the same; Equity is giving people what they need to be successful", "Equality is for pay; Equity is for hours", "Equality is for gender; Equity is for race"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Corporate Governance'?", "options" => ["The government of a country", "The system of rules, practices, and processes by which a firm is directed and controlled", "Managing a team", "Buying new software"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Due Diligence'?", "options" => ["Working hard", "Reasonable steps taken by a person in order to satisfy a legal requirement, especially before buying something", "Paying taxes on time", "Hiring a new manager"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Audit' in ethics?", "options" => ["A large room", "A systematic assessment of how well a company is following its ethical policies", "A performance review", "A bank statement"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $biz_course_id, "category_id" => 3,
+        "title" => "Map 46: Intro to Project Management", "desc" => "Gantt charts, task allocation, and project lifecycle.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Project'?", "options" => ["Routine daily work", "A temporary endeavor undertaken to create a unique product, service, or result", "A type of computer", "A department in a company"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the role of a 'Project Manager'?", "options" => ["To do all the work", "To lead the team to achieve the project goals within given constraints", "To pay the employees", "To answer the phones"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the 'Project Lifecycle'?", "options" => ["The age of the project manager", "The sequence of phases that a project goes through from its initiation to its closure", "The project's budget", "A list of tasks"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Stakeholder' in a project?", "options" => ["The person holding the wood", "Anyone who has an interest in or may be affected by the project", "Only the project manager", "A competitor"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Scope'?", "options" => ["A type of mouthwash", "The detailed set of deliverables or features of a project", "The budget of a project", "The deadline"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Scope Creep'?", "options" => ["A person walking slowly", "Uncontrolled changes or continuous growth in a project's scope", "A small project", "A mistake in the plan"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Milestone'?", "options" => ["A heavy stone", "A significant point or event in a project", "A type of task", "A project deadline"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Gantt Chart'?", "options" => ["A map of the office", "A type of bar chart that illustrates a project schedule", "A list of expenses", "A performance review"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Deliverable'?", "options" => ["A person who delivers mail", "A tangible or intangible good or service produced as a result of a project", "A project deadline", "A budget report"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Risk Management' in projects?", "options" => ["Taking risks", "Identifying, analyzing, and responding to project risks", "Buying insurance", "Ignoring problems"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Resource Allocation'?", "options" => ["Buying more things", "Assigning and managing assets in a manner that supports a project's goals", "Hiring new staff", "Spending the budget"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Critical Path'?", "options" => ["A dangerous road", "The sequence of stages determining the minimum time needed for an operation", "The project goal", "A list of tasks"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Agile' project management?", "options" => ["Being very fast", "An iterative approach to managing projects that focuses on continuous improvement and flexibility", "A type of software", "A strictly planned project"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Waterfall' project management?", "options" => ["Working near water", "A linear and sequential approach to project management", "A very fast project", "An iterative project"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Project Charter'?", "options" => ["A map", "A document that formally authorizes the existence of a project", "A list of tasks", "A budget report"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Procurement'?", "options" => ["Cleaning the office", "The act of obtaining goods or services, typically for business purposes", "Selling products", "Hiring staff"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Work Breakdown Structure' (WBS)?", "options" => ["A broken machine", "A hierarchical decomposition of the total scope of work to be carried out", "A daily schedule", "A budget report"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Quality Assurance' (QA)?", "options" => ["Promising good work", "A way of preventing mistakes and avoiding problems when delivering products or services", "A type of test", "Fixing a broken product"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Slack Time' or 'Float'?", "options" => ["A coffee break", "The amount of time a task can be delayed without affecting the project completion date", "Being lazy", "The duration of a meeting"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Project Stakeholder Management'?", "options" => ["Managing a shop", "Identifying the people, groups, or organizations that could impact or be impacted by the project", "Hiring staff", "Selling products"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Constraint' in a project?", "options" => ["A type of law", "Any restriction that defines a project's boundaries (e.g., time, budget)", "A goal", "A significant event"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Dependency' between tasks?", "options" => ["Needing someone", "A relationship in which a task relies on another task to start or finish", "A mistake in the plan", "A significant event"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Post-Mortem' in projects?", "options" => ["A medical exam", "A process for evaluating a project after it has been completed", "Closing a bank account", "Firing the team"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Sponsor' of a project?", "options" => ["A person who buys tickets", "A person or group who provides resources and support for the project and is accountable for success", "A manager", "A competitor"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $biz_course_id, "category_id" => 3,
+        "title" => "Map 47: Strategy & High-Level Leadership", "desc" => "Strategic alignment, corporate vision, and leading teams.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Leadership'?", "options" => ["Telling people what to do", "The action of leading a group of people or an organization", "Having a high salary", "Owning a company"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Vision Statement'?", "options" => ["A medical report", "A declaration of an organization's objectives, intended to guide its internal decision-making", "A mission statement", "A budget report"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Strategic Alignment'?", "options" => ["Being in a straight line", "The process of modifying organizational structure and processes to support the business strategy", "Managing a team", "Buying new software"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Competitive Advantage'?", "options" => ["Having more money", "A condition or circumstance that puts a company in a superior business position", "A type of law", "Cheating in business"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Delegation'?", "options" => ["Doing all the work", "Entrusting a task or responsibility to another person", "Hiring new staff", "Quitting a job"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Servant Leadership'?", "options" => ["Being a servant", "A leadership philosophy in which the main goal of the leader is to serve", "A strict leader", "A leader who does no work"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Transactional Leadership'?", "options" => ["Leadership based on money", "A style of leadership that focuses on supervision, organization, and performance", "A visionary leader", "A type of banking"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Transformational Leadership'?", "options" => ["Changing your clothes", "A style of leadership where a leader works with teams to identify needed change and creating a vision", "A strict leader", "A type of software"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Strategic Thinking'?", "options" => ["Thinking about tomorrow", "Thinking that is focused on finding and developing unique opportunities to create value", "Daydreaming", "Problem solving"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Blue Ocean Strategy'?", "options" => ["Fishing in the ocean", "Simultaneous pursuit of differentiation and low cost to open up a new market space", "Selling products near water", "A type of marketing"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Value Chain'?", "options" => ["A chain made of gold", "The process or activities by which a company adds value to an article", "A list of expenses", "A marketing flyer"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Market Penetration'?", "options" => ["Entering a store", "A measure of the amount of sales or adoption of a product or service compared to the total theoretical market", "A type of tax", "Buying a competitor"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Core Competency'?", "options" => ["Being good at everything", "A defining capability or advantage that distinguishes an enterprise from its competitors", "A daily task", "A professional skill only"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Vertical Integration'?", "options" => ["Standing up straight", "The combination in one company of two or more stages of production normally operated by separate companies", "Hiring more staff", "Merging two companies"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Horizontal Integration'?", "options" => ["Lying down", "The process of a company increasing production of goods or services at the same part of the supply chain", "Quitting a job", "A salary bonus"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Market Cannibalization'?", "options" => ["Eating food", "A reduction in sales volume, sales revenue, or market share of one product as a result of the introduction of a new product by the same producer", "A type of marketing", "A financial loss"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Autocratic Leadership'?", "options" => ["Driving a car", "A leadership style characterized by individual control over all decisions and little input from group members", "A democratic leader", "A leader who does no work"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Democratic Leadership'?", "options" => ["A political system", "A leadership style in which members of the group take a more participative role in the decision-making process", "A strict leader", "A visionary leader"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Laissez-faire Leadership'?", "options" => ["A type of food", "Leaders are hands-off and allow group members to make the decisions", "A strict leader", "A visionary leader"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Micro-management'?", "options" => ["Managing a small team", "A leadership style where a manager closely observes or controls the work of subordinates", "A visionary leader", "A type of software"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Change Agent'?", "options" => ["A person who counts money", "A person from inside or outside an organization who helps an organization transform itself", "A type of software", "A marketing plan"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Conflict Management'?", "options" => ["Starting a fight", "The process of limiting the negative aspects of conflict while increasing the positive aspects of conflict", "Ignoring the problem", "Telling the boss"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Empowerment' in leadership?", "options" => ["Giving someone power", "Giving employees the authority, tools, and resources they need to make decisions", "A salary increase", "Hiring a new manager"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Team Building'?", "options" => ["Building a house", "The process of creating a team that is cohesive and works well together", "A type of software", "A team meeting"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $biz_course_id, "category_id" => 3,
+        "title" => "Map 48: Final Business Capstone", "desc" => "The ultimate challenge. Integrate finance, HR, and strategy into a single project.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "SCENARIO: An employee has consistently failed to meet KPIs despite warnings. What is the BEST administrative action?", "options" => ["Fire them immediately", "Initiate a formal Disciplinary Procedure and performance review", "Ignore it and hope they improve", "Tell their coworkers"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: Your department has gone over budget for three months. What is the first priority?", "options" => ["Ask for more money", "Conduct a financial audit and review expenses against the budget", "Fire an employee", "Stop all work"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: A major client is unhappy with the service they received. What do you use to track this?", "options" => ["A notebook", "CRM Software (History and Ticket status)", "A calendar", "An email draft"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: You need to plan a 100-person regional conference in 6 months. What tool do you use first?", "options" => ["A menu for lunch", "A Project Management Gantt Chart and Milestone schedule", "An attendee list", "A map of the venue"], "ans" => 1, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "SCENARIO: A new data law is passed. What is the department's first step?", "options" => ["Wait for a fine", "Review compliance and update POPIA/Data Privacy policies", "Tell the IT team to handle it alone", "Close the business"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: Two team members have a personality clash affecting the project. What should the manager do?", "options" => ["Ignore it", "Facilitate a Conflict Resolution meeting", "Fire both", "Tell them to grow up"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: The CEO wants a 50-page report summarized in 5 minutes. What do you provide?", "options" => ["A table of contents", "An Executive Summary with key metrics", "The first five pages", "A list of employee names"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: You are hiring for a new role. Where do you find the required skills?", "options" => ["A payroll report", "The Job Description", "A mission statement", "A marketing flyer"], "ans" => 1, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "SCENARIO: A supplier has sent an incorrect invoice. What is the administrative process?", "options" => ["Pay it anyway", "Verify against the PO (Purchase Order) and request a credit note or correction", "Throw it away", "Call the bank"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: You need to store vital contracts safely for 10 years. What do you use?", "options" => ["A desk drawer", "Secure digital archiving with redundancy and offsite backups", "A paper folder in a box", "An email folder"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: The company wants to launch a new product. What analysis should be done first?", "options" => ["A SWOT analysis and market research", "Hiring 10 new people", "Buying an advertisement", "Ordering inventory"], "ans" => 0, "xp" => 280],
+                ["q" => "SCENARIO: You step into a meeting and realize no one is taking notes. What do you do?", "options" => ["Ignore it", "Appoint a note-taker to produce formal Meeting Minutes", "Record it on your phone secretly", "Try to remember everything later"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "SCENARIO: An employee reports a supervisor for unethical behavior. What procedure is followed?", "options" => ["A marketing plan", "The Whistleblower policy and internal ethics investigation", "Firing the employee", "Telling the supervisor"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: A project is facing scope creep. How do you handle it?", "options" => ["Do the extra work for free", "Formally review the project scope and budget with stakeholders", "Quit the project", "Ignore the extra tasks"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: You want to measure the success of a new strategy. What do you check?", "options" => ["The company's social media", "Key Performance Indicators (KPIs) against set targets", "The opinions of the staff", "The total sales only"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: You are delegating a major project. What is essential to provide?", "options" => ["A list of items to buy", "Clear objectives, authority, and resources", "A salary increase", "A desk in a nice office"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "MASTER FINAL: What is the primary focus of an effective Business Administrator?", "options" => ["Making everyone happy", "Operational efficiency, strategic alignment, and organizational sustainability", "Buying the best computers", "Having the largest office"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: In high-level management, what determines the success of a strategic plan?", "options" => ["The number of pages in the plan", "Proper implementation, monitoring, and flexibility to change", "Having a lot of money", "Hiring a famous CEO"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: Why is a diverse and inclusive workplace beneficial for business?", "options" => ["It's just a trend", "It brings different perspectives, improves innovation, and enhances problem-solving", "It lowers the payroll", "It looks good in advertisements only"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: What is the 'Triple Bottom Line' in modern business?", "options" => ["Profit, Profit, and more Profit", "People, Planet, and Profit", "Sales, Marketing, and IT", "Money, Power, and Fame"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "EXAM: How do HR, Finance, and Operations interact in an organization?", "options" => ["They are separate entities", "They work interdependently; Operations produces, Finance manages money, and HR manages people", "They compete for the CEO's attention", "They only interact during office parties"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: What is the most critical factor for an organization's long-term survival?", "options" => ["Having a lot of cash", "The ability to adapt to changes in the market and external environment", "Having the best marketing", "Having the most employees"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: What is the value of 'Business Intelligence' (BI)?", "options" => ["Knowing your competitors' secrets", "Using data analysis to provide actionable insights for decision-making", "Having a high IQ", "Buying a new computer"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: What is the hallmark of a great leader?", "options" => ["Being very loud and aggressive", "Inspiring others, setting a clear vision, and enabling the team to succeed", "Making all the decisions alone", "Having a very high salary"], "ans" => 1, "xp" => 600]
+            ]]
+        ]
+    ]
+];
+
+// ==========================================================
+// COMMUNICATION STUDIES & LANGUAGE CURRICULUM (Maps 49-60)
+// ==========================================================
+$comm_maps = [
+    // CATEGORY 1: COMMUNICATION FOUNDATIONS (Maps 49-52)
+    [
+        "id" => ++$highest_id, "course_id" => $comm_course_id, "category_id" => 1,
+        "title" => "Map 49: The Communication Process", "desc" => "Master the mechanics of how information is encoded, transmitted, and decoded.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "In the communication model, what is 'Encoding'?", "options" => ["Receiving a message", "Converting thoughts into a communicable message", "The background noise", "The medium used"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Decoding'?", "options" => ["Sending an email", "Interpreting and assigning meaning to a received message", "Creating a code", "Ignoring the sender"], "ans" => 1, "xp" => 150],
+                ["q" => "Which element refers to the pathway through which a message travels?", "options" => ["Noise", "Channel", "Context", "Feedback"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Feedback' in communication?", "options" => ["The initial message", "The receiver's response to the sender", "A type of interference", "The volume of speech"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'External Noise'?", "options" => ["The sender's thoughts", "Physical sounds or distractions in the environment", "A misunderstanding of words", "A bad mood"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Physiological Noise'?", "options" => ["Traffic sounds", "Biological factors like illness or hearing loss that interfere with communication", "Prejudices or bias", "Using difficult jargon"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Psychological Noise'?", "options" => ["A loud fan", "Mental interference like stress, anxiety, or internal bias", "A broken phone line", "A foreign language"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Semantic Noise'?", "options" => ["Loud music", "Misunderstanding caused by different meanings assigned to words (e.g., jargon)", "Hunger", "Poor Wi-Fi"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "Which communication model describes communication as a one-way process?", "options" => ["Transactional Model", "Linear Model", "Interactional Model", "Circular Model"], "ans" => 1, "xp" => 210],
+                ["q" => "Which model views communication as simultaneous, where we are both sender and receiver at once?", "options" => ["Linear Model", "Transactional Model", "Transmission Model", "Static Model"], "ans" => 1, "xp" => 210],
+                ["q" => "What does 'Context' refer to in communication?", "options" => ["The words used", "The physical, social, or chronological environment where communication occurs", "The speed of talking", "The volume"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Intrapersonal Communication'?", "options" => ["Talking to a group", "Communication with oneself (internal thought)", "Talking to a boss", "Sending a letter"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Interpersonal Communication'?", "options" => ["Public speaking", "Direct communication between two people", "A news broadcast", "Reading a book"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Dyadic Communication'?", "options" => ["Talking to 10 people", "A communication exchange between exactly two people", "Talking to yourself", "Mass media"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Mass Communication'?", "options" => ["A private secret", "Communicating to a large, anonymous audience through a medium (e.g., TV)", "A text message", "A job interview"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Group Communication'?", "options" => ["Talking to yourself", "Communication among 3 or more people focused on a common goal", "A one-on-one meeting", "A billboard"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What does the term 'Field of Experience' refer to in communication?", "options" => ["A literal field", "The sum of a person's culture, experiences, and heredity brought to an interaction", "Professional job skills", "The distance between people"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Asynchronous Communication'?", "options" => ["Real-time talking", "Communication where there is a time gap between sending and receiving (e.g., Email)", "A face-to-face meeting", "Video calls"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Synchronous Communication'?", "options" => ["Sending a letter", "Communication that occurs in real-time (e.g., Phone call, Instant Message)", "An old newspaper", "A billboard"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Meta-communication'?", "options" => ["Communication about communication", "Communication about robots", "A very fast message", "Communication without words"], "ans" => 0, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Communication Competence'?", "options" => ["Being the loudest", "The ability to choose a communication behavior that is both appropriate and effective", "Knowing all languages", "Never making a mistake"], "ans" => 1, "xp" => 400],
+                ["q" => "Which principle suggests that communication cannot be taken back?", "options" => ["Communication is Transactional", "Communication is Irreversible", "Communication is Intentional", "Communication is Linear"], "ans" => 1, "xp" => 400],
+                ["q" => "What does it mean that communication is 'Unrepeatable'?", "options" => ["You can never say the same word", "The exact same interaction cannot happen twice because context changes", "You shouldn't repeat yourself", "The receiver always forgets"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Cognitive Complexity' in communication?", "options" => ["Being confused", "The ability to construct a variety of different frameworks for viewing an issue", "Having a high IQ", "Using long words"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $comm_course_id, "category_id" => 1,
+        "title" => "Map 50: Verbal & Non-Verbal Dynamics", "desc" => "Understand the power of body language, tone, and vocalics.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Non-verbal Communication'?", "options" => ["Writing an email", "Messages expressed by other than linguistic means (body, distance, eye contact)", "Using sign language", "A radio broadcast"], "ans" => 1, "xp" => 150],
+                ["q" => "What percentage of communication is often attributed to non-verbal cues?", "options" => ["10%", "Between 65% and 93%", "Exactly 50%", "Less than 5%"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Kinesics'?", "options" => ["The study of touch", "The study of body movement and gestures", "The study of time", "The study of smell"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Proxemics'?", "options" => ["The study of eye contact", "The study of how people use space and distance", "The study of clothing", "The study of handshakes"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Paralanguage' (Vocalics)?", "options" => ["Learning a second language", "Non-linguistic vocal cues like pitch, rate, and volume", "Writing in code", "Sign language"], "ans" => 1, "xp" => 180],
+                ["q" => "What are 'Haptics'?", "options" => ["Visual aids", "The study of communication through touch", "The study of facial expressions", "The study of listening"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Chronemics'?", "options" => ["The study of colors", "The study of how people use and structure time", "The study of technology", "The study of aging"], "ans" => 1, "xp" => 180],
+                ["q" => "What are 'Oculesics'?", "options" => ["The study of ears", "The study of eye behavior (eye contact, pupils)", "The study of smell", "The study of posture"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "Which non-verbal gesture has different meanings across cultures (e.g., 'thumbs up')?", "options" => ["Universal Expression", "Emblem", "Illustrator", "Adaptor"], "ans" => 1, "xp" => 210],
+                ["q" => "What is an 'Illustrator' in non-verbal communication?", "options" => ["A person who draws", "Gestures that accompany and complement verbal messages (e.g., pointing)", "Scratching your head", "A nervous habit"], "ans" => 1, "xp" => 210],
+                ["q" => "What is an 'Adaptor'?", "options" => ["A type of power plug", "Unconscious bodily movements in response to an environment (e.g., fidgeting)", "A professional handshake", "A smile"], "ans" => 1, "xp" => 210],
+                ["q" => "What are 'Artifacts' in communication?", "options" => ["Old fossils", "Personal objects and clothing that communicate something about us", "The words we use", "Electronic devices"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Emotional Contagion'?", "options" => ["A physical virus", "The process by which emotions are transferred from one person to another", "Hiding your feelings", "A type of sadness"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Micro-expression'?", "options" => ["A long speech", "Brief, involuntary facial expressions that reveal true emotions", "A small emoji", "A quiet whisper"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Congruence' in communication?", "options" => ["Being different", "When verbal and non-verbal messages match", "A mathematical equation", "Speaking loudly"], "ans" => 1, "xp" => 250],
+                ["q" => "What is the 'Social Distance' zone (Proxemics)?", "options" => ["0-18 inches", "4-12 feet", "12-25 feet", "Over 100 feet"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the 'Intimate Distance' zone?", "options" => ["4-12 feet", "0-18 inches", "12-25 feet", "Everywhere"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Deception Detection'?", "options" => ["Finding a lost key", "The ability to identify when someone is lying based on non-verbal cues", "Using a lie detector machine", "Reading a person's mind"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Non-verbal Leakage'?", "options" => ["Crying", "When non-verbal cues betray a message different from the verbal one", "A leaky faucet", "Losing your voice"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Posture' communication?", "options" => ["The way you type", "The way one holds one's body (communicates confidence, interest, etc.)", "The color of your skin", "The speed of your walk"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "How does 'Environment' communicate?", "options" => ["It doesn't", "The layout, lighting, and decor of a room can signal formality or comfort", "Through weather reports", "By using a loudspeaker"], "ans" => 1, "xp" => 400],
+                ["q" => "Which non-verbal cue is most essential for establishing trust in Western cultures?", "options" => ["Crossed arms", "Sustained eye contact", "Looking at the floor", "A fast speaking rate"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Territoriality'?", "options" => ["Owning a pet", "A stationary area we claim as our own", "A country", "A type of travel"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Mirroring'?", "options" => ["Looking in a mirror", "Subtly mimicking another person's non-verbal behavior to build rapport", "Being rude", "Talking at the same time"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $comm_course_id, "category_id" => 1,
+        "title" => "Map 51: Active Listening & Feedback", "desc" => "Go beyond hearing into deep processing and supportive responding.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the difference between 'Hearing' and 'Listening'?", "options" => ["None", "Hearing is physiological; Listening is psychological/intentional", "Listening is for music only", "Hearing is more important"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Active Listening'?", "options" => ["Listening while running", "Fully concentrating and responding to the speaker", "Listening in the background", "Ignoring the speaker"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the first stage of the listening process?", "options" => ["Responding", "Attending/Receiving", "Remembering", "Evaluating"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Mindful Listening'?", "options" => ["Being distracted", "Giving careful and thoughtful attention to the messages we receive", "Listening to a podcast", "Listening while sleeping"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Pseudolistening'?", "options" => ["Listening to fake news", "An imitation of true listening (pretending to listen)", "Listening very fast", "Listening to music"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Stage Hogging'?", "options" => ["Acting in a play", "Turning the conversation to oneself instead of listening", "A type of agriculture", "Being a loud speaker"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Selective Listening'?", "options" => ["Listening to everything", "Only responding to the parts of a speaker's remarks that interest you", "Listening to the radio", "Choosing a new song"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Insulated Listening'?", "options" => ["Listening in a cold room", "Avoiding or failing to acknowledge specific topics", "Wearing headphones", "A type of quiet talk"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Defensive Listening'?", "options" => ["Listening for a goal", "Taking innocent comments as personal attacks", "Listening to a debate", "Being very quiet"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Ambushing' in listening?", "options" => ["A surprise party", "Listening carefully only to collect information to attack the speaker later", "A hidden microphone", "Listening while hiding"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Paraphrasing' as a listening response?", "options" => ["Repeating exactly", "Restating the speaker's message in your own words to check understanding", "Asking a new question", "Staying silent"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Empathetic Listening'?", "options" => ["Listening for errors", "Listening to understand the speaker's perspective and feelings", "Listening for facts only", "A type of counseling"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Critical Listening'?", "options" => ["Listening for gossip", "Listening to evaluate the quality or merit of a message (e.g., a political speech)", "Listening to a movie", "Listening while angry"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Information Listening'?", "options" => ["Listening to music", "Listening to learn or understand new information", "Listening to a secret", "Listening for tone"], "ans" => 1, "xp" => 250],
+                ["q" => "Which listening style focuses on relationships and emotional connection?", "options" => ["Task-oriented", "Relational", "Critical", "Analytical"], "ans" => 1, "xp" => 250],
+                ["q" => "Which listening style focuses on efficiency and getting a job done?", "options" => ["Relational", "Task-oriented", "Empathetic", "Passive"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Supportive' response?", "options" => ["Disagreeing", "Expression of care, concern, or interest (e.g., 'I can see that was hard')", "Telling them what to do", "Ignoring the feeling"], "ans" => 1, "xp" => 300],
+                ["q" => "What is an 'Evaluating' response?", "options" => ["Asking a question", "Judging the speaker's thoughts or behaviors (e.g., 'That was a bad idea')", "Staying silent", "Nodding"], "ans" => 1, "xp" => 300],
+                ["q" => "What is the 'Understanding' stage of listening?", "options" => ["Just hearing sound", "The act of interpreting the message according to its context", "Remembering it later", "Evaluating the truth"], "ans" => 1, "xp" => 300],
+                ["q" => "How can you improve 'Remembering' in the listening process?", "options" => ["Taking notes or repeating information", "Closing your eyes", "Talking over the speaker", "Leaving the room"], "ans" => 0, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Prompting' in listening?", "options" => ["Interrupting", "Using silence and brief statements to encourage the speaker to continue", "Telling a joke", "Ending the talk"], "ans" => 1, "xp" => 400],
+                ["q" => "What is an 'Analyzing' response?", "options" => ["Agreeing", "Offering an interpretation of a speaker's message (e.g., 'Maybe you feel that way because...')", "Asking for a fact", "Crying"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Advising' in a listening context?", "options" => ["Listening quietly", "Offering a solution or suggestion (e.g., 'You should...')", "Asking a question", "Telling a story"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the biggest barrier to listening in the digital age?", "options" => ["Paper books", "Information Overload and distraction", "Too much silence", "Short pencils"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $comm_course_id, "category_id" => 1,
+        "title" => "Map 52: Digital Discourse & Ethics", "desc" => "Navigate social media, online etiquette, and the ethics of digital identity.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Netiquette'?", "options" => ["A fish net", "The correct way to behave on the internet", "A computer virus", "An internet service provider"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Flaming' in online discourse?", "options" => ["A fire emoji", "Sending angry or insulting messages over the internet", "Posting a photo", "Closing a tab"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Cyberbullying'?", "options" => ["Working online", "The use of electronic communication to bully a person", "Playing a game", "Watching a video"], "ans" => 1, "xp" => 150],
+                ["q" => "What does it mean if a post is 'Public'?", "options" => ["Only friends can see it", "Anyone on the internet can see it", "It is hidden", "It is deleted"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Digital Citizenship'?", "options" => ["Living in a city", "The responsible and respectful use of technology", "Buying a new phone", "Having a lot of followers"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Phishing'?", "options" => ["Catching a fish", "A scam where people try to steal personal info via email/links", "A type of software", "A social network"], "ans" => 1, "xp" => 180],
+                ["q" => "What is an 'Internet Troll'?", "options" => ["A monster", "Someone who purposely posts provocative or off-topic content to upset others", "A helpful user", "A computer repairman"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Doxxing'?", "options" => ["Fixing a PC", "Publishing private info about someone with malicious intent", "Writing a document", "Sending a DM"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Digital Footprint'?", "options" => ["A footprint in sand", "The trail of data you leave behind on the internet", "The size of your mouse", "A virus"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Information Overload'?", "options" => ["A fast computer", "The state of having too much information to process", "A large hard drive", "A new update"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Misinformation'?", "options" => ["A secret", "False or inaccurate information, regardless of intent", "A type of email", "A loud noise"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Disinformation'?", "options" => ["A factual report", "False information deliberately spread to deceive others", "A typo", "A deleted post"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is an 'Echo Chamber'?", "options" => ["A loud room", "An environment where a person only encounters information that reflects their own beliefs", "A recording studio", "A computer lab"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Online Anonymity'?", "options" => ["Using your real name", "The ability to interact online without revealing your identity", "Being very famous", "Deleting your account"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Slacktivism'?", "options" => ["Hard work", "Actions taken online (like sharing a post) that require little effort or commitment to a cause", "Professional activism", "Being lazy"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Terms of Service' (ToS)?", "options" => ["A greeting", "The legal agreement between a user and an app/service", "A phone bill", "A software update"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Two-Factor Authentication' (2FA)?", "options" => ["Two people talking", "A security process requiring two different methods to verify identity", "Typing twice", "A long password"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Bot' in social media?", "options" => ["A robot person", "An automated account controlled by software rather than a human", "A type of emoji", "A computer hardware"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Astroturfing'?", "options" => ["Planting grass", "Creating fake grassroots support for a person or cause online", "Buying followers", "A type of game"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Media Convergence'?", "options" => ["Media breaking up", "The merging of traditional media (like newspapers) with digital media and technology", "A new TV channel", "A group of reporters"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Algorithm' bias in social media?", "options" => ["A fast computer", "When computer rules systematically favor or ignore certain types of information/people", "A math error", "A type of virus"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Deepfake'?", "options" => ["A very deep lake", "AI-generated media that replaces one person's face or voice with another convincingly", "A secure password", "A hidden post"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Cancel Culture'?", "options" => ["Stopping a show", "A modern form of ostracism where someone is thrust out of social or professional circles", "A type of religion", "Deleting an app"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the primary concern of 'Data Mining'?", "options" => ["Finding gold", "Companies collecting and analyzing user data for profit or influence", "Building a network", "Fixing a phone"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+
+    // CATEGORY 2: LANGUAGE & LINGUISTICS (Maps 53-56)
+    [
+        "id" => ++$highest_id, "course_id" => $comm_course_id, "category_id" => 2,
+        "title" => "Map 53: Structure of Language", "desc" => "Master the rules of grammar, syntax, and phonology.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Linguistics'?", "options" => ["The study of history", "The scientific study of language and its structure", "Learning many languages", "Writing a book"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Phonology'?", "options" => ["The study of phones", "The study of speech sounds in a language", "The study of words", "The study of sentences"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Morphology'?", "options" => ["The study of shapes", "The study of how words are formed from smaller parts (morphemes)", "The study of grammar", "The study of meaning"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Syntax'?", "options" => ["A tax on language", "The arrangement of words to create well-formed sentences", "The spelling of words", "The tone of voice"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Semantics'?", "options" => ["The study of grammar", "The study of meaning in language", "The study of sounds", "The study of social context"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Pragmatics'?", "options" => ["The study of rules", "The study of language in its context of use", "The study of dictionaries", "The study of prefixes"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Morpheme'?", "options" => ["A large word", "The smallest unit of meaning in a language (e.g., 'un-', 'happi-')", "A type of sound", "A single letter"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Phoneme'?", "options" => ["A phone app", "The smallest unit of sound in a language", "A whole word", "A sentence"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Etymology'?", "options" => ["The study of insects", "The study of the history and origin of words", "The study of future language", "The study of poems"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Orthography'?", "options" => ["The study of rocks", "The conventional spelling system of a language", "The study of speech", "The study of meaning"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Lexicography'?", "options" => ["Taking photos", "The process of compiling and writing dictionaries", "The study of grammar", "A type of printing"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Discourse Analysis'?", "options" => ["Counting words", "The study of how language is used in texts and contexts", "Learning to type", "A type of code"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Dialect'?", "options" => ["A foreign language", "A particular form of a language specific to a region or group", "The official language", "Poor grammar"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Standard Language'?", "options" => ["A language with no rules", "The variety of language used in formal settings and education", "Slang", "A dead language"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Jargon'?", "options" => ["A new word", "Special words or expressions used by a particular profession", "A foreign accent", "Clear writing"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Slang'?", "options" => ["Formal language", "Informal words and phrases more common in speech than writing", "Scientific terms", "Old words"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Bilingualism'?", "options" => ["Talking to yourself", "The ability to speak two languages fluently", "Speaking very fast", "Knowing one language well"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Code-switching'?", "options" => ["Learning to code", "Alternating between two or more languages or varieties in conversation", "Changing your name", "Fixing a computer"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Language Acquisition'?", "options" => ["Buying a book", "The process by which humans learn a language", "Translating a text", "Deleting a language"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Creole' language?", "options" => ["A secret code", "A stable natural language developed from the mixing of parent languages", "A very old language", "A type of slang"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Prescriptive' grammar?", "options" => ["Following usage", "Rules on how a language SHOULD be used", "Describing how people talk", "A doctor's note"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Descriptive' linguistics?", "options" => ["Making new rules", "Describing how language is ACTUALLY used by people", "Correcting others", "Writing a poem"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Cognitive Linguistics'?", "options" => ["Study of old text", "Study of the relationship between language and the mind", "Learning to read", "A type of sign language"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Universal Grammar'?", "options" => ["A book of rules", "The theory that all humans have an innate ability to learn language", "A language for the world", "A type of internet code"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $comm_course_id, "category_id" => 2,
+        "title" => "Map 54: Semantics & Pragmatics", "desc" => "Explore the meaning of words and the intent behind their use.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Denotation'?", "options" => ["The emotional meaning", "The literal, dictionary definition of a word", "The opposite of a word", "The sound of a word"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Connotation'?", "options" => ["The dictionary meaning", "The emotional or cultural associations attached to a word", "The spelling", "A type of grammar"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Synonym'?", "options" => ["A word with opposite meaning", "A word with a similar meaning", "A word that sounds the same", "A very long word"], "ans" => 1, "xp" => 150],
+                ["q" => "What is an 'Antonym'?", "options" => ["A similar word", "A word with the opposite meaning", "A type of prefix", "A name for a person"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Ambiguity'?", "options" => ["Being very clear", "When a word or sentence has more than one possible meaning", "A spelling error", "A type of loud noise"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Metaphor'?", "options" => ["A literal fact", "A figure of speech comparing two things without using 'like' or 'as'", "A type of punctuation", "A long story"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Simile'?", "options" => ["A joke", "A comparison using 'like' or 'as'", "A direct lie", "A type of greeting"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Idiom'?", "options" => ["A spelling mistake", "A group of words whose meaning is not deducible from the individual words (e.g., 'kick the bucket')", "Formal language", "A type of accent"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Irony'?", "options" => ["Being serious", "Expressing meaning by using language that normally signifies the opposite", "A type of metal", "A very fast speech"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Sarcasm'?", "options" => ["Being kind", "The use of irony to mock or convey contempt", "A type of praise", "A foreign language"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Euphemism'?", "options" => ["A rude word", "A mild or indirect expression substituted for one considered harsh or blunt", "A technical term", "A type of question"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Hyperbole'?", "options" => ["Understating a fact", "Exaggerated statements or claims not meant to be taken literally", "A type of circle", "A quiet whisper"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Cooperation Principle' (Grice)?", "options" => ["Fighting with others", "The idea that people contribute what is required for a conversation to be successful", "Talking only about yourself", "Never speaking"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Maxim of Quality'?", "options" => ["Speaking a lot", "Be truthful; do not say what you believe to be false", "Being very fast", "Using long words"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Maxim of Quantity'?", "options" => ["Being truthful", "Be as informative as required, but no more", "Being polite", "Using jargon"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Maxim of Relevance'?", "options" => ["Talking about everything", "Be relevant to the topic at hand", "Being funny", "Asking many questions"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Speech Act'?", "options" => ["Acting in a play", "An utterance that has a performative function (e.g., promising, apologizing)", "A long speech", "A type of accent"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Illocutionary Force'?", "options" => ["A physical punch", "The intended effect of a speech act", "The volume of a voice", "A type of computer"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Politeness Theory'?", "options" => ["Being rude", "How we manage 'face' (public image) and social distance through language", "Having good manners only", "A type of grammar"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Face-threatening Act'?", "options" => ["Hitting someone", "An utterance that challenges or damages another person's public image", "Closing your eyes", "A type of smile"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Implicature'?", "options" => ["A literal statement", "What is suggested in an utterance even though not expressed literally", "A spelling error", "A type of accent"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Presupposition'?", "options" => ["An ending", "Implicit assumptions made by a speaker before an utterance", "A dictionary definition", "A question"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Deixis'?", "options" => ["A type of sound", "Words whose meaning depends on context (e.g., 'here', 'there', 'you')", "A whole book", "A sign language"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Entailment'?", "options" => ["A physical tail", "A relationship between sentences where if A is true, B must also be true", "A type of greeting", "A story ending"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $comm_course_id, "category_id" => 2,
+        "title" => "Map 55: Socio-Linguistics & Identity", "desc" => "Examine how language intersects with society, class, and culture.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Sociolinguistics'?", "options" => ["Study of old books", "The study of how language is affected by social factors (class, region, gender)", "Learning to speak", "The study of animal sounds"], "ans" => 1, "xp" => 150],
+                ["q" => "What is an 'Accent'?", "options" => ["The words you choose", "The distinctive way in which a group of people pronounce a language", "Good grammar", "A foreign name"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Social Prestige' in language?", "options" => ["Being rich", "The high value placed on certain varieties of a language", "Knowing many words", "Speaking loudly"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Language Taboo'?", "options" => ["A new language", "Words or topics considered offensive or forbidden in a society", "A type of dictionary", "A professional term"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Diglossia'?", "options" => ["Having no voice", "When two varieties of a language are used by a single community (e.g., formal vs. casual)", "Speaking two different languages", "A type of throat infection"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Linguistic Relativism'?", "options" => ["Language has no rules", "The idea that language influences the way its speakers think", "Everything is the same", "Only one language is true"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Lingua Franca'?", "options" => ["A language from France", "A language used as a common bridge between people who speak different native languages", "A secret language", "A dead language"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Language Death'?", "options" => ["A scary story", "When a language loses its last native speakers", "Forgetting a word", "A silent room"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Overt Prestige'?", "options" => ["Hiding your accent", "Using a standard language variety to sound educated or high-status", "Using slang with friends", "Speaking very softly"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Covert Prestige'?", "options" => ["Being famous", "Using non-standard language to signal belonging or 'coolness' within a subculture", "Writing a formal letter", "Learning a new language"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Idiolect'?", "options" => ["A type of logic", "An individual's unique way of speaking", "A whole group's dialect", "A foreign language"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Ethno-linguistics'?", "options" => ["Study of space", "The study of the relationship between language and culture", "The study of numbers", "Learning to read"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Language Vitality'?", "options" => ["How fast people talk", "The likelihood that a language will continue to be used in the future", "A type of health food", "The volume of a language"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Language Planning'?", "options" => ["Writing a diary", "Deliberate efforts to influence the function or structure of a language", "Organizing a speech", "A school lesson"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Gender-neutral' language?", "options" => ["Language for men only", "Language that avoids bias towards a particular sex or social gender", "Language for women only", "No language"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Linguistic Discrimination'?", "options" => ["Hiring a translator", "Unfair treatment of people based on their use of language or accent", "Learning a second language", "Correcting a typo"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Pidgin'?", "options" => ["A type of bird", "A simplified language used for communication between people with different languages", "A professional dialect", "A very old text"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Isogloss'?", "options" => ["A type of glass", "A line on a map marking the boundary of a linguistic feature", "A dictionary entry", "A type of grammar"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Linguistic Imperialism'?", "options" => ["Being polite", "The dominance of one language over others, often through political or economic power", "Traveling for work", "Learning English"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Register' in sociolinguistics?", "options" => ["A cash machine", "The variety of language used for a particular purpose or social setting (e.g., formal vs. casual)", "A list of names", "A type of font"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Accommodation Theory'?", "options" => ["Living in a hotel", "The idea that we adjust our speech to be more like (or different from) our conversation partner", "Buying a house", "Ignoring your friend"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Convergent' speech?", "options" => ["Talking to yourself", "Adjusting speech to sound more like the listener to gain approval", "Talking faster", "Using loud volume"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Divergent' speech?", "options" => ["Agreeing with everyone", "Emphasizing speech differences to signal social distance or unique identity", "Repeating a word", "Staying silent"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Linguistic Insecurity'?", "options" => ["A virus", "Feelings of anxiety or self-consciousness about one's accent or language use", "A secure password", "Being very confident"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $comm_course_id, "category_id" => 2,
+        "title" => "Map 56: Professional Writing & Rhetoric", "desc" => "Master the art of persuasion and formal written communication.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Rhetoric'?", "options" => ["A type of bird", "The art of effective or persuasive speaking or writing", "Good handwriting", "Counting numbers"], "ans" => 1, "xp" => 150],
+                ["q" => "Who are the 'Classical' masters of rhetoric?", "options" => ["The Romans", "The Greeks (e.g., Aristotle)", "The British", "The Americans"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Ethos'?", "options" => ["Emotional appeal", "Appeal to credibility and character", "Logical proof", "A type of soup"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Pathos'?", "options" => ["A straight road", "Appeal to emotion", "Appeal to logic", "Appeal to time"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Logos'?", "options" => ["A company logo", "Appeal to logic and reason", "Appeal to authority", "A type of speech"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Rhetorical Question'?", "options" => ["A very hard question", "A question asked to make a point rather than to get an answer", "A question with no answer", "A secret question"], "ans" => 1, "xp" => 180],
+                ["q" => "What is the 'Active Voice'?", "options" => ["Speaking loudly", "When the subject of the sentence performs the action (e.g., 'The chef cooked')", "Whispering", "The target of the action"], "ans" => 1, "xp" => 180],
+                ["q" => "What is the 'Passive Voice'?", "options" => ["Being angry", "When the subject of the sentence receives the action (e.g., 'The meal was cooked')", "Speaking fast", "A type of font"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Clarity' in professional writing?", "options" => ["Using long words", "Ensuring the message is easy to understand and unambiguous", "Being very vague", "Writing in code"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Conciseness'?", "options" => ["Writing 20 pages", "Conveying information briefly without sacrificing clarity", "Using complicated jargon", "Repeating yourself"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Tone' in a document?", "options" => ["The font color", "The writer's attitude toward the reader or the subject matter", "The paper quality", "The price of the book"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Style' in writing?", "options" => ["The way you dress", "The unique way a writer uses language to express themselves", "A type of computer", "A marketing plan"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Plagiarism'?", "options" => ["Helping a friend", "Using someone else's work or ideas without credit", "Learning to read", "Correcting a typo"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Citation'?", "options" => ["A type of ticket", "A reference to a source of information used in a document", "A spelling error", "A type of sign language"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Thesis Statement'?", "options" => ["The final page", "The main point or argument of a piece of writing", "The title", "A list of sources"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Audience Analysis'?", "options" => ["Watching a movie", "Understanding the needs and background of your readers", "Talking to yourself", "A performance review"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Logical Fallacy'?", "options" => ["A true fact", "An error in reasoning that invalidates an argument", "A type of math", "A correct answer"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Ad Hominem'?", "options" => ["Attacking the topic", "Attacking the person instead of the argument", "Being very polite", "Using logic"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Slippery Slope'?", "options" => ["A winter sport", "Arguing that one small step will inevitably lead to a chain of negative events", "A true conclusion", "A technical term"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Parallelism' in writing?", "options" => ["Writing in two lines", "Using consistent grammatical structures for related ideas", "Being very random", "Using two languages"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Kairos'?", "options" => ["A name", "The rhetorical concept of 'timeliness' or the opportune moment", "A type of logic", "A type of emotion"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Propaganda'?", "options" => ["Factual news", "Information, often biased or misleading, used to promote a political cause", "A type of advertisement", "A dictionary"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Spin' in communication?", "options" => ["Rotating a ball", "The strategic biased interpretation of an event to influence public opinion", "Telling the truth", "A type of dance"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Syntactic Variety'?", "options" => ["Using the same sentence", "Varying sentence length and structure to keep writing engaging", "Varying the font", "Varying the language"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+
+    // CATEGORY 3: ADVANCED APPLICATIONS (Maps 57-60)
+    [
+        "id" => ++$highest_id, "course_id" => $comm_course_id, "category_id" => 3,
+        "title" => "Map 57: Intercultural Communication", "desc" => "Bridge the gap between cultures, values, and global identities.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Culture'?", "options" => ["Just the food", "The shared beliefs, values, and practices of a group", "The government", "A type of music"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Intercultural Communication'?", "options" => ["Talking to computers", "Communication between people from different cultural backgrounds", "Talking to yourself", "A phone call"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Ethnocentrism'?", "options" => ["Loving all cultures", "Judging other cultures by the standards of your own (thinking yours is superior)", "Learning a language", "Traveling"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Cultural Relativism'?", "options" => ["Hating your culture", "The practice of understanding a culture on its own terms without judgment", "A type of science", "Moving to a new country"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'High-context' culture?", "options" => ["Communication is literal", "Communication relies heavily on non-verbal cues and relationships (e.g., Japan)", "Loud communication", "A computer network"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Low-context' culture?", "options" => ["Communication is hidden", "Communication is direct, explicit, and literal (e.g., USA, Germany)", "No communication", "Using many codes"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Individualism'?", "options" => ["Working in groups", "Placing high value on personal goals and independence", "Loving your family only", "Being lonely"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Collectivism'?", "options" => ["Working alone", "Placing high value on group harmony and interdependence", "A collection of stamps", "Being rude"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Power Distance'?", "options" => ["The distance of a race", "The extent to which less powerful members accept unequal power distribution", "The power of a battery", "A type of accent"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Uncertainty Avoidance'?", "options" => ["Taking risks", "The degree to which people feel threatened by unknown or ambiguous situations", "Running away", "A type of law"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Monochronic' time?", "options" => ["Time for everything", "Focusing on doing one thing at a time and strict schedules", "Doing many things", "A type of clock"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Polychronic' time?", "options" => ["No time", "A more flexible approach to time where multiple things happen at once", "One single minute", "A fast computer"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Culture Shock'?", "options" => ["An electrical shock", "Disorientation felt when experiencing an unfamiliar way of life", "Liking a new food", "Learning a word"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Acculturation'?", "options" => ["Losing your culture", "The process of adopting the traits of another culture while keeping your own", "Deleting a language", "Staying at home"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Assimilation'?", "options" => ["Keeping your habits", "The process of fully integrating into a new culture and losing your original cultural identity", "A type of math", "Traveling for fun"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Stereotyping'?", "options" => ["Being fair", "Oversimplified generalizations about a group of people", "Taking a photo", "A type of printing"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Prejudice'?", "options" => ["A kind thought", "A preconceived opinion that is not based on reason or actual experience", "A true fact", "A type of logic"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Intercultural Empathy'?", "options" => ["Feeling sorry for others", "The ability to perceive the world as it is perceived by someone from a different culture", "Learning to read", "A type of food"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Third Culture'?", "options" => ["A bad culture", "A hybrid culture formed when two people from different backgrounds create a common ground", "A third language", "A space colony"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Global Citizenship'?", "options" => ["Owning the world", "Identifying as a member of the global community rather than just a nation", "Traveling for free", "Knowing every map"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Biculturalism'?", "options" => ["Speaking two words", "Being proficient in the traditions and values of two different cultures", "Having two names", "Moving twice"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Cross-cultural' training?", "options" => ["A sport", "Education to help people work effectively with those from other cultures", "Learning to type", "A medical test"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Xenophobia'?", "options" => ["Love of travel", "Dislike or prejudice against people from other countries", "A type of phobia of heights", "A new computer brand"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Cultural Competence'?", "options" => ["Being the best", "The ability to interact effectively with people of different cultures", "Knowing all history", "Being a tour guide"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $comm_course_id, "category_id" => 3,
+        "title" => "Map 58: Public Speaking & Presentation", "desc" => "Command the room, manage anxiety, and deliver powerful speeches.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Public Speaking'?", "options" => ["Talking to yourself", "Giving a speech or presentation to a live audience", "Writing a letter", "Listening to radio"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Glossophobia'?", "options" => ["Fear of glass", "The fear of public speaking", "Fear of water", "Fear of heights"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the 'Introduction' of a speech?", "options" => ["The goodbye", "The beginning that grabs attention and states the main goal", "The list of facts", "A break for lunch"], "ans" => 1, "xp" => 150],
+                ["q" => "What is an 'Extemporaneous' speech?", "options" => ["A memorized script", "A carefully prepared and practiced speech delivered in a conversational manner", "Reading from a book", "Talking without any thought"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Impromptu' speaking?", "options" => ["Long preparation", "Speaking without any advanced preparation", "Reading a poem", "A recorded video"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Transition' in a speech?", "options" => ["The end", "Words or phrases that connect one idea to the next", "The main point", "A joke"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Visual Aid'?", "options" => ["Hearing music", "Objects, slides, or images used to support a speech", "A type of glasses", "A quiet voice"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Eye Contact' importance?", "options" => ["To see the clock", "To build trust and connection with the audience", "To look at your notes", "To scare people"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Inflection' in your voice?", "options" => ["Speaking flat", "The modulation of pitch and tone to convey meaning and emotion", "A type of accent", "Being very quiet"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Projection'?", "options" => ["Hiding your voice", "Using your voice forcefully so it can be heard by everyone", "A movie screen", "Singing a song"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Enunciation'?", "options" => ["Mumbling", "Speaking each word clearly and distinctly", "Using slang", "A type of grammar"], "ans" => 1, "xp" => 210],
+                ["q" => "What is the 'Conclusion' of a speech?", "options" => ["The middle", "The end that summarizes the points and provides a closing thought", "The first joke", "A list of sources"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Audience Disposition'?", "options" => ["The size of the room", "The audience's attitude or emotional state toward the topic", "The number of chairs", "The price of tickets"], "ans" => 1, "xp" => 250],
+                ["q" => "What is an 'Attention-Getter'?", "options" => ["A loud scream", "A hook used at the start (a quote, story, or fact) to engage listeners", "The first slide", "A type of hat"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Persuasive' speaking?", "options" => ["Telling a story", "Speaking to change the audience's mind or motivate them to action", "Giving facts only", "A medical lecture"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Informative' speaking?", "options" => ["Selling a product", "Speaking to share knowledge or explain a topic", "Starting a fight", "Telling a lie"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Stage Presence'?", "options" => ["Being on a stage", "The energy and confidence a speaker projects to the audience", "The clothes you wear only", "Standing very still"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Call to Action'?", "options" => ["A phone call", "A specific request for the audience to DO something after the speech", "The title", "A thank you"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Articulation'?", "options" => ["Having a fast pulse", "The physical production of specific speech sounds", "A type of logic", "The length of a sentence"], "ans" => 1, "xp" => 300],
+                ["q" => "How should you handle 'Q&A'?", "options" => ["Ignore questions", "Listen fully, repeat the question, and answer honestly and briefly", "Argue with the audience", "Leave the room"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Monotone'?", "options" => ["A loud voice", "A voice that does not vary in pitch or expression", "A beautiful song", "A clear speech"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Pacing'?", "options" => ["Running", "The speed at which you deliver your speech", "The number of steps on a stage", "The volume of your voice"], "ans" => 1, "xp" => 400],
+                ["q" => "What are 'Filler Words'?", "options" => ["Strong adjectives", "Words like 'um', 'ah', and 'like' that fill silence and distract", "Important technical terms", "Foreign words"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the best way to manage speech anxiety?", "options" => ["Stop talking forever", "Preparation, practice, and controlled breathing", "Drinking 10 coffees", "Avoiding the audience"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $comm_course_id, "category_id" => 3,
+        "title" => "Map 59: Media Literacy & Analysis", "desc" => "Critically evaluate the information you consume from TV, News, and Web.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Media Literacy'?", "options" => ["Knowing how to use a mouse", "The ability to access, analyze, evaluate, and create media", "Watching TV all day", "Having a lot of followers"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Mass Media'?", "options" => ["Private talk", "Tools that reach a very large audience (News, Radio, Web)", "A type of exercise", "A math equation"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Media Bias'?", "options" => ["A balanced report", "The perceived bias of journalists and news producers in selection of many events and stories", "A type of radio", "A movie review"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Gatekeeping' in media?", "options" => ["Opening a gate", "The process through which information is filtered for dissemination (deciding what news to show)", "A security guard", "A type of login"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Agenda-setting Theory'?", "options" => ["Planning a party", "The idea that media doesn't tell us what to think, but what to think ABOUT", "A type of school lesson", "A marketing flyer"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Framing' in a news story?", "options" => ["Putting a photo in a frame", "How information is presented and organized to influence the reader's perspective", "A type of crime", "A construction job"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Clickbait'?", "options" => ["A type of fish", "Headlines designed to attract clicks by using exaggeration or suspense", "A factual news title", "A type of software"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Sensationalism'?", "options" => ["Being very calm", "The use of exciting or shocking stories at the expense of accuracy to provoke interest", "A type of music", "A scientific report"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Media Consolidation'?", "options" => ["Deleting media", "When a few large companies own most media outlets", "A type of file backup", "A new TV channel"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Citizen Journalism'?", "options" => ["A professional reporter", "Ordinary people reporting news via social media and blogs", "A government news", "Reading the paper"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Confirmation Bias'?", "options" => ["Being balanced", "The tendency to search for and believe info that confirms your existing beliefs", "A type of math", "A correct answer"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Filter Bubble'?", "options" => ["A soap bubble", "A state of isolation that results from personalized searches and algorithms", "A clean computer", "A type of camera"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Primary Source'?", "options" => ["A textbook", "First-hand evidence of an event (e.g., eyewitness, original document)", "A summary", "A Wikipedia page"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Secondary Source'?", "options" => ["An original letter", "An interpretation or analysis of a primary source (e.g., a textbook, documentary)", "An eyewitness", "A physical object"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Fact-checking'?", "options" => ["Writing a story", "Verifying the accuracy of claims made in media", "Adding photos", "Changing the title"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Media Representation'?", "options" => ["A lawyer", "How groups of people are depicted in the media", "A type of advertisement", "The price of media"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Propaganda'?", "options" => ["Objective facts", "Biased information used to promote a particular political point of view", "A type of music", "A dictionary"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Fake News'?", "options" => ["A new newspaper", "Information that is intentionally false or misleading", "A typo", "A gossip column"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Native Advertising'?", "options" => ["A TV commercial", "Ads that look like the regular content of the website (e.g., sponsored articles)", "A large billboard", "A free sample"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Critical Thinking' in media?", "options" => ["Hating everything", "Evaluating information with a questioning and logical mindset", "Believing everything", "Fast reading"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is the 'Digital Divide'?", "options" => ["A mathematical term", "The gap between those who have access to technology and those who do not", "A broken phone", "A new computer brand"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Information Privacy'?", "options" => ["Sharing everything", "The right to control how your personal data is collected and used online", "A type of password", "A hidden post"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'User-Generated Content'?", "options" => ["A movie", "Content like reviews, posts, and videos created by the users of a service", "A professional news", "A software code"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Viral' content?", "options" => ["A computer virus", "Content that spreads rapidly and widely across the internet", "A slow website", "A deleted post"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $comm_course_id, "category_id" => 3,
+        "title" => "Map 60: Capstone: Master of Discourse", "desc" => "The ultimate challenge. Integrate linguistics, rhetoric, and digital ethics.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "SCENARIO: You are in a meeting where two coworkers from different cultures disagree on a deadline. What should you check first?", "options" => ["The font used in the email", "High-context vs Low-context time orientations (Monochronic vs Polychronic)", "Who is louder", "The office air conditioning"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: A politician gives a speech focused on their years of service and integrity. Which rhetorical appeal are they using?", "options" => ["Logos", "Ethos", "Pathos", "Kairos"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: You see a sensational news headline that makes you very angry. What is the BEST first media literacy step?", "options" => ["Share it immediately", "Fact-check the source and check for 'emotional contagion' or clickbait framing", "Comment with an insult", "Delete your account"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: A friend is crying and telling you a story. You nod and say 'I can't imagine how that feels.' What are you doing?", "options" => ["Pseudolistening", "Empathetic Listening", "Stage Hogging", "Analyzing"], "ans" => 1, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "SCENARIO: You find an old letter. You want to study how the words used have changed meaning over 100 years. What is this?", "options" => ["Phonology", "Etymology and Diachronic Semantics", "Syntax", "Morphology"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: An email says 'The report was finished.' You want it to sound more direct. How do you change it?", "options" => ["'The report is over.'", "'I finished the report.' (Active Voice)", "'Finished was the report.'", "'Someone did it.'"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: You are talking to a boss and accidentally use a swear word. You feel awkward because you broke which rule?", "options" => ["Syntax", "Pragmatics and Register", "Phonology", "Etymology"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: You notice you stand much closer to your best friend than to your bank teller. What is this a study of?", "options" => ["Haptics", "Proxemics", "Chronemics", "Vocalics"], "ans" => 1, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "SCENARIO: You are giving a speech and notice people in the back are leaning forward. What should you adjust?", "options" => ["Your clothing", "Your projection (volume)", "Your logic", "Your conclusion"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: Someone says 'You're so smart' after you make a mistake. Which semantic concept is this?", "options" => ["Simile", "Irony / Sarcasm", "Denotation", "Euphemism"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: You are browsing social media and see only news that you agree with. What are you likely inside of?", "options" => ["A computer virus", "An Echo Chamber / Filter Bubble", "A public library", "A group chat"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: A speaker says 'If we let them change the lunch menu, soon the whole office will collapse into chaos.' What fallacy is this?", "options" => ["Ad Hominem", "Slippery Slope", "Circular Logic", "Red Herring"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "SCENARIO: You need to send a complex legal document via email. What should you prioritize?", "options" => ["Emoji use", "Clarity, Conciseness, and Formal Tone", "Using all caps", "A very long signature"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: A child learns to say 'goed' instead of 'went'. They have understood a rule but applied it incorrectly. What is this?", "options" => ["Linguistics error", "Morphological overregularization", "Syntax failure", "Phonology problem"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: You are writing a book and use a dictionary to check the history of a word. What is this called?", "options" => ["Geology", "Etymology", "Biology", "Sociology"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: You are in a foreign country and people find your 'thumbs up' offensive. What is the gesture called?", "options" => ["An Illustrator", "An Emblem", "An Adaptor", "An Artifact"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "MASTER FINAL: What is the primary purpose of studying communication as a process?", "options" => ["To talk as much as possible", "To understand and improve the shared creation of meaning between individuals", "To win every argument", "To learn to code"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: Which field explains why we talk differently to a baby than to a judge?", "options" => ["Biology", "Sociolinguistics (Register/Context)", "Phonology", "Morphology"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: To be a truly 'competent' communicator, one must be...", "options" => ["Both effective and appropriate", "Fast and loud", "Silent and mysterious", "Always correct"], "ans" => 0, "xp" => 400],
+                ["q" => "MASTER FINAL: What is the biggest ethical responsibility of a digital citizen?", "options" => ["Buying a fast PC", "Verifying information and communicating with respect", "Getting the most likes", "Following every account"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "EXAM: How does 'Noise' affect the transactional model of communication?", "options" => ["It makes it better", "It distorts the message and requires better encoding/decoding strategies", "It stops communication completely", "It only affects the radio"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: Why is 'Ethos' often considered the most important rhetorical appeal?", "options" => ["Because emotions are weak", "Because if the audience does not trust the speaker, logic and emotion will fail", "Because authority is always right", "Because it is the shortest word"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: In a globalized world, what is the value of 'Cultural Intelligence' (CQ)?", "options" => ["It's not valuable", "It allows for effective collaboration across diverse linguistic and social boundaries", "It makes you a better driver", "It increases your internet speed"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: What is the core goal of Media Literacy in a democracy?", "options" => ["To delete the news", "To empower citizens to think critically and detect disinformation", "To buy more media", "To follow one leader"], "ans" => 1, "xp" => 600]
+            ]]
+        ]
+    ]
+];
+
+// ==========================================================
+// CUSTOMER SERVICE CURRICULUM (Maps 61-72)
+// ==========================================================
+$cs_maps = [
+    // CATEGORY 1: FOUNDATIONS OF SERVICE (Maps 61-64)
+    [
+        "id" => ++$highest_id, "course_id" => $cs_course_id, "category_id" => 1,
+        "title" => "Map 61: Introduction to Service Excellence", "desc" => "Understand the core philosophy of world-class service.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the primary goal of Customer Service?", "options" => ["To ignore the client", "To provide assistance and build loyalty", "To argue with customers", "To only make a one-time sale"], "ans" => 1, "xp" => 150],
+                ["q" => "Who is an 'Internal Customer'?", "options" => ["A paying client", "A colleague or coworker within your company", "A government official", "A delivery driver"], "ans" => 1, "xp" => 150],
+                ["q" => "What is an 'External Customer'?", "options" => ["The manager", "A person who buys products or services from the business", "The IT department", "A former employee"], "ans" => 1, "xp" => 150],
+                ["q" => "What does 'First Impression' mean in service?", "options" => ["The final bill", "The initial impact a service provider makes on a customer", "The second meeting", "A type of training"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "Which behavior demonstrates 'Professionalism'?", "options" => ["Arriving late", "Punctuality, politeness, and expert knowledge", "Using slang", "Ignoring emails"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Proactive' service?", "options" => ["Waiting for a complaint", "Anticipating needs before the customer asks", "Reacting after a mistake", "Doing nothing"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Reactive' service?", "options" => ["Solving problems only after they occur", "Planning for the future", "Starting a business", "Greeting a customer"], "ans" => 0, "xp" => 180],
+                ["q" => "Why is 'Brand Image' important in service?", "options" => ["It doesn't matter", "It represents the customer's perception and trust in the company", "It's just a logo", "It determines the office color"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Customer Centricity'?", "options" => ["Focusing on profit only", "Putting the customer at the center of every business decision", "Ignoring the staff", "Working alone"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Service Level'? ", "options" => ["The height of a desk", "The measurable performance standard agreed upon for a service", "The number of floors in a building", "The salary of a clerk"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Empathy'?", "options" => ["Feeling sorry for someone", "The ability to understand and share the feelings of another", "Being very smart", "Talking loudly"], "ans" => 1, "xp" => 210],
+                ["q" => "What is the difference between 'Service' and 'Experience'?", "options" => ["They are the same", "Service is the task; Experience is how the customer feels during the process", "Experience is for managers only", "Service is always free"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Reliability' in service?", "options" => ["Being funny", "Performing the promised service dependably and accurately", "Having a lot of employees", "Being the cheapest"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Responsiveness'?", "options" => ["Talking back", "Willingness to help customers and provide prompt service", "Waiting for instructions", "Hiding from clients"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Assurance'?", "options" => ["Insurance", "The knowledge and courtesy of employees and their ability to convey trust", "A guarantee of money back", "A type of software"], "ans" => 1, "xp" => 250],
+                ["q" => "What are 'Tangibles' in service?", "options" => ["Feelings", "Physical facilities, equipment, and appearance of personnel", "The company's history", "The phone line"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Customer Lifetime Value' (CLV)?", "options" => ["The price of one product", "The total revenue a business can expect from a single customer account", "The weight of a client", "The number of visits"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Service Culture'?", "options" => ["The art in the office", "The shared values and goals that prioritize customer satisfaction", "The dress code only", "The country's tradition"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Personalization'?", "options" => ["Talking to yourself", "Treating customers as individuals with unique needs", "Hiring a personal assistant", "Changing your name"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Authenticity' in service?", "options" => ["Being fake", "Providing sincere and genuine interactions", "Using a script perfectly", "Having a high price"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'World Class Service'?", "options" => ["Working in another country", "Consistently exceeding customer expectations and setting industry benchmarks", "Being a large company", "Having a lot of technology"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Customer Advocacy'?", "options" => ["Suing a client", "When satisfied customers recommend your business to others", "A legal department", "A complaint"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Moments of Truth'?", "options" => ["A lie detector test", "Any interaction where a customer forms an opinion about a service", "The final payment", "A legal contract"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Sustainable' service?", "options" => ["Service that ends fast", "Service that can be maintained consistently over the long term", "Service with no staff", "Service that is free"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $cs_course_id, "category_id" => 1,
+        "title" => "Map 62: Communication Skills", "desc" => "Master the verbal and non-verbal tools of the trade.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Active Listening'?", "options" => ["Hearing music", "Fully concentrating and responding to the customer", "Ignoring the speaker", "Talking over the client"], "ans" => 1, "xp" => 150],
+                ["q" => "Which is an example of a 'Closed Question'?", "options" => ["'How do you feel?'", "'Did you receive the order?'", "'What is the problem?'", "'Tell me more.'"], "ans" => 1, "xp" => 150],
+                ["q" => "Which is an example of an 'Open Question'?", "options" => ["'Is it blue?'", "'Can you describe what happened?'", "'Are you happy?'", "'Is it 5 o'clock?'"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Tone of Voice'?", "options" => ["How loud you are", "The emotional quality and attitude expressed through speech", "The words you choose", "Your accent"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Paraphrasing'?", "options" => ["Repeating exactly", "Restating the customer's point in your own words to check understanding", "Writing a poem", "Staying silent"], "ans" => 1, "xp" => 180],
+                ["q" => "Why is 'Eye Contact' important in person?", "options" => ["To see their eye color", "To build trust and show you are paying attention", "To intimidate them", "To look for reflections"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Positive Language'?", "options" => ["Telling lies", "Focusing on what can be done rather than what cannot", "Being very loud", "Using long words"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Jargon'?", "options" => ["A type of food", "Technical terms that customers may not understand", "Clear communication", "A foreign language"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Non-verbal Communication'?", "options" => ["Writing a letter", "Body language, facial expressions, and gestures", "Speaking a language", "Sending an email"], "ans" => 1, "xp" => 210],
+                ["q" => "What does 'Mirroring' involve?", "options" => ["Looking in a mirror", "Subtly mimicking a customer's posture or tone to build rapport", "Arguing with a client", "Hiding your face"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Verbal Cues'?", "options" => ["Hand gestures", "Words or sounds that signal you are listening (e.g., 'I see', 'Uh-huh')", "The way you dress", "The layout of the office"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Clarity' in speech?", "options" => ["Using slang", "Speaking in a way that is easy to understand", "Whispering", "Using complex metaphors"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Inflection'?", "options" => ["Being flat", "Changing the pitch of your voice to emphasize words", "An infection", "The speed of typing"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Empathetic Responding'?", "options" => ["Giving a refund", "Acknowledging a customer's feelings before providing a solution", "Ignoring the complaint", "Asking for money"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Summarizing'?", "options" => ["A vacation", "Briefly repeating the main points of a conversation", "Deleting the record", "Asking a new question"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Assertiveness'?", "options" => ["Being aggressive", "Expressing your views clearly and respectfully without being pushy", "Being shy", "Agreeing with everything"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Intercultural Communication'?", "options" => ["Talking to computers", "Communicating effectively with people from different backgrounds", "Learning to code", "Traveling for fun"], "ans" => 1, "xp" => 300],
+                ["q" => "What is a 'Semantic Barrier'?", "options" => ["A physical wall", "Misunderstandings caused by different meanings of words", "Loud noise", "A broken phone"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Digital Etiquette'?", "options" => ["Buying a new PC", "Rules for professional behavior in emails and chats", "Social media marketing", "Fixing a phone"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'De-escalation' through words?", "options" => ["Starting a fight", "Using calm and neutral language to lower a customer's anger", "Being rude", "Hanging up the phone"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Rapport'?", "options" => ["A legal report", "A harmonious connection and mutual trust with a customer", "The end of a shift", "A bill"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Emotional Intelligence' (EQ)?", "options" => ["Having a high IQ", "The ability to manage your own and others' emotions effectively", "Being very emotional", "Crying with a customer"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Feedback'?", "options" => ["A loud noise", "Information given about a service or product's performance", "A type of payment", "A marketing flyer"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the 'Golden Rule' of service communication?", "options" => ["The customer is always wrong", "Treat the customer as you would want to be treated", "Charge as much as possible", "Talk as fast as you can"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $cs_course_id, "category_id" => 1,
+        "title" => "Map 63: Professionalism & Grooming", "desc" => "Represent your company with visual and behavioral excellence.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Personal Grooming'?", "options" => ["Fixing a computer", "Maintaining a clean and neat physical appearance", "Selling a product", "Buying new shoes"], "ans" => 1, "xp" => 150],
+                ["q" => "Why is a 'Uniform' used?", "options" => ["To make everyone look the same", "To create a professional and recognizable brand identity", "Because it's cheaper", "To save time in the morning"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Punctuality'?", "options" => ["Good grammar", "Being on time", "Talking fast", "Being smart"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Body Language'?", "options" => ["Speaking a language", "Communication using posture, eye contact, and gestures", "Exercise at work", "Eating healthy"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Professionalism'?", "options" => ["Having a degree", "The conduct, aims, or qualities that characterize a profession", "Working for a long time", "Earning a high salary"], "ans" => 1, "xp" => 180],
+                ["q" => "Which is NOT appropriate for office wear?", "options" => ["A suit", "Clean shirt", "Dirty or torn clothing", "Polished shoes"], "ans" => 2, "xp" => 180],
+                ["q" => "What is 'Work Ethic'?", "options" => ["A type of law", "The principle that hard work is intrinsically virtuous or worthy of reward", "Working at night", "Being the boss"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Integrity'?", "options" => ["Being smart", "The quality of being honest and having strong moral principles", "Knowing the rules", "Following orders"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Accountability'?", "options" => ["Doing math", "Taking responsibility for one's actions and decisions", "Blaming others", "Working long hours"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Reliability'?", "options" => ["Being fast", "Consistently performing well and being trustworthy", "Having a new car", "Being friendly"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Discretion'?", "options" => ["Being loud", "Behaving or speaking in such a way as to avoid causing offense or revealing private info", "Working in secret", "Choosing your own hours"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Adaptability'?", "options" => ["Staying the same", "The ability to adjust to new conditions and changes", "Being stubborn", "Moving to a new city"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Time Management'?", "options" => ["Watching a clock", "Organizing and planning how to divide your time between activities", "Buying a watch", "Running fast"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Organization'?", "options" => ["A company", "The ability to stay focused on different tasks and manage time/space well", "Hiring people", "Cleaning the floor"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Civility'?", "options" => ["Living in a city", "Polite and courteous behavior", "Talking loudly", "Following the law"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Initiative'?", "options" => ["Waiting for orders", "The ability to assess and initiate things independently", "Starting a new company", "Taking a break"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Diplomacy'?", "options" => ["International politics", "The art of dealing with people in a sensitive and effective way", "Being a manager", "Ignoring problems"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Personal Branding'?", "options" => ["Marking cattle", "How you present yourself to others in the professional world", "Having a logo", "Wearing a name tag"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Emotional Resilience'?", "options" => ["Being sad", "The ability to recover quickly from difficulties or stress", "Having a lot of power", "Working alone"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Collaboration'?", "options" => ["Competing", "Working with others to produce or create something", "Hiring employees", "Taking orders"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Servant Leadership'?", "options" => ["Being a servant", "A philosophy where the main goal is to serve others", "Being a boss", "Working for free"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Work-Life Balance'?", "options" => ["Working and sleeping", "The equilibrium between professional and personal life", "Working 24 hours", "Being unemployed"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Mentorship'?", "options" => ["Teaching a class", "A relationship where a more experienced person guides a less experienced one", "Paying a tutor", "Hiring a new staff"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Professional Etiquette'?", "options" => ["Furniture", "The code of behavior that delineates expectations for social behavior in a workplace", "The salary", "The company rules"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $cs_course_id, "category_id" => 1,
+        "title" => "Map 64: Phone & Digital Etiquette", "desc" => "Handle remote customer interactions with precision and care.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the standard professional phone greeting?", "options" => ["'Hello?'", "'Who is this?'", "Identify yourself and the company", "Say nothing until they speak"], "ans" => 2, "xp" => 150],
+                ["q" => "What is 'Digital Etiquette'?", "options" => ["Buying a PC", "Correct behavior on digital platforms (email, chat)", "Fixing a phone", "Social media"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Hold Etiquette'?", "options" => ["Holding a box", "Asking permission and providing a reason before placing a caller on hold", "Putting them on hold instantly", "Hanging up"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Voicemail Etiquette'?", "options" => ["Deleting messages", "Providing a clear, concise message with your name and number", "Yelling into the phone", "Saying nothing"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What should you avoid in professional emails?", "options" => ["Proper grammar", "Using ALL CAPS (shouting)", "A clear subject line", "Your contact info"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Response Time'?", "options" => ["The time you start work", "The duration between receiving a query and answering it", "The speed of light", "The time it takes to print"], "ans" => 1, "xp" => 180],
+                ["q" => "What is an 'Auto-responder'?", "options" => ["A robot person", "An automated email reply used when you are away", "A phone charger", "A type of virus"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'BCC' in email?", "options" => ["Blind Carbon Copy (hiding recipients)", "Business Computer Code", "Big Company Communication", "Before Closing Call"], "ans" => 0, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Chat Etiquette'?", "options" => ["Using slang", "Professional and quick communication in instant messaging", "Talking to yourself", "Deleting messages"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Cold Call'?", "options" => ["A call in winter", "Calling a potential customer who has had no prior contact", "Hanging up", "A technical support call"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Warm Transfer'?", "options" => ["Heating a phone", "Introducing the caller to the person you are transferring them to", "A fast transfer", "A broken call"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Phonetic Alphabet' used for?", "options" => ["Spelling names", "To clearly communicate letters over the phone (Alpha, Bravo, etc.)", "Singing", "Writing a letter"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Video Call' etiquette?", "options" => ["Sitting in the dark", "Muting when not speaking and having a professional background", "Eating loudly", "Turning off the camera always"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Spam'?", "options" => ["A type of food only", "Unsolicited, bulk digital messages", "An important email", "A secure file"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Netiquette'?", "options" => ["A fish net", "Internet etiquette", "A computer network", "A type of firewall"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Attachment' etiquette?", "options" => ["Hiding a file", "Ensuring file sizes are manageable and relevant to the email", "Deleting emails", "Using viruses"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Emoji' use in professional settings?", "options" => ["Always use them", "Use sparingly and only if appropriate for the company culture", "Never use them", "Use 10 at a time"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Screen Sharing'?", "options" => ["Buying a new monitor", "Displaying your computer screen to others during a call", "Taking a photo", "Hiding your work"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Synchronous' communication?", "options" => ["Email", "Real-time communication (Phone, Live Chat)", "A letter", "A billboard"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Asynchronous' communication?", "options" => ["Phone call", "Communication with a time lag (Email, Forum)", "A meeting", "A video call"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Active Listening' on the phone?", "options" => ["Hanging up", "Using verbal cues and not interrupting", "Typing loudly", "Listening to music"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Cybersecurity' in service?", "options" => ["Fixing hardware", "Protecting customer data and avoiding phishing scams", "Buying software", "Using a password manager"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Social Media' service?", "options" => ["Posting photos", "Handling customer queries and complaints on public platforms", "Advertising only", "Playing games"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Accessibility' in digital service?", "options" => ["Having a fast PC", "Ensuring services can be used by people with disabilities", "Having free Wi-Fi", "A login screen"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+
+    // CATEGORY 2: COMMUNICATION & CONFLICT (Maps 65-68)
+    [
+        "id" => ++$highest_id, "course_id" => $cs_course_id, "category_id" => 2,
+        "title" => "Map 65: Managing Difficult Customers", "desc" => "Psychology and tactics for handling high-pressure interactions.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is the first thing to do with an angry customer?", "options" => ["Yell back", "Listen calmly and let them vent", "Hang up", "Laugh at them"], "ans" => 1, "xp" => 150],
+                ["q" => "Why do customers usually get 'difficult'?", "options" => ["They are bad people", "They feel ignored, frustrated, or treated unfairly", "They like to fight", "They have too much money"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'De-escalation'?", "options" => ["Starting a fire", "Reducing the intensity of a conflict", "Buying more time", "Winning an argument"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Ventilating'?", "options" => ["Opening a window", "Allowing a customer to express their anger fully without interruption", "Taking a break", "Changing the subject"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Active Listening'?", "options" => ["Nodding without listening", "Fully engaging and confirming you understand the issue", "Talking while they talk", "Ignoring the client"], "ans" => 1, "xp" => 180],
+                ["q" => "Which phrase is helpful for de-escalation?", "options" => ["'Calm down!'", "'I understand why you are frustrated.'", "'It's not my fault.'", "'You are wrong.'"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Body Language' in conflict?", "options" => ["Crossing your arms", "Keeping an open, neutral posture", "Staring aggressively", "Looking at your watch"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Patience'?", "options" => ["Being fast", "The capacity to accept delay or trouble without getting angry", "Being smart", "Working alone"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Objectivity'?", "options" => ["Being emotional", "Basing decisions on facts rather than personal feelings", "Bolding text", "Hiding the truth"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Assertiveness'?", "options" => ["Being a bully", "Standing your ground respectfully and clearly", "Being weak", "Giving in to everything"], "ans" => 1, "xp" => 210],
+                ["q" => "How should you handle an abusive customer?", "options" => ["Abuse them back", "Respectfully set boundaries and end the call if necessary per policy", "Cry", "Do nothing"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Empathy'?", "options" => ["Feeling sorry", "Understanding the customer's perspective", "Agreeing with a lie", "Being loud"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Reframing'?", "options" => ["Changing a photo", "Looking at a problem from a different, more positive perspective", "Deleting a file", "Asking a question"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Mirroring' emotions?", "options" => ["Being angry too", "Usually a bad idea; you should stay calm if they are angry", "Copying a smile", "Hiding your face"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Problem Ownership'?", "options" => ["Buying a company", "Taking personal responsibility for seeing a solution through", "Blaming the boss", "Doing nothing"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Consistency'?", "options" => ["Being different", "Applying rules and service standards the same way for everyone", "Being fast", "Knowing the name"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Boundary Setting'?", "options" => ["Building a wall", "Establishing clear limits on what behavior is acceptable", "Hiring a guard", "Ignoring the rules"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Negotiation'?", "options" => ["Fighting", "A discussion aimed at reaching an agreement", "A command", "A secret"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Escalation'?", "options" => ["A fire", "Moving a customer to a higher level of authority (manager)", "Walking up stairs", "Ignoring a call"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Resolution'?", "options" => ["A new year goal", "The action of solving a problem or dispute", "A promise", "A refund"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Post-traumatic Growth' in service?", "options" => ["Being sad", "Learning and becoming better after a difficult interaction", "Quitting a job", "A medical term"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Internalization'?", "options" => ["Taking things personally", "When you let a customer's anger affect your self-worth (should be avoided)", "Hiding your thoughts", "Fixing a PC"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Debriefing'?", "options" => ["Changing clothes", "Discussing a difficult interaction with a supervisor to process and learn", "Sending a bill", "Taking a break"], "ans" => 1, "xp" => 400],
+                ["q" => "What is the 'Customer Service Recovery' paradox?", "options" => ["Losing money", "When a customer is MORE loyal after a problem is fixed well than if no problem happened", "A secret", "A type of sales"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $cs_course_id, "category_id" => 2,
+        "title" => "Map 66: Conflict De-escalation", "desc" => "Master the verbal and behavioral tools to calm any storm.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Conflict'?", "options" => ["A group of people", "A serious disagreement or argument", "A new product", "A type of weather"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'De-escalation'?", "options" => ["Starting a fire", "Reducing the intensity of a conflict", "Buying more time", "Winning an argument"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Body Language'?", "options" => ["Speaking a language", "Communication using posture, eye contact, and gestures", "Exercise at work", "Eating healthy"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Patience'?", "options" => ["Being fast", "The capacity to accept delay or trouble without getting angry", "Being smart", "Working alone"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Active Listening'?", "options" => ["Nodding without listening", "Fully engaging and confirming you understand the issue", "Talking while they talk", "Ignoring the client"], "ans" => 1, "xp" => 180],
+                ["q" => "Which phrase is helpful for de-escalation?", "options" => ["'Calm down!'", "'I understand why you are frustrated.'", "'It's not my fault.'", "'You are wrong.'"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Objectivity'?", "options" => ["Being emotional", "Basing decisions on facts rather than personal feelings", "Bolding text", "Hiding the truth"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Assertiveness'?", "options" => ["Being a bully", "Standing your ground respectfully and clearly", "Being weak", "Giving in to everything"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Reframing'?", "options" => ["Changing a photo", "Looking at a problem from a different, more positive perspective", "Deleting a file", "Asking a question"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Mirroring' emotions?", "options" => ["Being angry too", "Usually a bad idea; you should stay calm if they are angry", "Copying a smile", "Hiding your face"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Problem Ownership'?", "options" => ["Buying a company", "Taking personal responsibility for seeing a solution through", "Blaming the boss", "Doing nothing"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Consistency'?", "options" => ["Being different", "Applying rules and service standards the same way for everyone", "Being fast", "Knowing the name"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Boundary Setting'?", "options" => ["Building a wall", "Establishing clear limits on what behavior is acceptable", "Hiring a guard", "Ignoring the rules"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Negotiation'?", "options" => ["Fighting", "A discussion aimed at reaching an agreement", "A command", "A secret"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Escalation'?", "options" => ["A fire", "Moving a customer to a higher level of authority (manager)", "Walking up stairs", "Ignoring a call"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Resolution'?", "options" => ["A new year goal", "The action of solving a problem or dispute", "A promise", "A refund"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Post-traumatic Growth' in service?", "options" => ["Being sad", "Learning and becoming better after a difficult interaction", "Quitting a job", "A medical term"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Internalization'?", "options" => ["Taking things personally", "When you let a customer's anger affect your self-worth (should be avoided)", "Hiding your thoughts", "Fixing a PC"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Debriefing'?", "options" => ["Changing clothes", "Discussing a difficult interaction with a supervisor to process and learn", "Sending a bill", "Taking a break"], "ans" => 1, "xp" => 300],
+                ["q" => "What is the 'Customer Service Recovery' paradox?", "options" => ["Losing money", "When a customer is MORE loyal after a problem is fixed well than if no problem happened", "A secret", "A type of sales"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Active Listening'?", "options" => ["Nodding without listening", "Fully engaging and confirming you understand the issue", "Talking while they talk", "Ignoring the client"], "ans" => 1, "xp" => 400],
+                ["q" => "Which phrase is helpful for de-escalation?", "options" => ["'Calm down!'", "'I understand why you are frustrated.'", "'It's not my fault.'", "'You are wrong.'"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Objectivity'?", "options" => ["Being emotional", "Basing decisions on facts rather than personal feelings", "Bolding text", "Hiding the truth"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Assertiveness'?", "options" => ["Being a bully", "Standing your ground respectfully and clearly", "Being weak", "Giving in to everything"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $cs_course_id, "category_id" => 2,
+        "title" => "Map 67: Problem Solving & Recovery", "desc" => "Turn bad experiences into brand loyalty with expert recovery.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Service Recovery'?", "options" => ["Taking a break", "The process of fixing a service failure to retain a customer", "Charging a fee", "Deleting a record"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the first step in solving a problem?", "options" => ["Blaming someone", "Identifying and defining the problem clearly", "Giving a refund immediately", "Ignoring it"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Root Cause'?", "options" => ["A type of plant", "The fundamental reason why a problem occurred", "A manager", "A bill"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Compensating' a customer?", "options" => ["Giving extra work", "Providing something (discount, refund, gift) to make up for a mistake", "Yelling at them", "Nothing"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is an 'Apology'?", "options" => ["A type of argument", "An expression of regret for a mistake", "A legal contract", "A fine"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Brainstorming'?", "options" => ["A headache", "Generating many ideas to solve a problem", "Working alone", "Following a script"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Implementation'?", "options" => ["Thinking about it", "Putting a solution into action", "Deleting a solution", "Asking for help"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Evaluation'?", "options" => ["A party", "Reviewing if a solution worked and why", "Paying a bill", "Cleaning the office"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Prevention'?", "options" => ["Acting after a mistake", "Taking steps to ensure a problem does not happen again", "Ignoring the issue", "Waiting for orders"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Continuous Improvement'?", "options" => ["Staying the same", "The ongoing effort to improve products, services, or processes", "Hiring new staff", "Buying new software"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Standardization'?", "options" => ["Being unique", "Ensuring the same quality and method for all service delivery", "Working alone", "Hiding the rules"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Customer Feedback'?", "options" => ["A loud noise", "Information from customers about their satisfaction", "A type of payment", "A marketing flyer"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Empathy' in recovery?", "options" => ["Giving money", "Showing the customer you care about the trouble they faced", "Ignoring the feeling", "Being loud"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Responsibility'?", "options" => ["Blaming others", "Taking charge of a situation to fix it", "Being a manager", "Working long hours"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Flexibility'?", "options" => ["Strictly following rules", "Being able to bend rules to help a customer when appropriate", "Being weak", "Doing nothing"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Timeliness'?", "options" => ["Being late", "Solving the problem as quickly as possible", "Taking a break", "Watching the clock"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Follow-up' in recovery?", "options" => ["Ignoring the customer", "Contacting the customer after a fix to ensure they are still happy", "Sending a bill", "Asking for a tip"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Data Driven' solving?", "options" => ["Using feelings", "Using metrics and reports to find and fix service issues", "Asking a friend", "Guessing"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Service Design'?", "options" => ["The office decor", "The deliberate planning of a service to improve customer satisfaction", "A new logo", "A marketing plan"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Six Sigma'?", "options" => ["A brand of car", "A set of techniques for process improvement and reducing errors", "A programming language", "A type of phone"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Kaizen'?", "options" => ["A type of food", "A Japanese philosophy of continuous improvement", "A secret code", "A type of sales"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Benchmarking'?", "options" => ["Buying a bench", "Comparing your service performance against the best in the industry", "Cleaning the office", "Hiring staff"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Value Added'?", "options" => ["Charging more", "Providing extra benefits that exceed the basic service", "Deleting data", "Hiding the price"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Total Quality Management' (TQM)?", "options" => ["Managing a shop", "An organization-wide effort to install a permanent climate of quality", "Hiring new staff", "Selling products"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $cs_course_id, "category_id" => 2,
+        "title" => "Map 68: Sales and Emotional Intelligence", "desc" => "Leverage psychological tools to drive value and connection.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Emotional Intelligence' (EQ)?", "options" => ["Having a high IQ", "The ability to manage your own and others' emotions effectively", "Being very emotional", "Crying with a customer"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Empathy' in sales?", "options" => ["Giving money", "Understanding the customer's needs and perspectives", "Ignoring the feeling", "Being loud"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Rapport'?", "options" => ["A legal report", "A harmonious connection and mutual trust with a customer", "The end of a shift", "A bill"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Upselling'?", "options" => ["Selling things on a hill", "Encouraging a customer to purchase a more expensive or premium version of a product", "Selling things for free", "Ignoring a customer"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Cross-selling'?", "options" => ["Selling to angry customers", "Selling related or complementary products to a customer", "Selling to a competitor", "Selling in a different language"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Active Listening' in sales?", "options" => ["Nodding without listening", "Fully engaging and confirming you understand the issue", "Talking while they talk", "Ignoring the client"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Assertiveness'?", "options" => ["Being a bully", "Standing your ground respectfully and clearly", "Being weak", "Giving in to everything"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Consistency'?", "options" => ["Being different", "Applying rules and service standards the same way for everyone", "Being fast", "Knowing the name"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Reframing'?", "options" => ["Changing a photo", "Looking at a problem from a different, more positive perspective", "Deleting a file", "Asking a question"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Mirroring' emotions?", "options" => ["Being angry too", "Usually a bad idea; you should stay calm if they are angry", "Copying a smile", "Hiding your face"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Problem Ownership'?", "options" => ["Buying a company", "Taking personal responsibility for seeing a solution through", "Blaming the boss", "Doing nothing"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Consistency'?", "options" => ["Being different", "Applying rules and service standards the same way for everyone", "Being fast", "Knowing the name"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Boundary Setting'?", "options" => ["Building a wall", "Establishing clear limits on what behavior is acceptable", "Hiring a guard", "Ignoring the rules"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Negotiation'?", "options" => ["Fighting", "A discussion aimed at reaching an agreement", "A command", "A secret"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Escalation'?", "options" => ["A fire", "Moving a customer to a higher level of authority (manager)", "Walking up stairs", "Ignoring a call"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Resolution'?", "options" => ["A new year goal", "The action of solving a problem or dispute", "A promise", "A refund"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Post-traumatic Growth' in service?", "options" => ["Being sad", "Learning and becoming better after a difficult interaction", "Quitting a job", "A medical term"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Internalization'?", "options" => ["Taking things personally", "When you let a customer's anger affect your self-worth (should be avoided)", "Hiding your thoughts", "Fixing a PC"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Debriefing'?", "options" => ["Changing clothes", "Discussing a difficult interaction with a supervisor to process and learn", "Sending a bill", "Taking a break"], "ans" => 1, "xp" => 300],
+                ["q" => "What is the 'Customer Service Recovery' paradox?", "options" => ["Losing money", "When a customer is MORE loyal after a problem is fixed well than if no problem happened", "A secret", "A type of sales"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Active Listening'?", "options" => ["Nodding without listening", "Fully engaging and confirming you understand the issue", "Talking while they talk", "Ignoring the client"], "ans" => 1, "xp" => 400],
+                ["q" => "Which phrase is helpful for de-escalation?", "options" => ["'Calm down!'", "'I understand why you are frustrated.'", "'It's not my fault.'", "'You are wrong.'"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Objectivity'?", "options" => ["Being emotional", "Basing decisions on facts rather than personal feelings", "Bolding text", "Hiding the truth"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Assertiveness'?", "options" => ["Being a bully", "Standing your ground respectfully and clearly", "Being weak", "Giving in to everything"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+
+    // CATEGORY 3: STRATEGY & EXPERIENCE (Maps 69-72)
+    [
+        "id" => ++$highest_id, "course_id" => $cs_course_id, "category_id" => 3,
+        "title" => "Map 69: Measuring Satisfaction (NPS/CSAT)", "desc" => "Understand the data that drives service strategy.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What does 'CSAT' stand for?", "options" => ["Customer Service and Technology", "Customer Satisfaction Score", "Common Service Action Team", "Corporate Sales and Training"], "ans" => 1, "xp" => 150],
+                ["q" => "What does 'NPS' stand for?", "options" => ["Net Promoter Score", "National Phone Service", "New Product Sale", "Net Profit Statement"], "ans" => 0, "xp" => 150],
+                ["q" => "What is a 'Promoter' in NPS?", "options" => ["A person who hates the brand", "A customer who is highly likely to recommend the brand (score 9-10)", "A manager", "A marketing flyer"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Detractor' in NPS?", "options" => ["A loyal fan", "A customer who is unhappy and likely to damage the brand (score 0-6)", "A competitive company", "A type of discount"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'CES'?", "options" => ["Customer Effort Score (how easy it was to solve an issue)", "Common Entry System", "Corporate Expense Sheet", "Customer Email Service"], "ans" => 0, "xp" => 180],
+                ["q" => "What is 'Churn Rate'?", "options" => ["Making butter", "The percentage of customers who stop using your service over time", "The speed of sales", "The number of new users"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Qualitative' feedback?", "options" => ["Numbers and stats", "Descriptive feedback like comments and reviews", "A type of tax", "A bank statement"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Quantitative' feedback?", "options" => ["Comments and stories", "Numerical data like ratings and scores", "A secret code", "A job interview"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is a 'Passive' customer in NPS?", "options" => ["An angry client", "A customer who is satisfied but not enthusiastic (score 7-8)", "A person who never buys", "A company owner"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Benchmarking'?", "options" => ["Buying a bench", "Comparing your scores against industry standards or competitors", "Cleaning the office", "Hiring staff"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'First Response Time' (FRT)?", "options" => ["The end of a call", "The time it takes for a customer to receive the first reply to their query", "The speed of light", "A technical term"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Average Handle Time' (AHT)?", "options" => ["The weight of a product", "The average duration of a customer interaction", "The time spent on break", "The number of staff"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Sentiment Analysis'?", "options" => ["A math test", "Using technology to identify the emotional tone behind customer comments", "Ignoring the customer", "A type of sales"], "ans" => 1, "xp" => 250],
+                ["q" => "What is a 'Touchpoint'?", "options" => ["A place to touch the wall", "Any interaction between a customer and a brand", "A fingerprint", "A type of screen"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Customer Journey Mapping'?", "options" => ["A vacation map", "Visualizing every step a customer takes with your company", "A GPS device", "A marketing plan"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Closing the Loop'?", "options" => ["A magic trick", "Following up with a customer after they provide feedback to resolve their issue", "Ending a call", "A type of sales"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Voice of the Customer' (VoC)?", "options" => ["Talking loudly", "The process of capturing customer requirements, expectations, and preferences", "A radio show", "A legal contract"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Retention' strategy?", "options" => ["Firing customers", "Plans aimed at keeping current customers and reducing churn", "Finding new clients", "Selling products"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Mystery Shopping'?", "options" => ["Shopping at night", "Hiring people to pose as customers to test service quality", "Buying a gift", "A type of sales"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Service Level Agreement' (SLA)?", "options" => ["A type of cable", "A contract specifying the standards of service expected", "A fast internet connection", "A programming language"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Omnichannel' service?", "options" => ["Using one phone", "Providing a seamless customer experience across all channels (Web, Phone, In-person)", "A new TV station", "A marketing award"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Customer Success'?", "options" => ["A customer getting rich", "A proactive strategy to ensure customers achieve their desired outcomes using your product", "Winning a game", "Selling one product"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Loyalty Program'?", "options" => ["A secret code", "A marketing strategy that rewards customers for repeat business", "A type of tax", "A bank statement"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'User Experience' (UX)?", "options" => ["Playing a game", "The overall experience of a person using a product, especially in terms of how easy or pleasing it is to use", "A type of software", "Working in a company"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $cs_course_id, "category_id" => 3,
+        "title" => "Map 70: CRM Systems and Data", "desc" => "Manage client relations and professional support systems.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What does 'CRM' stand for?", "options" => ["Company Relationship Management", "Customer Relationship Management", "Common Resource Management", "Corporate Record Marketing"], "ans" => 1, "xp" => 150],
+                ["q" => "What is the primary goal of Customer Service?", "options" => ["To make money only", "To ensure customer satisfaction and build loyalty", "To ignore complaints", "To sell as much as possible once"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'Client'?", "options" => ["A coworker", "A person or organization using the services of another", "A competitor", "A manager"], "ans" => 1, "xp" => 150],
+                ["q" => "Which tool is commonly used to track customer interactions?", "options" => ["A notebook", "CRM Software", "A calendar", "A calculator"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Customer Loyalty'?", "options" => ["Liking a company", "The likelihood that a customer will continue to buy from a business", "Buying things for free", "A type of discount"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Customer Retention'?", "options" => ["Firing a customer", "The ability of a company to keep its customers over time", "Searching for new customers", "Ignoring old customers"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Empathy' in customer service?", "options" => ["Being smart", "The ability to understand and share the feelings of the customer", "Feeling sorry for someone", "Being very loud"], "ans" => 1, "xp" => 180],
+                ["q" => "What is a 'Complaint'?", "options" => ["A type of praise", "An expression of dissatisfaction with a product or service", "A suggestion", "A thank you note"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Upselling'?", "options" => ["Selling things on a hill", "Encouraging a customer to purchase a more expensive or premium version of a product", "Selling things for free", "Ignoring a customer"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Cross-selling'?", "options" => ["Selling to angry customers", "Selling related or complementary products to a customer", "Selling to a competitor", "Selling in a different language"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Customer Journey'?", "options" => ["A trip the customer takes", "The complete sum of experiences that customers go through when interacting with your company", "A marketing flyer", "A list of customers"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Feedback'?", "options" => ["A loud noise", "Information about reactions to a product or service, used as a basis for improvement", "A type of payment", "An advertisement"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is a 'Ticket' in customer support?", "options" => ["A bus ticket", "A record of a customer request or issue in a support system", "A fine", "A prize"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'SLA' in customer service?", "options" => ["Service Level Agreement (e.g., promising a reply in 24 hours)", "Super Low Average", "Standard Legal Action", "Secret Loyalty Award"], "ans" => 0, "xp" => 250],
+                ["q" => "What is 'Churn Rate'?", "options" => ["Making butter", "The rate at which customers stop doing business with an entity", "The speed of sales", "The number of new customers"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Touchpoint'?", "options" => ["A place to touch the wall", "Any point of interaction between a customer and a business", "A type of computer", "A fingerprint"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Personalization' in CRM?", "options" => ["Talking to yourself", "Tailoring a service or product to accommodate specific individuals", "Hiring new staff", "Changing the company logo"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Automation' in CRM?", "options" => ["A type of car", "Using software to perform repetitive tasks (like sending follow-up emails)", "Fixing machinery", "A new marketing plan"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Lead' in sales?", "options" => ["A type of metal", "A person or organization that has shown interest in a product or service", "A manager", "A final sale"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Conversion'?", "options" => ["Changing religion", "The point at which a lead becomes a paying customer", "A type of translation", "A salary increase"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'NPS' (Net Promoter Score)?", "options" => ["A type of tax", "A metric used to measure customer loyalty and satisfaction", "A bank statement", "A marketing award"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'User Experience' (UX)?", "options" => ["Playing a game", "The overall experience of a person using a product, especially in terms of how easy or pleasing it is to use", "A type of software", "Working in a company"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Proactive' customer service?", "options" => ["Acting after a complaint", "Anticipating customer needs and addressing them before they become problems", "Ignoring the customer", "Waiting for instructions"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Customer Advocacy'?", "options" => ["Suing a company", "When customers are so satisfied they actively promote your brand to others", "A type of marketing", "A legal team"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $cs_course_id, "category_id" => 3,
+        "title" => "Map 71: Service Leadership", "desc" => "Manage service teams, KPIs, and cultural alignment.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Service Leadership'?", "options" => ["Telling people what to do", "The ability to inspire and enable a team to provide excellent service", "Being the loudest", "Doing all the work alone"], "ans" => 1, "xp" => 150],
+                ["q" => "What is a 'KPI' in service management?", "options" => ["Key Performance Indicator", "Known Personal Interest", "Keeping People Informed", "Key Process Item"], "ans" => 0, "xp" => 150],
+                ["q" => "What is 'Onboarding'?", "options" => ["Getting on a boat", "The process of integrating a new employee into the service team", "Firing a person", "Giving a refund"], "ans" => 1, "xp" => 150],
+                ["q" => "What is 'Employee Engagement'?", "options" => ["A wedding", "The emotional commitment an employee has to the organization and its goals", "Being very busy", "Telling people what to do"], "ans" => 1, "xp" => 150]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Coaching'?", "options" => ["Yelling at staff", "Providing feedback and guidance to help employees improve skills", "Playing sports", "Doing the work for them"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Empowerment'?", "options" => ["Giving someone power", "Giving employees the authority to make decisions to help customers", "Taking away authority", "A technical term"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Service Culture'?", "options" => ["The art in the office", "The shared values and goals that prioritize customer satisfaction", "The dress code only", "The country's tradition"], "ans" => 1, "xp" => 180],
+                ["q" => "What is 'Turnover'?", "options" => ["A type of pastry", "The rate at which employees leave and are replaced", "A promotion", "Changing shifts"], "ans" => 1, "xp" => 180]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Quality Assurance' (QA)?", "options" => ["Promising good work", "The systematic monitoring and evaluation of service delivery", "A type of test", "Fixing a broken product"], "ans" => 1, "xp" => 210],
+                ["q" => "What is a 'Performance Review'?", "options" => ["Watching a movie", "A formal assessment of an employee's work over a period", "A salary increase", "A team meeting"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Conflict Management'?", "options" => ["Starting a fight", "The process of limiting the negative aspects of conflict", "Ignoring the problem", "Telling the boss"], "ans" => 1, "xp" => 210],
+                ["q" => "What is 'Motivation'?", "options" => ["Tiredness", "The reason or reasons one has for acting or behaving in a particular way", "A type of training", "A salary bonus"], "ans" => 1, "xp" => 210]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Strategic Planning'?", "options" => ["Daily task listing", "Setting long-term goals and determining the best approach", "Planning a party", "Creating a weekly schedule"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'SOP'?", "options" => ["A type of software", "Standard Operating Procedure (established step-by-step instructions)", "The company name", "The layout of the office"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Change Management'?", "options" => ["Counting petty cash", "The process of transitioning individuals or teams to a desired future state", "Changing the office layout", "Updating the software"], "ans" => 1, "xp" => 250],
+                ["q" => "What is 'Resource Allocation'?", "options" => ["Buying more things", "Assigning and managing assets to support service goals", "Hiring new staff", "Spending the budget"], "ans" => 1, "xp" => 250]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "What is 'Emotional Intelligence' (EQ) in leadership?", "options" => ["Having a high IQ", "Managing your emotions and the team's emotions effectively", "Being very emotional", "Crying at work"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Synergy' in a team?", "options" => ["Working alone", "Cooperation producing a combined effect greater than the sum of separate effects", "A type of software", "Competing with coworkers"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Delegation'?", "options" => ["Doing all the work", "Entrusting a task or responsibility to another person", "Hiring new staff", "Quitting a job"], "ans" => 1, "xp" => 300],
+                ["q" => "What is 'Servant Leadership'?", "options" => ["Being a servant", "A leadership philosophy where the main goal is to serve", "A strict leader", "A leader who does no work"], "ans" => 1, "xp" => 300]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "What is 'Burnout'?", "options" => ["A fire in the office", "Physical or mental collapse caused by overwork or stress", "Running out of coffee", "Quitting your job"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Accountability'?", "options" => ["Doing math", "The obligation to accept responsibility for one's actions", "Blaming others", "Working long hours"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Transparency'?", "options" => ["A clear window", "Operating in a way that is easy for others to see what actions are performed", "Hiding the truth", "A type of software"], "ans" => 1, "xp" => 400],
+                ["q" => "What is 'Organizational Behavior'?", "options" => ["How people act in public", "The study of how people interact within groups", "Company rules", "A type of psychology only"], "ans" => 1, "xp" => 400]
+            ]]
+        ]
+    ],
+    [
+        "id" => ++$highest_id, "course_id" => $cs_course_id, "category_id" => 3,
+        "title" => "Map 72: Customer Experience Strategy (Capstone)", "desc" => "The ultimate challenge. Design a holistic strategy for brand excellence.",
+        "levels" => [
+            ["offset" => 60, "questions" => [
+                ["q" => "SCENARIO: An angry customer is shouting in a physical store. What is the BEST first step?", "options" => ["Shout back to show authority", "Calmly invite them to a private area to listen", "Call the police immediately", "Ignore them and help others"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: Your team's NPS score has dropped from 50 to 20. What do you do first?", "options" => ["Fire the team", "Analyze qualitative feedback from detractors to find the root cause", "Increase prices", "Ignore the score"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: You need to ensure a new service process is the same across 10 branches. What do you use?", "options" => ["A verbal instruction", "Standard Operating Procedures (SOPs) and training", "A hope for the best", "A marketing flyer"], "ans" => 1, "xp" => 200],
+                ["q" => "SCENARIO: A customer is using abusive language to a staff member. What is the policy?", "options" => ["The staff must accept it", "The staff can respectfully set a boundary and terminate the interaction per policy", "The staff should abuse them back", "The staff should cry"], "ans" => 1, "xp" => 200]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "SCENARIO: A customer wants a refund that is against company policy, but they are a loyal VIP. What is the move?", "options" => ["Refuse strictly", "Use 'Empowerment' to offer a one-time exception or a high-value alternative", "Change the policy for everyone", "Give them cash from the drawer"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: You notice a staff member is always late and looks unkempt. How do you handle it?", "options" => ["Publicly embarrass them", "Have a private coaching session about Professionalism and Grooming", "Fire them instantly", "Do nothing"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: A customer emails with a complex technical problem. What is the best tone?", "options" => ["Short and blunt", "Empathetic, clear, and professional", "Use lots of emojis", "Reply in 2 weeks"], "ans" => 1, "xp" => 240],
+                ["q" => "SCENARIO: You are launching a new product. How do you prepare the service team?", "options" => ["Tell them on the day", "Provide comprehensive training, FAQs, and role-playing", "Give them a manual only", "Don't tell them"], "ans" => 1, "xp" => 240]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "SCENARIO: A client's data has been leaked. What is the priority?", "options" => ["Hide it", "Crisis communication and immediate transparency per data laws (POPIA/GDPR)", "Delete the records", "Blame the IT guy"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: A customer journey map shows people quit at the 'Payment' stage. What is the fix?", "options" => ["Reduce prices", "Improve the 'User Experience' (UX) and simplify the payment touchpoint", "Add more ads", "Ignore it"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: Your department has no budget for refunds. How do you recover service?", "options" => ["Ignore problems", "Use 'Value Added' recovery like personal apologies, future vouchers, or extra support", "Lie to the customer", "Quit your job"], "ans" => 1, "xp" => 280],
+                ["q" => "SCENARIO: You are hiring for a high-stress reception role. What is the key skill to look for?", "options" => ["Typing speed", "High Emotional Intelligence (EQ) and Resilience", "Height", "Strength"], "ans" => 1, "xp" => 280]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "SCENARIO: Two team members are arguing in front of customers. What is the administrative response?", "options" => ["Join the argument", "Immediate private intervention and disciplinary review", "Ignore it", "Tell the customers to judge"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: You want to improve long-term loyalty. What metric do you prioritize?", "options" => ["Daily sales", "Customer Lifetime Value (CLV) and Retention Rate", "The number of phone calls", "The office cleanliness"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: A customer is complaining on Twitter/X. How do you respond?", "options" => ["Argue publicly", "Publicly acknowledge with empathy and move to a private DM for resolution", "Delete their post", "Ignore it"], "ans" => 1, "xp" => 350],
+                ["q" => "SCENARIO: You are standardizing service across 50 people. What tool is best?", "options" => ["A large meeting", "A robust CRM system with mandatory logging and clear SOPs", "A WhatsApp group", "A notebook"], "ans" => 1, "xp" => 350]
+            ]],
+            ["offset" => 60, "questions" => [
+                ["q" => "MASTER FINAL: What defines a truly successful Customer Service Strategy?", "options" => ["Being the cheapest", "Alignment of people, processes, and technology to consistently deliver value", "Having the most employees", "Using the newest computers"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: In service leadership, what is the 'Internal Service Quality' link?", "options" => ["Good lighting", "The idea that happy, well-supported employees lead to happy customers", "Buying better software", "Hiring more managers"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: What is 'Service Innovation'?", "options" => ["Fixing errors", "Deliberately creating new ways to deliver value and exceed customer expectations", "Hiring staff", "Selling more"], "ans" => 1, "xp" => 400],
+                ["q" => "MASTER FINAL: What is the biggest ethical risk in modern customer service?", "options" => ["Talking too much", "Data privacy breaches and algorithmic bias in CRM", "Being late", "Using the wrong font"], "ans" => 1, "xp" => 400]
+            ]],
+            ["offset" => -60, "questions" => [
+                ["q" => "EXAM: How does 'Empathy' impact the bottom line?", "options" => ["It doesn't", "It increases retention, word-of-mouth, and lifetime value", "It makes products cheaper", "It speeds up the internet"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: Why is 'Consistency' more important than occasional 'Wow' moments?", "options" => ["It's not", "Consistency builds long-term trust and predictable quality for the brand", "It's easier to do", "It saves money"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: What is the value of 'Root Cause Analysis' in service?", "options" => ["Assigning blame", "Ensuring that failures are fixed permanently rather than just patched", "Finding a new manager", "Calculating profit"], "ans" => 1, "xp" => 600],
+                ["q" => "EXAM: What is the core of 'Service Excellence'?", "options" => ["The product only", "A human-centric approach to problem-solving and relationship management", "Having a lot of money", "Being a famous company"], "ans" => 1, "xp" => 600]
+            ]]
+        ]
+    ]
+];
+
 // Combine everything
-$final_data = array_merge($cleaned_data, $new_maps, $inter_maps, $advanced_maps);
+$final_data = array_merge($cleaned_data, $new_maps, $inter_maps, $advanced_maps, $biz_maps, $comm_maps, $cs_maps);
 
 set_config('journey_data', json_encode($final_data), 'local_sisizathu');
 
