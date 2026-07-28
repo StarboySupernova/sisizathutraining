@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LAB 01: Connectivity Outage | Sisizathu Training</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg-1: #0a0f1e;
+    --bg-2: #121a33;
+    --bg-3: #0d1826;
+    --glass: rgba(255,255,255,0.045);
+    --glass-hover: rgba(255,255,255,0.08);
+    --border: rgba(255,255,255,0.09);
+    --border-strong: rgba(255,255,255,0.16);
+    --text: #eef1fb;
+    --muted: #93a0c4;
+    --muted-2: #73809e;
+    --build: #4fd1c5;
+    --break: #f0a868;
+    --fund: #8fb4ff;
+    --danger: #ff4d4d;
+    --radius: 20px;
+  }
+
+  * { box-sizing: border-box; }
+
+  /* 1. Breathing Background Animation */
+  @keyframes drift {
+    0% { background-position: 0% 0%; }
+    50% { background-position: 100% 100%; }
+    100% { background-position: 0% 0%; }
+  }
+
+  body {
+    margin: 0;
+    font-family: 'Inter', sans-serif;
+    color: var(--text);
+    background:
+      radial-gradient(circle at 12% 8%, rgba(79,209,197,0.12), transparent 40%),
+      radial-gradient(circle at 88% 18%, rgba(240,168,104,0.1), transparent 38%),
+      radial-gradient(circle at 50% 95%, rgba(143,180,255,0.1), transparent 45%),
+      linear-gradient(160deg, var(--bg-1) 0%, var(--bg-2) 45%, var(--bg-3) 100%);
+    background-size: 200% 200%;
+    animation: drift 20s ease-in-out infinite;
+    background-attachment: fixed;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* Glassmorphic Scrollbar */
+  ::-webkit-scrollbar { width: 12px; }
+  ::-webkit-scrollbar-track { background: var(--bg-1); }
+  ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.15); border-radius: 10px; border: 3px solid var(--bg-1); }
+  ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.3); }
+
+  h1, h2, h3, h4 { font-family: 'Space Grotesk', sans-serif; font-weight: 600; margin: 0; letter-spacing: -0.01em; }
+  .mono { font-family: 'JetBrains Mono', monospace; }
+  a { color: var(--build); text-decoration: none; transition: 0.2s; }
+  a:hover { color: var(--text); text-decoration: underline; }
+  
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 28px; }
+
+  /* ---------- HERO & INCIDENT BANNER ---------- */
+  .hero { padding: 80px 28px 60px; position: relative; }
+  
+  /* 5. Pulsing Incident Beacon */
+  .incident-badge {
+    display: inline-flex; align-items: center; gap: 12px;
+    font-family: 'JetBrains Mono', monospace; font-size: 13px; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--danger); padding: 8px 18px; border: 1px solid rgba(255,77,77,0.3);
+    border-radius: 100px; background: rgba(255,77,77,0.05); margin-bottom: 24px;
+  }
+  .beacon {
+    width: 10px; height: 10px; border-radius: 50%; background: var(--danger);
+    box-shadow: 0 0 0 0 rgba(255, 77, 77, 0.7); animation: pulse 1.5s infinite;
+  }
+  @keyframes pulse {
+    0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 77, 77, 0.7); }
+    70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(255, 77, 77, 0); }
+    100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(255, 77, 77, 0); }
+  }
+
+  .hero h1 { font-size: clamp(30px, 4vw, 48px); line-height: 1.1; margin-bottom: 16px; }
+  .hero p.lead { font-size: 17px; color: var(--muted); max-width: 800px; margin-bottom: 30px; }
+
+  /* ---------- CARDS & HOVER PHYSICS ---------- */
+  .phase-card {
+    background: var(--glass); border: 1px solid var(--border);
+    border-radius: var(--radius); padding: 36px; margin-bottom: 30px;
+    backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+    transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  }
+  
+  /* 4. Hover Lift & Glow */
+  .phase-card:hover {
+    transform: translateY(-4px);
+    background: var(--glass-hover);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.4), 0 0 20px rgba(79,209,197,0.05);
+  }
+
+  .phase-header { border-bottom: 1px solid var(--border); padding-bottom: 16px; margin-bottom: 24px; }
+  .phase-header .tag { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--build); display: block; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.1em;}
+  .phase-header h2 { font-size: 24px; }
+
+  /* 2. Interactive Glass Checklists */
+  .checklist { list-style: none; padding: 0; margin: 0; }
+  .checklist label {
+    display: flex; align-items: flex-start; gap: 14px; padding: 12px 16px;
+    background: rgba(255,255,255,0.02); border: 1px solid var(--border);
+    border-radius: 12px; margin-bottom: 12px; cursor: pointer; transition: 0.2s;
+    font-size: 15px; color: var(--text);
+  }
+  .checklist label:hover { background: rgba(255,255,255,0.05); }
+  .checklist input[type="checkbox"] {
+    appearance: none; width: 22px; height: 22px; border: 2px solid var(--muted-2);
+    border-radius: 6px; outline: none; cursor: pointer; position: relative; flex-shrink: 0;
+    transition: 0.2s; margin-top: 2px;
+  }
+  .checklist input[type="checkbox"]:checked { background: var(--build); border-color: var(--build); }
+  .checklist input[type="checkbox"]:checked::after {
+    content: "✔"; position: absolute; top: -2px; left: 4px; color: #000; font-weight: bold; font-size: 14px;
+  }
+  .checklist input[type="checkbox"]:checked + span {
+    text-decoration: line-through; color: var(--muted); opacity: 0.6; transition: 0.3s;
+  }
+
+  /* 3. Mac-Style Terminal Code Blocks */
+  .terminal {
+    background: #050810; border: 1px solid var(--border-strong);
+    border-radius: 12px; overflow: hidden; margin: 24px 0; font-family: 'JetBrains Mono', monospace;
+  }
+  .terminal-header {
+    background: rgba(255,255,255,0.05); padding: 10px 16px; display: flex; align-items: center; gap: 8px;
+    border-bottom: 1px solid var(--border);
+  }
+  .terminal-dots span { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 4px; }
+  .dot-red { background: #ff5f56; } .dot-yel { background: #ffbd2e; } .dot-grn { background: #27c93f; }
+  .terminal-title { color: var(--muted); font-size: 12px; margin-left: 10px; }
+  .terminal pre { margin: 0; padding: 20px; overflow-x: auto; color: #a5b4fc; font-size: 13.5px; line-height: 1.5; }
+  .term-cmd { color: var(--build); }
+  .term-err { color: var(--danger); }
+
+/* 6. Navigation Buttons */
+.nav-actions { display: flex; justify-content: space-between; gap: 16px; margin-top: 20px; margin-bottom: 60px; flex-wrap: wrap; }
+.btn { display: inline-flex; align-items: center; justify-content: center; padding: 14px 28px; border-radius: 12px; font-family: 'JetBrains Mono', monospace; font-size: 14px; font-weight: 600; text-decoration: none !important; transition: 0.3s; cursor: pointer; }
+.btn-primary { background: var(--build); color: #000 !important; box-shadow: 0 4px 20px var(--build-soft); }
+.btn-primary:hover { background: #6ee7b7 !important; color: #000 !important; transform: translateY(-3px); text-decoration: none !important; }
+.btn-secondary { background: rgba(255,255,255,0.05); color: var(--text) !important; border: 1px solid var(--border-strong); }
+.btn-secondary:hover { background: rgba(255,255,255,0.15) !important; color: #fff !important; transform: translateY(-3px); text-decoration: none !important; }
+  
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <div class="hero">
+    <div class="incident-badge"><div class="beacon"></div> Critical Incident Logged</div>
+    <h1>LAB 01: The "Sisizathu Hub" Connectivity Outage</h1>
+    <p class="lead"><strong>Scenario:</strong> You are a Junior Systems Administrator on the Morning Shift. At 09:00 AM, the primary business application crashed. Users cannot pull data from the live coordinator server. Your task is to diagnose the root cause, repair the system, and document the incident according to our Service Level Agreements (SLA).</p>
+  </div>
+
+  <div class="phase-card" style="border-top: 3px solid var(--muted-2);">
+    <div class="phase-header">
+      <span class="tag" style="color: var(--muted-2);">Phase 0 — Environment Setup</span>
+      <h2>Prepare Your Workstation</h2>
+    </div>
+    <p style="color: var(--muted); margin-bottom: 20px; font-size: 15px;">Before starting the lab, you must configure your local PC with the required tools (Python, VS Code) and register on our internal network systems.</p>
+    <ul class="checklist">
+      <label><input type="checkbox"><span><strong>Account Registration:</strong> Navigate to <a href="https://projects.sisizathutraining.com" target="_blank">Projects</a>, <a href="https://support.sisizathutraining.com" target="_blank">Support</a>, and <a href="https://knowledgebase.sisizathutraining.com" target="_blank">Knowledgebase</a> to create/register your student accounts.</span></label>
+      <label><input type="checkbox"><span>Open <strong>Windows PowerShell</strong> on your PC as Administrator.</span></label>
+      <label><input type="checkbox"><span>Run the automated setup script by pasting this command:<br><code style="color:var(--build); background:rgba(0,0,0,0.3); padding:4px 8px; border-radius:6px; margin-top:8px; display:inline-block; font-size:13px;">irm https://lab.sisizathutraining.com/setup.ps1 | iex</code></span></label>
+    </ul>
+  </div>
+
+  <div class="phase-card">
+    <div class="phase-header">
+      <span class="tag">Phase 1 — Project Governance</span>
+      <h2>Acknowledge the Ticket</h2>
+    </div>
+    <p style="color: var(--muted); margin-bottom: 20px; font-size: 15px;">Before touching any code or infrastructure, you must officially take ownership of the issue so the team knows it is being handled.</p>
+    <ul class="checklist">
+      <label><input type="checkbox"><span>Log in to your project dashboard at <a href="https://projects.sisizathutraining.com" target="_blank">projects.sisizathutraining.com</a>.</span></label>
+      <label><input type="checkbox"><span>Locate the task titled <strong>"Investigate Hub Connectivity"</strong> in the Backlog.</span></label>
+      <label><input type="checkbox"><span>Move the task card from the <strong>Backlog</strong> column to the <strong>In Progress</strong> column.</span></label>
+    </ul>
+  </div>
+
+  <div class="phase-card" style="border-top: 3px solid var(--break);">
+    <div class="phase-header">
+      <span class="tag" style="color: var(--break);">Phase 2 — Diagnosis & Repair</span>
+      <h2>Enter the Sandbox & Fix the Fault</h2>
+    </div>
+  <ul class="checklist">
+   <label><input type="checkbox"><span>Download the lab files: <a href="https://sisizathutraining.com/SisizathuTraining_Sandbox.rar" style="text-decoration: underline;"><strong>SisizathuTraining_Sandbox.zip</strong></a> and extract the folder to your Desktop.</span></label>
+   <label><input type="checkbox"><span>Open the folder, double-click to run the <code>SisizathuTraining.py</code> application, and observe the exact error message.</span></label>
+ </ul>
+
+    <div class="terminal">
+      <div class="terminal-header">
+        <div class="terminal-dots"><span class="dot-red"></span><span class="dot-yel"></span><span class="dot-grn"></span></div>
+        <div class="terminal-title">CMD — SisizathuTraining Sandbox</div>
+      </div>
+      <pre><code><span class="term-cmd">C:\Users\Learner\Desktop\SisizathuTraining_Sandbox></span> python SisizathuTraining.py
+Starting Sisizathu Hub System Check...
+Reading configuration file...
+
+<span class="term-err">[CRITICAL FAULT] Cannot reach the server! Network target rejected.</span>
+Error Details: requests.exceptions.ConnectionError: HTTPConnectionPool(host='localhost', port=9999): Max retries exceeded.</code></pre>
+    </div>
+
+    <ul class="checklist">
+      <label><input type="checkbox"><span>Use your diagnostic skills to figure out why the app is failing. <em>Hint: Check the terminal error closely. Where is the app trying to connect? Open <code>config.json</code> in Notepad.</em></span></label>
+      <label><input type="checkbox"><span>Repair the <code>config.json</code> file so it points to the correct live server.</span></label>
+      <label><input type="checkbox"><span><strong>Take a screenshot</strong> of the working application displaying the "[SUCCESS]" message.</span></label>
+    </ul>
+  </div>
+
+  <div class="phase-card">
+    <div class="phase-header">
+      <span class="tag" style="color: var(--fund);">Phase 3 — Frontline Support</span>
+      <h2>Close the Loop (SLA Compliance)</h2>
+    </div>
+    <ul class="checklist">
+      <label><input type="checkbox"><span>Go to the IT Helpdesk at <a href="https://support.sisizathutraining.com" target="_blank">support.sisizathutraining.com</a>.</span></label>
+      <label><input type="checkbox"><span>Open a New Ticket under the category <strong>Network Fault</strong>.</span></label>
+      <label><input type="checkbox"><span>Upload your screenshot as evidence of the fix.</span></label>
+      <label><input type="checkbox"><span>Write a brief, professional summary (Incident Report) of what was broken, how you found it, and how you fixed it.</span></label>
+    </ul>
+  </div>
+
+  <div class="phase-card" style="border-top: 3px solid var(--build);">
+    <div class="phase-header">
+      <span class="tag">Phase 4 — Knowledge Transfer</span>
+      <h2>Document for the Future</h2>
+    </div>
+    <p style="color: var(--muted); margin-bottom: 20px; font-size: 15px;">A fix isn't finished until it's documented. Update the corporate wiki so the next Junior SysAdmin knows what to do.</p>
+    <ul class="checklist">
+      <label><input type="checkbox"><span>Go to the corporate Knowledge Base at <a href="https://knowledgebase.sisizathutraining.com" target="_blank">knowledgebase.sisizathutraining.com</a>.</span></label>
+      <label><input type="checkbox"><span>Create a new Wiki article titled <strong>"Resolution: Sisizathu Hub DNS/Hosts Failure"</strong>.</span></label>
+      <label><input type="checkbox"><span>Write a step-by-step guide explaining how to check and clean the Windows <code>hosts</code> file.</span></label>
+    </ul>
+  </div>
+
+  <!-- Navigation -->
+  <div class="nav-actions">
+    <a href="index.html" class="btn btn-secondary">← Back to Master Roadmap</a>
+    <a href="lab_02.html" class="btn btn-primary">Proceed to LAB 02: Logic Fault →</a>
+  </div>
+
+</div>
+
+</body>
+</html>
