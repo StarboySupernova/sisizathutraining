@@ -18,11 +18,40 @@
   }
   
   body {
-    margin: 0; font-family: 'Inter', sans-serif; color: #eef1fb; background: var(--bg-main);
-    overflow-x: hidden; transition: background 0.8s ease, box-shadow 0.8s ease;
-  }
+      margin: 0; font-family: 'Inter', sans-serif; color: #eef1fb;
+      background-color: var(--bg-main);
+      background-image: 
+        linear-gradient(rgba(10, 15, 30, 0.88), rgba(10, 15, 30, 0.98)),
+        linear-gradient(0deg, transparent 24%, rgba(79, 209, 197, 0.07) 25%, rgba(79, 209, 197, 0.07) 26%, transparent 27%, transparent 74%, rgba(79, 209, 197, 0.07) 75%, rgba(79, 209, 197, 0.07) 76%, transparent 77%, transparent),
+        linear-gradient(90deg, transparent 24%, rgba(79, 209, 197, 0.07) 25%, rgba(79, 209, 197, 0.07) 26%, transparent 27%, transparent 74%, rgba(79, 209, 197, 0.07) 75%, rgba(79, 209, 197, 0.07) 76%, transparent 77%, transparent);
+      background-size: 100% 100%, 60px 60px, 60px 60px;
+      background-position: center center;
+      overflow-x: hidden; transition: background 0.8s ease, box-shadow 0.8s ease;
+    }
 
-  /* --- CRASH MODE ANIMATIONS --- */
+    /* Subtle CRT Scanline overlay */
+    .scanlines {
+      position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
+      background: linear-gradient(to bottom, rgba(255,255,255,0), rgba(255,255,255,0) 50%, rgba(0,0,0,0.15) 50%, rgba(0,0,0,0.15));
+      background-size: 100% 4px; z-index: 9999; pointer-events: none; opacity: 0.6;
+    }
+
+    /* Glassmorphic Security Popup */
+    .glass-popup-overlay {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); z-index: 200;
+      display: none; align-items: center; justify-content: center; opacity: 0; transition: 0.3s;
+    }
+    .glass-popup-overlay.active { display: flex; opacity: 1; }
+    .glass-popup {
+      background: rgba(10, 15, 30, 0.8); border: 1px solid var(--danger);
+      border-radius: 16px; padding: 25px; width: 85%; text-align: center;
+      box-shadow: 0 10px 40px rgba(255,68,68,0.3), inset 0 0 15px rgba(255,68,68,0.2);
+      transform: translateY(20px); transition: 0.3s;
+    }
+    .glass-popup-overlay.active .glass-popup { transform: translateY(0); }
+
+    /* --- CRASH MODE ANIMATIONS --- */
   body.system-crash {
     background: #1a0505;
     box-shadow: inset 0 0 150px rgba(255, 0, 0, 0.4);
@@ -65,12 +94,39 @@
   .chk-row a:hover { text-decoration: underline; }
 
   /* --- DEVICE FRAME (Borrowed from Kids Kingdom & Upgraded) --- */
-  .simulator-wrapper { transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); perspective: 1000px; }
+  .simulator-wrapper { transition: all 0.8s cubic-bezier(0.34, 1.56, 0.64, 1); perspective: 1000px; position: relative; }
+
+.space-bg { position: absolute; inset: -150px; z-index: 0; opacity: 0; transition: opacity 1.2s ease; pointer-events: none; overflow: hidden; }
+.simulator-wrapper.idle-space .space-bg { opacity: 1; }
+.stars-layer { position: absolute; inset: 0; background-repeat: repeat; }
+.stars-far {
+  background-image:
+    radial-gradient(1px 1px at 20px 30px, #fff, transparent),
+    radial-gradient(1px 1px at 90px 120px, #fff, transparent),
+    radial-gradient(1px 1px at 150px 60px, #fff, transparent),
+    radial-gradient(2px 2px at 200px 180px, rgba(255,255,255,0.8), transparent),
+    radial-gradient(1px 1px at 260px 20px, #fff, transparent);
+  background-size: 300px 300px;
+  opacity: 0.5;
+  animation: driftFar 100s linear infinite;
+}
+.stars-near {
+  background-image:
+    radial-gradient(2px 2px at 40px 80px, #8fb4ff, transparent),
+    radial-gradient(1px 1px at 120px 40px, #fff, transparent),
+    radial-gradient(2px 2px at 180px 140px, #4fd1c5, transparent),
+    radial-gradient(1px 1px at 240px 100px, #fff, transparent);
+  background-size: 260px 260px;
+  opacity: 0.85;
+  animation: driftNear 45s linear infinite;
+}
+@keyframes driftFar { from { background-position: 0 0; } to { background-position: -300px 300px; } }
+@keyframes driftNear { from { background-position: 0 0; } to { background-position: 260px -260px; } }
   .kk-device-frame {
     width: 380px; height: 780px; margin: 0 auto; padding: 14px;
     background: linear-gradient(145deg, #2a2a2e, #0c0c0e);
     border-radius: 54px; box-shadow: 0 25px 60px rgba(0,0,0,0.7), inset 0 1px 1px rgba(255,255,255,0.15);
-    position: relative; overflow: hidden; transition: all 0.5s ease;
+    position: relative; overflow: hidden; transition: all 0.5s ease; z-index: 1;
   }
   .kk-screen {
     width: 100%; height: 100%; background: #050505; border-radius: 40px; position: relative; overflow: hidden;
@@ -107,8 +163,7 @@
   /* Editor View */
   #edit-view { background: #1e1e1e; flex-direction: column; }
   #edit-view.active { display: flex; }
-  .editor-textarea { flex: 1; width: 100%; background: transparent; border: none; color: #d4d4d4; font-family: 'JetBrains Mono'; font-size: 0.85rem; resize: none; outline: none; line-height: 1.5; }
-  
+.editor-textarea { flex: 1; min-height: 0; width: 100%; background: transparent; border: none; color: #d4d4d4; font-family: 'JetBrains Mono'; font-size: 0.85rem; resize: none; outline: none; line-height: 1.5; }  
   /* Account View */
   #account-view { background: #0a0f1e; flex-direction: column; padding: 25px 20px; }
   #account-view.active { display: flex; }
@@ -123,7 +178,7 @@
 </style>
 </head>
 <body>
-
+<div class="scanlines"></div>
 <div class="lab-layout">
   <!-- LEFT: INSTRUCTIONS -->
   <div class="lab-instructions">
@@ -158,7 +213,11 @@
   </div>
 
   <!-- RIGHT: DEVICE SIMULATOR -->
-  <div class="simulator-wrapper">
+  <div class="simulator-wrapper" id="simulator-wrapper">
+  <div class="space-bg">
+    <div class="stars-layer stars-far"></div>
+    <div class="stars-layer stars-near"></div>
+  </div>
     <div class="kk-device-frame">
       <div class="kk-screen">
         <div class="kk-dynamic-island">
@@ -180,31 +239,96 @@
               <span style="color:#0f0;">sisizathu@admin:~$</span>
               <input type="text" class="term-input" id="term-input" autocomplete="off" spellcheck="false">
             </div>
-            <button class="run-btn" id="start-btn" onclick="startSimulation()" style="width:100%; margin-top:20px;">▶ RUN DIAGNOSTICS</button>
+            <div class="term-input-wrapper" id="term-input-line">
+              <span style="color:#0f0;">sisizathu@admin:~$</span>
+              <input type="text" class="term-input" id="term-input" autocomplete="off" spellcheck="false">
+            </div>
+            <!-- Session-based success message -->
+            <div id="reg-success-term"
+              style="display:none; color:var(--build); font-family:'JetBrains Mono'; font-size:0.8rem; text-align:center; margin-top:20px; background:rgba(79,209,197,0.1); padding:10px; border-radius:8px; border:1px solid rgba(79,209,197,0.3);">
+              SUCCESS: Account created. Proceed to authentication & diagnostics.
+            </div>
+            <button class="run-btn" id="start-btn" onclick="startSimulation()" style="width:100%; margin-top:10px;">▶ RUN
+              DIAGNOSTICS</button>
           </div>
-
+          
           <!-- Code Editor View -->
           <div class="view-content" id="edit-view">
-            <textarea class="editor-textarea" id="code-editor" spellcheck="false">
-{
-  "app_name": "Sisizathu Hub",
-  "version": "1.0.4",
-  "server_url": "http://localhost:9999/status.json",
-  "timeout_seconds": 5
-}
-            </textarea>
+          
+            <!-- Security Overlay & Popup -->
+            <div id="editor-lock"
+              style="position:absolute; top:0; left:0; width:100%; height:calc(100% - 60px); z-index:10; cursor:not-allowed;"
+              onclick="showAuthPopup()"></div>
+            <div class="glass-popup-overlay" id="auth-popup">
+              <div class="glass-popup">
+                <h3 style="color:var(--danger); margin-top:0; font-family:'JetBrains Mono';">[ACCESS DENIED]</h3>
+                <p style="font-size:0.8rem; color:#93a0c4; margin-bottom:20px;">You must authenticate via the Terminal or Account
+                  tab to gain Write-Access to configuration files.</p>
+                <button class="run-btn" style="background:var(--danger); color:#fff; width:100%; margin:0;"
+                  onclick="closeAuthPopup()">ACKNOWLEDGE</button>
+              </div>
+            </div>
+          
+              <textarea class="editor-textarea" id="code-editor" spellcheck="false" oninput="saveCodeState()">{
+              // ⚠ SISIZATHU HUB — RUNTIME CONFIG
+              "app_name": "Sisizathu Hub",
+              "version": "1.0.4",
+              "environment": "production",
+            
+              // ❌ BROKEN: this is a loopback address (localhost). The live VM
+              //    cannot reach it from outside — it isn't a public HOSTKING
+              //    endpoint. That's why the kernel throws CONNECTION_REFUSED.
+              // ✅ FIX: replace the host with -> lab.sisizathutraining.com
+              "server_url": "http://localhost:9999/status.json",
+            
+              "timeout_seconds": 5,
+              "retry_attempts": 3,
+              "datacenter": "HOSTKING JHB-Node-01"
+            }</textarea>
             <button class="run-btn" onclick="checkFixAndRun()">💾 SAVE & RUN APP</button>
           </div>
-        <!-- Account Registration View -->
-        <div class="view-content" id="account-view">
-          <h3 style="margin-top:0; color: var(--build); font-family: 'Space Grotesk';">Server VMware Accounts</h3>
-            <p style="font-size: 0.85rem; color: #93a0c4; margin-bottom: 20px;">Register your credentials to gain API access to the live Sisizathu server.</p>
-            <input type="text" id="reg-user" placeholder="Choose Username" style="box-sizing: border-box; width:100%; padding:12px; margin-bottom:12px; background:#121a33; border:1px solid #333; color:#fff; border-radius:8px; font-family: 'JetBrains Mono'; outline: none;">
-            <input type="password" id="reg-pass" placeholder="Choose Password" style="box-sizing: border-box; width:100%; padding:12px; margin-bottom:20px; background:#121a33; border:1px solid #333; color:#fff; border-radius:8px; font-family: 'JetBrains Mono'; outline: none;">
-            <button class="run-btn" onclick="registerAccount()" style="box-sizing: border-box; width:100%; margin-top:0;">REGISTER ACCOUNT</button>
-            <div id="reg-msg" style="margin-top: 15px; font-size: 0.85rem; font-family: 'JetBrains Mono'; text-align: center; font-weight: bold;"></div>
+          
+          <!-- Account Registration View -->
+          <div class="view-content" id="account-view">
+            <h3 style="margin-top:0; color: var(--build); font-family: 'Space Grotesk';">Server VMware Accounts</h3>
+            <p style="font-size: 0.85rem; color: #93a0c4; margin-bottom: 20px;">Register your credentials to gain API access to
+              the live Sisizathu server.</p>
+          
+            <!-- Register Form -->
+            <div id="reg-form">
+              <input type="text" id="reg-user" placeholder="Choose Username"
+                style="box-sizing: border-box; width:100%; padding:12px; margin-bottom:12px; background:#121a33; border:1px solid #333; color:#fff; border-radius:8px; font-family: 'JetBrains Mono'; outline: none;">
+              <input type="password" id="reg-pass" placeholder="Choose Password"
+                style="box-sizing: border-box; width:100%; padding:12px; margin-bottom:20px; background:#121a33; border:1px solid #333; color:#fff; border-radius:8px; font-family: 'JetBrains Mono'; outline: none;">
+              <button class="run-btn" onclick="registerAccount()"
+                style="box-sizing: border-box; width:100%; margin-top:0;">REGISTER ACCOUNT</button>
+            </div>
+          
+           <!-- Logged In State -->
+<div id="logged-in-box"
+  style="display:none; flex-direction:column; align-items:center; background:rgba(79,209,197,0.1); padding:20px; border-radius:12px; border:1px solid rgba(79,209,197,0.3); width:100%; box-sizing:border-box;">
+  <div
+    style="width:50px; height:50px; border-radius:50%; background:var(--build); display:flex; align-items:center; justify-content:center; color:#000; font-weight:bold; font-size:1.5rem; margin-bottom:10px;">
+    ✓</div>
+  <span style="color:var(--build); font-family:'JetBrains Mono'; font-size:0.9rem; margin-bottom:5px;">Authenticated
+    as:</span>
+  <strong id="auth-user-name" style="font-size:1.2rem; margin-bottom:15px;">User</strong>
+
+  <div style="width:100%; background:rgba(0,0,0,0.25); border-radius:10px; padding:14px; margin-bottom:20px; font-family:'JetBrains Mono'; font-size:0.8rem;">
+    <div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px solid rgba(255,255,255,0.08); color:#93a0c4;"><span>Role</span><strong id="acc-role" style="color:#eef1fb;">SysAdmin</strong></div>
+    <div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px solid rgba(255,255,255,0.08); color:#93a0c4;"><span>Server</span><strong id="acc-server" style="color:#eef1fb;">-</strong></div>
+    <div style="display:flex; justify-content:space-between; padding:5px 0; border-bottom:1px solid rgba(255,255,255,0.08); color:#93a0c4;"><span>System Status</span><strong id="acc-status" style="color:var(--build);">-</strong></div>
+    <div style="display:flex; justify-content:space-between; padding:5px 0; color:#93a0c4;"><span>Session Time</span><strong id="acc-session" style="color:#eef1fb;">00:00</strong></div>
+  </div>
+
+    <button class="run-btn" onclick="logout()"
+    style="background:var(--danger); color:#fff; width:100%; margin:0; position:sticky; bottom:0;">LOGOUT</button>
+</div>
+          
+            <div id="reg-msg"
+              style="margin-top: 15px; font-size: 0.85rem; font-family: 'JetBrains Mono'; text-align: center; font-weight: bold;">
+            </div>
           </div>
-        </div>
 
       </div>
     </div>
@@ -222,9 +346,11 @@
     document.getElementById('btn-edit').classList.remove('active');
     document.getElementById('btn-account').classList.remove('active');
     
-    document.getElementById(tab + '-view').classList.add('active');
-    document.getElementById('btn-' + tab).classList.add('active');
-  }
+      document.getElementById(tab + '-view').classList.add('active');
+  document.getElementById('btn-' + tab).classList.add('active');
+
+  if (tab === 'account' && isAuthenticated) updateAccountDetails();
+}
 
   // --- Terminal Emulator Logic ---
   const termOut = document.getElementById('term-output');
@@ -262,6 +388,56 @@
     termOut.parentElement.scrollTop = termOut.parentElement.scrollHeight;
   }
 
+  function printSpinner(task, durationMs=900) {
+  return new Promise(resolve => {
+    const frames = ['⠋','⠙','⠹','⠸','⠼','⠴','⠦','⠧','⠇','⠏'];
+    const line = document.createElement('div');
+    line.className = 'term-line'; line.style.color = '#0ff';
+    termOut.appendChild(line);
+    let i = 0; const start = Date.now();
+    const iv = setInterval(() => {
+      line.innerText = `${frames[i++ % frames.length]} ${task}...`;
+      termOut.parentElement.scrollTop = termOut.parentElement.scrollHeight;
+      if (Date.now() - start >= durationMs) {
+        clearInterval(iv);
+        line.style.color = '#0f0';
+        line.innerText = `✔ ${task} initialized.`;
+        resolve();
+      }
+    }, 90);
+  });
+}
+
+function printProgressBar(task, durationMs=1000, width=24) {
+  return new Promise(resolve => {
+    const line = document.createElement('div');
+    line.className = 'term-line'; line.style.color = '#fff';
+    termOut.appendChild(line);
+    const start = Date.now();
+    const iv = setInterval(() => {
+      const pct = Math.min(1, (Date.now() - start) / durationMs);
+      const filled = Math.round(pct * width);
+      line.innerText = `${task.padEnd(20)} [${'█'.repeat(filled)}${'░'.repeat(width-filled)}] ${Math.round(pct*100)}%`;
+      termOut.parentElement.scrollTop = termOut.parentElement.scrollHeight;
+      if (pct >= 1) { clearInterval(iv); resolve(); }
+    }, 60);
+  });
+}
+
+function printFireworks(durationMs=700) {
+  return new Promise(resolve => {
+    const frames = ["   *   "," *   * ","*  +  *"," *   * ","   *   "];
+    const line = document.createElement('div');
+    line.className = 'term-line'; line.style.color = '#0f0'; line.style.fontWeight = 'bold';
+    termOut.appendChild(line);
+    let i = 0; const start = Date.now();
+    const iv = setInterval(() => {
+      line.innerText = frames[i++ % frames.length];
+      if (Date.now() - start >= durationMs) { clearInterval(iv); resolve(); }
+    }, 120);
+  });
+}
+
   function awaitInput() {
     return new Promise(resolve => {
       termInputWrapper.style.display = 'flex';
@@ -278,44 +454,113 @@
     });
   }
 
-  // --- Global State & Timer ---
-  let isAuthenticated = false;
+  // --- Global State & Persistence ---
+  let isAuthenticated = localStorage.getItem('lab01_auth') === 'true';
+  let currentUser = localStorage.getItem('lab01_user') || '';
+  let systemState = localStorage.getItem('lab01_state') || 'IDLE'; 
   let timerInterval = null;
-  let secondsElapsed = 0;
+  let secondsElapsed = parseInt(localStorage.getItem('lab01_timer')) || 0;
 
-  function startTimer() {
-    if(timerInterval) return; // Don't start multiple timers
-    timerInterval = setInterval(() => {
-      secondsElapsed++;
-      let m = Math.floor(secondsElapsed / 60).toString().padStart(2, '0');
-      let s = (secondsElapsed % 60).toString().padStart(2, '0');
-      document.getElementById('di-timer').innerText = `${m}:${s}`;
-    }, 1000);
+  // Init on Load
+  window.onload = () => {
+    // Restore Code
+    const savedCode = localStorage.getItem('lab01_code');
+    if(savedCode) document.getElementById('code-editor').value = savedCode;
+
+    // Restore Auth UI
+      if(isAuthenticated) unlockEditor();
+      updateTimerDisplay(); // reflect persisted time immediately, before any interval tick
+          // Restore Crash State
+      if(systemState === 'PANIC') {
+        triggerPanicUI();
+        startTimer();
+        printInstant("[SYSTEM RESTORED IN CRITICAL STATE]", "#ff0");
+        printInstant("Target URL is still invalid. Check your code.", "#f00");
+      } else if (systemState === 'ONLINE') {
+        document.getElementById('di-text').innerText = 'ONLINE';
+        document.getElementById('di-dot').style.background = '#0f0';
+        document.getElementById('start-btn').style.display = 'none';
+        document.querySelectorAll('.chk-row input').forEach(cb => cb.checked = true);
+        printInstant("[SYSTEM ALREADY ONLINE]", "#0f0");
+      } else {
+        document.getElementById('simulator-wrapper').classList.add('idle-space');
+      }
+
+      if (isAuthenticated) updateAccountDetails();
+  };
+
+  function saveCodeState() {
+    localStorage.setItem('lab01_code', document.getElementById('code-editor').value);
+  }
+
+  function updateTimerDisplay() {
+  let m = Math.floor(secondsElapsed / 60).toString().padStart(2, '0');
+  let s = (secondsElapsed % 60).toString().padStart(2, '0');
+  document.getElementById('di-timer').innerText = `${m}:${s}`;
+}
+
+function startTimer() {
+  if(timerInterval) return;
+  updateTimerDisplay();
+  timerInterval = setInterval(() => {
+    secondsElapsed++;
+    localStorage.setItem('lab01_timer', secondsElapsed);
+    updateTimerDisplay();
+  }, 1000);
+}
+  // --- Security Popup Logic ---
+  function showAuthPopup() {
+    document.getElementById('auth-popup').classList.add('active');
+  }
+  function closeAuthPopup() {
+    document.getElementById('auth-popup').classList.remove('active');
+  }
+  function unlockEditor() {
+  document.getElementById('editor-lock').style.display = 'none';
+  document.getElementById('reg-form').style.display = 'none';
+  document.getElementById('logged-in-box').style.display = 'flex';
+  document.getElementById('auth-user-name').innerText = currentUser;
+  updateAccountDetails();
+}
+
+function updateAccountDetails() {
+  document.getElementById('acc-server').innerText = 'lab.sisizathutraining.com';
+  const statusMap = { IDLE: 'Idle', PANIC: 'Critical Fault', ONLINE: 'Online' };
+  document.getElementById('acc-status').innerText = statusMap[systemState] || systemState;
+  document.getElementById('acc-session').innerText = document.getElementById('di-timer').innerText;
+}
+  function logout() {
+    localStorage.clear();
+    location.reload();
   }
 
   // --- The Simulation Sequence ---
   async function startSimulation() {
     startTimer();
+    document.getElementById('simulator-wrapper').classList.remove('idle-space');
+    document.getElementById('start-btn').style.display = 'none';
     document.getElementById('start-btn').style.display = 'none';
     termOut.innerHTML = '';
+    document.getElementById('reg-success-term').style.display = 'none';
     document.getElementById('di-text').innerText = 'BOOTING';
     document.getElementById('di-dot').style.background = '#0f0';
-    
-    // Auto-tick "Click Run Diagnostics" box
     document.querySelectorAll('.chk-row input')[2].checked = true;
 
-    await printLine("Initializing Sisizathu OS v2.1...", "#888", 10);
-    await printLine("Mounting file systems... [OK]", "#888", 10);
-    await printLine("Starting networking service... [OK]", "#888", 10);
-    printInstant("<br>");
+   await printLine("SisizathuVMWare v6.0 BIOS — Boot Revision 0922", "#fff", 8);
+await printLine("Partner Infrastructure: HOSTKING Datacenters", "#0ff", 8);
+await printSpinner("Detecting Xeon Scalable Gen 4 Architecture", 800);
+await printProgressBar("Zeroing Memory Blocks", 900, 24);
+await printSpinner("Decrypting Kernel Volumes (AES-256)", 800);
+await printSpinner("Connecting to Datacenter Hub", 700);
+await printLine("Power Supply: REDUNDANT_ACTIVE  |  Cooling: THERMAL_NOMINAL (21°C)", "#0f0", 5);
+printInstant("<br>");
     
-    // TASK 2: Login Simulation via Live API
+    // Auth via Terminal
     document.getElementById('di-text').innerText = 'AUTH';
     document.getElementById('di-dot').style.background = '#0ff';
     await printLine("[AUTH] Please authenticate with main server.", "#0ff", 20);
     await printLine("Enter SysAdmin Username: ", "#fff", 20);
     const user = await awaitInput();
-    
     await printLine("Enter Password: ", "#fff", 20);
     termInput.type = 'password';
     const pass = await awaitInput();
@@ -325,22 +570,24 @@
     
     try {
         const response = await fetch('https://lab.sisizathutraining.com/api/login.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+            method: 'POST', headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ username: user, password: pass })
         });
-        
         const result = await response.json();
 
         if (result.status === 'success') {
             isAuthenticated = true;
+            currentUser = user;
+            localStorage.setItem('lab01_auth', 'true');
+            localStorage.setItem('lab01_user', user);
+            unlockEditor();
+
             await printLine("[SUCCESS] Handshake verified. Token granted.", "#0f0", 20);
             document.querySelectorAll('.chk-row input')[3].checked = true;
             printInstant("<br>");
         } else {
             await printLine(`[AUTH FAILED] Server rejected credentials.`, "#f00", 20);
             await printLine(`Reason: ${result.message}`, "#ff0", 10);
-            await printLine(`Hint: Ensure you registered your account in the 'Account' tab first!`, "#888", 10);
             document.getElementById('start-btn').style.display = 'block';
             document.getElementById('di-text').innerText = 'IDLE';
             document.getElementById('di-dot').style.background = '#555';
@@ -348,22 +595,19 @@
         }
     } catch (err) {
         await printLine("[NETWORK ERROR] Cannot reach API at lab.sisizathutraining.com", "#f00", 20);
-        await printLine("Check your internet connection or ensure login.php is on the server.", "#ff0", 10);
         document.getElementById('start-btn').style.display = 'block';
         return;
     }
 
-    await printLine("Executing SisizathuHub.py...", "#0ff", 20);
-    await printLine("Reading config.json...", "#888", 20);
+   await printLine("Executing SisizathuHub.py...", "#0ff", 20);
+   await printLine("Reading config.json...", "#888", 20);
+   await printProgressBar("Probing Connection", 1000, 24);
     await new Promise(r => setTimeout(r, 600));
 
-    // THE CRASH
-    document.getElementById('di-text').innerText = 'PANIC';
-    document.body.classList.add('system-crash');
-    document.getElementById('btn-edit').classList.add('error-tab');
-    
-    document.querySelectorAll('.chk-row input')[4].checked = true;
-    document.querySelectorAll('.chk-row input')[5].checked = true;
+    // trigger panic
+    systemState = 'PANIC';
+    localStorage.setItem('lab01_state', systemState);
+    triggerPanicUI();
     
     await printLine("FATAL EXCEPTION: CONNECTION_REFUSED", "#f00", 10);
     await printLine("===========================================", "#f00", 5);
@@ -373,16 +617,18 @@
     await printLine("===========================================", "#f00", 5);
   }
 
+  function triggerPanicUI() {
+    document.getElementById('di-text').innerText = 'PANIC';
+    document.body.classList.add('system-crash');
+    document.getElementById('btn-edit').classList.add('error-tab');
+    document.querySelectorAll('.chk-row input')[4].checked = true;
+    document.querySelectorAll('.chk-row input')[5].checked = true;
+  }
+
   // --- Validation Logic ---
   async function checkFixAndRun() {
     switchTab('term');
-    
-    if (!isAuthenticated) {
-        termOut.innerHTML = '';
-        await printLine("[ACCESS DENIED] System locked.", "#f00", 10);
-        await printLine("You must successfully authenticate via 'RUN DIAGNOSTICS' first.", "#ff0", 10);
-        return;
-    }
+    if (!isAuthenticated) return; // Prevented by overlay anyway
 
     const code = document.getElementById('code-editor').value;
     termOut.innerHTML = '';
@@ -395,66 +641,59 @@
     await new Promise(r => setTimeout(r, 800));
 
     if (code.includes('lab.sisizathutraining.com')) {
+        systemState = 'ONLINE';
+        localStorage.setItem('lab01_state', systemState);
         document.body.classList.remove('system-crash');
         document.getElementById('di-text').innerText = 'ONLINE';
         document.getElementById('di-dot').style.background = '#0f0';
-        clearInterval(timerInterval); // Stop the resolution timer!
+        clearInterval(timerInterval);
         
         await printLine("Connecting to https://lab.sisizathutraining.com...", "#ff0", 20);
-        await new Promise(r => setTimeout(r, 600));
-        
+        await new Promise(r => setTimeout(r, 400));
+        await printFireworks(600);
+
         printInstant("<br>");
+        
         await printLine("╔══════════════════════════════════════════╗", "#0f0", 5);
         await printLine("║ [SUCCESS] 3-TIER SYSTEM IS ONLINE        ║", "#0f0", 5);
         await printLine("╚══════════════════════════════════════════╝", "#0f0", 5);
         await printLine("➤ Database: CONNECTED", "#0ff", 10);
         await printLine("➤ Location: Hostking Datacenter", "#0ff", 10);
-        await printLine("➤ Telemetry Sync: ACTIVE", "#0ff", 10);
         await printLine(`➤ Resolution Time: ${document.getElementById('di-timer').innerText}`, "#ff0", 10);
-        
         document.querySelectorAll('.chk-row input')[6].checked = true;
     } else {
-        document.body.classList.add('system-crash');
-        document.getElementById('di-text').innerText = 'PANIC';
-        document.getElementById('di-dot').style.background = '#f00';
+        triggerPanicUI();
         await printLine("FATAL EXCEPTION: CONNECTION_REFUSED", "#f00", 5);
         await printLine("Target URL is still invalid. Check your code.", "#ff0", 5);
     }
   }
-    // --- Account Registration Logic ---
+
+  // --- Account Registration Logic ---
   async function registerAccount() {
     const u = document.getElementById('reg-user').value;
     const p = document.getElementById('reg-pass').value;
     const msg = document.getElementById('reg-msg');
     
-    if(!u || !p) {
-      msg.style.color = 'var(--danger)';
-      msg.innerText = 'Please enter both fields.';
-      return;
-    }
+    if(!u || !p) { msg.style.color = 'var(--danger)'; msg.innerText = 'Please enter both fields.'; return; }
     
-    msg.style.color = 'var(--fund)';
-    msg.innerText = 'Connecting to server...';
+    msg.style.color = 'var(--fund)'; msg.innerText = 'Connecting to server...';
     
     try {
       const response = await fetch('https://lab.sisizathutraining.com/api/register.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ username: u, password: p })
       });
-      
       const result = await response.json();
       
       if(result.status === 'success') {
-        msg.style.color = 'var(--build)';
-        msg.innerText = 'Account Created! You may now use the Terminal.';
+         msg.style.color = 'var(--build)'; msg.innerText = 'Account Created! Switching to Terminal...';
+         document.getElementById('reg-success-term').style.display = 'block';
+         setTimeout(() => { switchTab('term'); document.getElementById('reg-user').value = ''; document.getElementById('reg-pass').value = ''; }, 1500);
       } else {
-        msg.style.color = 'var(--danger)';
-        msg.innerText = result.message;
+        msg.style.color = 'var(--danger)'; msg.innerText = result.message;
       }
     } catch(err) {
-      msg.style.color = 'var(--danger)';
-      msg.innerText = 'Network error. Cannot reach API.';
+      msg.style.color = 'var(--danger)'; msg.innerText = 'Network error. Cannot reach API.';
     }
   }
 
